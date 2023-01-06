@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FirebaseAuthProvider extends ChangeNotifier {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
   final actionCodeSettings = ActionCodeSettings(
     url: 'https://aquariumbleu.page.link',
     // handleCodeInApp: true,
