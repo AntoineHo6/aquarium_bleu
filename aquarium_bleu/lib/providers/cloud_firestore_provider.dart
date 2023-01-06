@@ -27,7 +27,7 @@ class CloudFirestoreProvider extends ChangeNotifier {
 
       return doc.exists;
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 

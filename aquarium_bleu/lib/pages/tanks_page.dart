@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../tank.dart';
 import '../widgets/my_drawer.dart';
-import '../widgets/tank_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TanksPage extends StatefulWidget {
   const TanksPage({super.key});
@@ -29,7 +29,7 @@ class _TanksPageState extends State<TanksPage> {
                     expandedHeight: 150.0,
                     flexibleSpace: FlexibleSpaceBar(
                       title: Text(
-                        'Your tanks',
+                        AppLocalizations.of(context).tanks,
                         style: Theme.of(context).textTheme.headline1,
                         textScaleFactor: 0.3,
                       ),
