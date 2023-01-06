@@ -13,6 +13,8 @@ class Tank {
 
   static Tank fromJson(Map<String, dynamic> json) => Tank(
         name: json['name'],
-        dimensions: json['dimensions'],
+        dimensions: json['dimensions'] == null
+            ? null
+            : Dimensions.fromJson(json['dimensions']),
       );
 }

@@ -12,4 +12,14 @@ class Dimensions {
     required this.height,
     required this.length,
   });
+
+  static Dimensions fromJson(Map<String, dynamic> json) {
+    return Dimensions(
+      unit: UnitsOfLength.values
+          .firstWhere((e) => e.toString() == 'UnitsOfLength.' + json['unit']),
+      depth: double.parse(json['depth']),
+      height: double.parse(json['height']),
+      length: double.parse(json['length']),
+    );
+  }
 }

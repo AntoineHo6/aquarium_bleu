@@ -21,6 +21,7 @@ class _TanksPageState extends State<TanksPage> {
       body: StreamBuilder<List<Tank>>(
           stream: context.watch<CloudFirestoreProvider>().readTanks(),
           builder: (context, snapshot) {
+            print(snapshot);
             if (snapshot.hasData) {
               return CustomScrollView(
                 slivers: <Widget>[
