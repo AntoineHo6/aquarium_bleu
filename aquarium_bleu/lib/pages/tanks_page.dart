@@ -6,12 +6,6 @@ import '../tank.dart';
 import '../widgets/my_drawer.dart';
 import '../widgets/tank_card.dart';
 
-class ChartData {
-  ChartData(this.x, this.y);
-  final DateTime x;
-  final double y;
-}
-
 class TanksPage extends StatefulWidget {
   const TanksPage({super.key});
 

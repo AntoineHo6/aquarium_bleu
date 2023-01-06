@@ -1,7 +1,18 @@
+import 'package:aquarium_bleu/dimensions.dart';
+
 class Tank {
   final String name;
+  Dimensions? dimensions;
 
-  Tank({required this.name});
+  Tank({required this.name, this.dimensions});
 
-  static Tank fromJson(Map<String, dynamic> json) => Tank(name: json['name']);
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'dimensions': dimensions,
+      };
+
+  static Tank fromJson(Map<String, dynamic> json) => Tank(
+        name: json['name'],
+        dimensions: json['dimensions'],
+      );
 }

@@ -34,7 +34,6 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor: Colors.lightBlue[300],
       ),
       initialRoute: context.watch<FirebaseAuthProvider>().initialRoute,
       routes: customRoutes,
