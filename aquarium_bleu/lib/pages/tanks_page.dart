@@ -1,22 +1,26 @@
+import 'package:aquarium_bleu/pages/tank_page.dart';
 import 'package:flutter/material.dart';
-
 import '../widgets/my_drawer.dart';
 import '../widgets/tank_card.dart';
 
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-
-class TanksHomePage extends StatefulWidget {
-  const TanksHomePage({super.key});
-
-  @override
-  State<TanksHomePage> createState() => _TanksHomePageState();
+class ChartData {
+  ChartData(this.x, this.y);
+  final DateTime x;
+  final double y;
 }
 
-class _TanksHomePageState extends State<TanksHomePage> {
+class TanksPage extends StatefulWidget {
+  const TanksPage({super.key});
+
+  @override
+  State<TanksPage> createState() => _TanksPageState();
+}
+
+class _TanksPageState extends State<TanksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MyDrawer(),
+      drawer: const MyDrawer(),
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
@@ -33,15 +37,17 @@ class _TanksHomePageState extends State<TanksHomePage> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-              childCount: 3,
+              childCount: 1,
               (BuildContext context, int index) {
                 return ElevatedButton(
+                  // Within the `FirstRoute` widget
                   onPressed: () {
-                    print("penis");
-                    FirebaseUIAuth.signOut(context: context);
-                    Navigator.pushReplacementNamed(context, '/sign-in');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const TankPage()),
+                    );
                   },
-                  child: TankCard("Apisto Tank"),
+                  child: const TankCard("Apisto Tank"),
                 );
               },
             ),

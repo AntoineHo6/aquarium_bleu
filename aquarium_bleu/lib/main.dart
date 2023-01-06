@@ -1,34 +1,11 @@
-import 'package:aquarium_bleu/pages/tanks_home_page.dart';
-import 'package:aquarium_bleu/widgets/tank_card.dart';
+import 'package:aquarium_bleu/pages/tanks_page.dart';
+import 'package:aquarium_bleu/providers/firebase_auth_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
-import 'package:firebase_auth/firebase_auth.dart'
-    hide PhoneAuthProvider, EmailAuthProvider;
 import 'package:flutter/material.dart';
-
-final actionCodeSettings = ActionCodeSettings(
-  url: 'https://aquariumbleu.page.link',
-  handleCodeInApp: true,
-  androidMinimumVersion: '1',
-  androidPackageName: 'com.example.aquarium_bleu',
-  // iOSBundleId: 'io.flutter.plugins.fireabaseUiExample',
-);
-
-String get initialRoute {
-  final auth = FirebaseAuth.instance;
-
-  if (auth.currentUser == null || auth.currentUser!.isAnonymous) {
-    return '/sign-in';
-  }
-
-  if (!auth.currentUser!.emailVerified && auth.currentUser!.email != null) {
-    return '/verify-email';
-  }
-
-  return '/';
-}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +13,14 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => FirebaseAuthProvider())
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -50,21 +34,23 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         primaryColor: Colors.lightBlue[300],
       ),
-      initialRoute: initialRoute,
+      initialRoute: context.watch<FirebaseAuthProvider>().initialRoute,
       routes: {
-        '/': (context) => TanksHomePage(),
+        '/': (context) => const TanksPage(),
         '/sign-in': (context) {
           return SignInScreen(
             providers: [
               EmailAuthProvider(),
+              GoogleProvider(
+                clientId:
+                    '36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com',
+              ),
             ],
             actions: [
               AuthStateChangeAction<UserCreated>((context, state) {
                 if (!state.credential.user!.emailVerified) {
-                  print("NEED VERIFY");
                   Navigator.pushNamed(context, '/verify-email');
                 } else {
-                  print("VERIFIIIIIIIIIEEEEEDD");
                   Navigator.pushReplacementNamed(context, '/');
                 }
               }),
@@ -82,7 +68,8 @@ class MyApp extends StatelessWidget {
           return EmailVerificationScreen(
             // headerBuilder: headerIcon(Icons.verified),
             // sideBuilder: sideIcon(Icons.verified),
-            actionCodeSettings: actionCodeSettings,
+            actionCodeSettings:
+                context.watch<FirebaseAuthProvider>().actionCodeSettings,
             actions: [
               EmailVerifiedAction(() {
                 Navigator.pushReplacementNamed(context, '/profile');

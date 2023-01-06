@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class TankCard extends StatelessWidget {
   final String tankName;
 
-  const TankCard(this.tankName);
+  const TankCard(this.tankName, {super.key});
 
   @override
   Widget build(BuildContext context) {
