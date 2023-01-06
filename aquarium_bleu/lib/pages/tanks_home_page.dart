@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../widgets/my_drawer.dart';
 import '../widgets/tank_card.dart';
 
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+
 class TanksHomePage extends StatefulWidget {
   const TanksHomePage({super.key});
 
@@ -34,7 +36,11 @@ class _TanksHomePageState extends State<TanksHomePage> {
               childCount: 3,
               (BuildContext context, int index) {
                 return ElevatedButton(
-                  onPressed: () => print("sds"),
+                  onPressed: () {
+                    print("penis");
+                    FirebaseUIAuth.signOut(context: context);
+                    Navigator.pushReplacementNamed(context, '/sign-in');
+                  },
                   child: TankCard("Apisto Tank"),
                 );
               },
