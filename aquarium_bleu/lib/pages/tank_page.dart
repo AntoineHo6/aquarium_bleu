@@ -1,7 +1,15 @@
+import 'package:aquarium_bleu/models/nitrate.dart';
+import 'package:aquarium_bleu/models/tank.dart';
+import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
+import 'package:aquarium_bleu/widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TankPage extends StatefulWidget {
-  const TankPage({super.key});
+  final Tank tank;
+
+  const TankPage(this.tank, {super.key});
 
   @override
   State<TankPage> createState() => _TankPageState();
@@ -12,6 +20,23 @@ class _TankPageState extends State<TankPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
+      body: StreamBuilder(
+          stream: context
+              .watch<CloudFirestoreProvider>()
+              .readNitrates(widget.tank.docId),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Column(
+                children: snapshot.data!
+                    .map((nitrate) => ElevatedButton(
+                        onPressed: () => null,
+                        child: Text(nitrate.amount.toString())))
+                    .toList(),
+              );
+            } else {
+              return Container();
+            }
+          }),
     );
   }
 }

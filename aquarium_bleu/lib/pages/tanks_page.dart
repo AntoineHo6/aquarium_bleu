@@ -1,8 +1,9 @@
+import 'package:aquarium_bleu/models/nitrate.dart';
 import 'package:aquarium_bleu/pages/tank_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../tank.dart';
+import '../models/tank.dart';
 import '../widgets/my_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -21,7 +22,6 @@ class _TanksPageState extends State<TanksPage> {
       body: StreamBuilder<List<Tank>>(
           stream: context.watch<CloudFirestoreProvider>().readTanks(),
           builder: (context, snapshot) {
-            print(snapshot);
             if (snapshot.hasData) {
               return CustomScrollView(
                 slivers: <Widget>[
@@ -46,7 +46,8 @@ class _TanksPageState extends State<TanksPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const TankPage(),
+                                builder: (context) =>
+                                    TankPage(snapshot.data!.elementAt(index)),
                               ),
                             );
                           },

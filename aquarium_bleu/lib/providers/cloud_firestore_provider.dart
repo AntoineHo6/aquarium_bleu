@@ -1,4 +1,5 @@
-import 'package:aquarium_bleu/tank.dart';
+import 'package:aquarium_bleu/models/nitrate.dart';
+import 'package:aquarium_bleu/models/tank.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -37,5 +38,17 @@ class CloudFirestoreProvider extends ChangeNotifier {
       .collection('tanks')
       .snapshots()
       .map((event) =>
-          event.docs.map((doc) => Tank.fromJson(doc.data())).toList());
+          event.docs.map((doc) => Tank.fromJson(doc.id, doc.data())).toList());
+
+  Stream<List<Nitrate>> readNitrates(String tankId) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('nitrates')
+        .snapshots()
+        .map((event) =>
+            event.docs.map((doc) => Nitrate.fromJson(doc.data())).toList());
+  }
 }

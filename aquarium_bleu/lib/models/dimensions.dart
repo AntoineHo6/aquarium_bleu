@@ -13,13 +13,15 @@ class Dimensions {
     required this.length,
   });
 
+  // TODO: toJson
+
   static Dimensions fromJson(Map<String, dynamic> json) {
     return Dimensions(
       unit: UnitsOfLength.values
           .firstWhere((e) => e.toString() == 'UnitsOfLength.' + json['unit']),
-      depth: double.parse(json['depth']),
-      height: double.parse(json['height']),
-      length: double.parse(json['length']),
+      depth: (json['depth']).toDouble(),
+      height: json['height'].toDouble(),
+      length: json['length'].toDouble(),
     );
   }
 }
