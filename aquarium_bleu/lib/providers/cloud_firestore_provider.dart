@@ -2,6 +2,7 @@ import 'package:aquarium_bleu/models/nitrate.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class CloudFirestoreProvider extends ChangeNotifier {
   late String _uid;
@@ -32,13 +33,16 @@ class CloudFirestoreProvider extends ChangeNotifier {
     }
   }
 
-  Stream<List<Tank>> readTanks() => FirebaseFirestore.instance
-      .collection('users')
-      .doc(_uid)
-      .collection('tanks')
-      .snapshots()
-      .map((event) =>
-          event.docs.map((doc) => Tank.fromJson(doc.id, doc.data())).toList());
+  Stream<List<Tank>> readTanks() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .snapshots()
+        .map((event) => event.docs
+            .map((doc) => Tank.fromJson(doc.id, doc.data()))
+            .toList());
+  }
 
   Stream<List<Nitrate>> readNitrates(String tankId) {
     return FirebaseFirestore.instance
@@ -50,5 +54,20 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .snapshots()
         .map((event) =>
             event.docs.map((doc) => Nitrate.fromJson(doc.data())).toList());
+  }
+
+  Future createTank(String name, bool isFreshWater) async {
+    final docTank = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(const Uuid().v4());
+
+    final json = {
+      'name': name,
+      'isFreshwater': isFreshWater,
+    };
+
+    await docTank.set(json);
   }
 }

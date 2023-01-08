@@ -1,12 +1,14 @@
+import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 import 'name_text_field.dart';
 
 class AddTankAlertDialog extends StatefulWidget {
-  List<String> tankNames;
+  final List<String> tankNames;
 
-  AddTankAlertDialog(this.tankNames, {super.key});
+  const AddTankAlertDialog(this.tankNames, {super.key});
 
   @override
   State<AddTankAlertDialog> createState() => _AddTankAlertDialogState();
@@ -16,7 +18,6 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
   late TextEditingController _nameFieldController;
   bool? _isFreshwater = true;
   bool _isNameValid = true;
-  bool _nameAlreadyExists = false;
   String? _errorText;
 
   @override
@@ -33,12 +34,6 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
-    if (_nameAlreadyExists) {
-      _errorText = AppLocalizations.of(context).nameAlreadyExists;
-    } else {
-      _errorText = AppLocalizations.of(context).invalidName;
-    }
-
     return AlertDialog(
       title: Text(
         AppLocalizations.of(context).addANewTank,
@@ -82,24 +77,27 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
       actions: <Widget>[
         TextButton(
           child: Text(AppLocalizations.of(context).add),
-          onPressed: () => handleAdd(),
+          onPressed: () => handleAdd(context),
         ),
       ],
     );
   }
 
-  void handleAdd() {
-    String name = _nameFieldController.text.trim().toLowerCase();
-    if (name.isEmpty) {
+  void handleAdd(BuildContext context) {
+    String nameModified = _nameFieldController.text.trim().toLowerCase();
+    if (nameModified.isEmpty) {
       setState(() {
         _isNameValid = false;
-        _nameAlreadyExists = false;
+        _errorText = AppLocalizations.of(context).emptyName;
       });
-    } else if (widget.tankNames.contains(name)) {
+    } else if (widget.tankNames.contains(nameModified)) {
       setState(() {
-        _nameAlreadyExists = true;
+        _isNameValid = false;
+        _errorText = AppLocalizations.of(context).nameAlreadyExists;
       });
     } else {
+      Provider.of<CloudFirestoreProvider>(context, listen: false)
+          .createTank(_nameFieldController.text, _isFreshwater!);
       Navigator.pop(context);
     }
   }

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NameTextField extends StatefulWidget {
-  TextEditingController controller;
-  bool isNameValid;
-  Function(String)? onChanged;
-  String? errorText;
+  final TextEditingController controller;
+  final bool isNameValid;
+  final Function(String)? onChanged;
+  final String? errorText;
 
-  NameTextField({
+  const NameTextField({
     super.key,
     required this.controller,
     required this.isNameValid,

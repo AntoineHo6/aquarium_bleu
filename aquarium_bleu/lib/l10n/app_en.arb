@@ -11,6 +11,6 @@
     "saltwater": "Saltwater",
     "add": "Add",
     "name": "Name",
-    "invalidName": "Invalid name",
+    "emptyName": "Empty name",
     "nameAlreadyExists": "Name already exists"
 }

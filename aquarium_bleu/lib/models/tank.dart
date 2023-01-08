@@ -16,7 +16,7 @@ class Tank {
   Map<String, dynamic> toJson() => {
         'name': name,
         'isFreshwater': isFreshwater, // check
-        'dimensions': dimensions, // rework
+        // 'dimensions': dimensions, // rework
       };
 
   static Tank fromJson(String docId, Map<String, dynamic> json) {

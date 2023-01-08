@@ -13,8 +13,6 @@ class Dimensions {
     required this.length,
   });
 
-  // TODO: toJson
-
   static Dimensions fromJson(Map<String, dynamic> json) {
     return Dimensions(
       unit: UnitsOfLength.values

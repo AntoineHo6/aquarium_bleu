@@ -8,6 +8,6 @@
     "saltwater": "Eau salée",
     "add": "Ajouter",
     "name": "Nom",
-    "invalidName": "Nom invalid",
+    "emptyName": "Nom vide",
     "nameAlreadyExists": "Le nom existe déjà"
 }

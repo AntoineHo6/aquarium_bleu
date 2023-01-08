@@ -15,7 +15,8 @@ class TanksPage extends StatefulWidget {
 }
 
 class _TanksPageState extends State<TanksPage> {
-  List<String> _tankNames = [];
+  // to avoid duplicate tank names when adding tanks
+  final List<String> _tankNames = [];
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,9 @@ class _TanksPageState extends State<TanksPage> {
                       childCount: snapshot.data?.length,
                       (BuildContext context, int index) {
                         Tank tank = snapshot.data!.elementAt(index);
-                        _tankNames.add(tank.name);
+                        // add tank's name to tankNames list.
+                        // Lowercase it for ez comparison
+                        _tankNames.add(tank.name.toLowerCase());
                         return ElevatedButton(
                           onPressed: () {
                             Navigator.push(
@@ -69,12 +72,7 @@ class _TanksPageState extends State<TanksPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => showDialog(
           context: context,
-          builder: (BuildContext context) {
-            for (String name in _tankNames) {
-              print(name);
-            }
-            return AddTankAlertDialog(_tankNames);
-          },
+          builder: (BuildContext context) => AddTankAlertDialog(_tankNames),
         ),
       ),
     );
