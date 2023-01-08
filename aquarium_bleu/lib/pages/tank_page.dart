@@ -12,11 +12,34 @@ class TankPage extends StatefulWidget {
   State<TankPage> createState() => _TankPageState();
 }
 
+enum MenuItem {
+  addMeasurement,
+}
+
 class _TankPageState extends State<TankPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(widget.tank.name),
+        actions: [
+          PopupMenuButton(
+            onSelected: (MenuItem item) {
+              switch (item) {
+                case MenuItem.addMeasurement:
+                  // TODO: Handle this case.
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuItem>>[
+              const PopupMenuItem<MenuItem>(
+                value: MenuItem.addMeasurement,
+                child: Text('Item 1'),
+              ),
+            ],
+          ),
+        ],
+      ),
       body: StreamBuilder(
           stream: context
               .watch<CloudFirestoreProvider>()

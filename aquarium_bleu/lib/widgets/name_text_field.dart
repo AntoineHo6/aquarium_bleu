@@ -38,7 +38,8 @@ class _NameTextFieldState extends State<NameTextField> {
             width: 0.5,
           ),
         ),
-        hintText: AppLocalizations.of(context).name,
+        hintText:
+            '${AppLocalizations.of(context).name} (${AppLocalizations.of(context).required})',
         errorText: widget.isNameValid ? null : widget.errorText,
       ),
     );
