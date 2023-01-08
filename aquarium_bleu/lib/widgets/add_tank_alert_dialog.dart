@@ -32,6 +32,25 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
     super.dispose();
   }
 
+  void _handleAdd(BuildContext context) {
+    String nameModified = _nameFieldController.text.trim().toLowerCase();
+    if (nameModified.isEmpty) {
+      setState(() {
+        _isNameValid = false;
+        _errorText = AppLocalizations.of(context).emptyName;
+      });
+    } else if (widget.tankNames.contains(nameModified)) {
+      setState(() {
+        _isNameValid = false;
+        _errorText = AppLocalizations.of(context).nameAlreadyExists;
+      });
+    } else {
+      Provider.of<CloudFirestoreProvider>(context, listen: false)
+          .createTank(_nameFieldController.text, _isFreshwater!);
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -76,29 +95,14 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
       ),
       actions: <Widget>[
         TextButton(
+          child: Text(AppLocalizations.of(context).cancel),
+          onPressed: () => Navigator.pop(context),
+        ),
+        TextButton(
           child: Text(AppLocalizations.of(context).add),
-          onPressed: () => handleAdd(context),
+          onPressed: () => _handleAdd(context),
         ),
       ],
     );
-  }
-
-  void handleAdd(BuildContext context) {
-    String nameModified = _nameFieldController.text.trim().toLowerCase();
-    if (nameModified.isEmpty) {
-      setState(() {
-        _isNameValid = false;
-        _errorText = AppLocalizations.of(context).emptyName;
-      });
-    } else if (widget.tankNames.contains(nameModified)) {
-      setState(() {
-        _isNameValid = false;
-        _errorText = AppLocalizations.of(context).nameAlreadyExists;
-      });
-    } else {
-      Provider.of<CloudFirestoreProvider>(context, listen: false)
-          .createTank(_nameFieldController.text, _isFreshwater!);
-      Navigator.pop(context);
-    }
   }
 }

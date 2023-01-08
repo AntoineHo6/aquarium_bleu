@@ -9,5 +9,6 @@
     "add": "Ajouter",
     "name": "Nom",
     "emptyName": "Nom vide",
-    "nameAlreadyExists": "Le nom existe déjà"
+    "nameAlreadyExists": "Le nom existe déjà",
+    "cancel": "Annuler"
 }

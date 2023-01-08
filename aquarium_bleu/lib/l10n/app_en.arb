@@ -12,5 +12,6 @@
     "add": "Add",
     "name": "Name",
     "emptyName": "Empty name",
-    "nameAlreadyExists": "Name already exists"
+    "nameAlreadyExists": "Name already exists",
+    "cancel": "Cancel"
 }
