@@ -15,7 +15,7 @@ class Nitrate {
   static Nitrate fromJson(Map<String, dynamic> json) {
     return Nitrate(
       unit: UnitsOfHardness.values
-          .firstWhere((e) => e.toString() == 'UnitsOfHardness.' + json['unit']),
+          .firstWhere((e) => e.toString() == 'UnitsOfHardness.${json['unit']}'),
       amount: (json['amount']).toDouble(),
       date: (json['date'] as Timestamp).toDate(),
     );

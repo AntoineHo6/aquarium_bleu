@@ -3,5 +3,14 @@
     "@helloWorld": {
       "description": "The conventional newborn programmer greeting"
     },
-    "tanks": "Tanks"
+    "tanks": "Tanks",
+    "addANewTank": "Add a new tank",
+    "tankName": "Tank name",
+    "tankType": "Tank type",
+    "freshwater": "Freshwater",
+    "saltwater": "Saltwater",
+    "add": "Add",
+    "name": "Name",
+    "invalidName": "Invalid name",
+    "nameAlreadyExists": "Name already exists"
 }

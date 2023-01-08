@@ -1,4 +1,13 @@
 {
     "helloWorld": "Allo monde!",
-    "tanks": "Aquariums"
+    "tanks": "Aquariums",
+    "addANewTank": "Ajouter un nouvel aquarium",
+    "tankName": "Nom de l'aquarium",
+    "tankType": "Type d'aquarium",
+    "freshwater": "Eau douce",
+    "saltwater": "Eau salée",
+    "add": "Ajouter",
+    "name": "Nom",
+    "invalidName": "Nom invalid",
+    "nameAlreadyExists": "Le nom existe déjà"
 }

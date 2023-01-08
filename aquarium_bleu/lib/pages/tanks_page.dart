@@ -1,9 +1,9 @@
-import 'package:aquarium_bleu/models/nitrate.dart';
 import 'package:aquarium_bleu/pages/tank_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/tank.dart';
+import '../widgets/add_tank_alert_dialog.dart';
 import '../widgets/my_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -15,6 +15,8 @@ class TanksPage extends StatefulWidget {
 }
 
 class _TanksPageState extends State<TanksPage> {
+  List<String> _tankNames = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,12 +37,13 @@ class _TanksPageState extends State<TanksPage> {
                         textScaleFactor: 0.3,
                       ),
                     ),
-                    centerTitle: true,
                   ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       childCount: snapshot.data?.length,
                       (BuildContext context, int index) {
+                        Tank tank = snapshot.data!.elementAt(index);
+                        _tankNames.add(tank.name);
                         return ElevatedButton(
                           onPressed: () {
                             Navigator.push(
@@ -59,9 +62,21 @@ class _TanksPageState extends State<TanksPage> {
                 ],
               );
             } else {
+              // add a message that says no data available
               return Container();
             }
           }),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            for (String name in _tankNames) {
+              print(name);
+            }
+            return AddTankAlertDialog(_tankNames);
+          },
+        ),
+      ),
     );
   }
 }
