@@ -11,5 +11,11 @@
     "emptyName": "Nom vide",
     "nameAlreadyExists": "Le nom existe déjà",
     "cancel": "Annuler",
-    "required": "Obligatoire"
+    "required": "Obligatoire",
+    "addParameterValue": "Enregistrer un paramètre",
+    "editTank": "Modifier l'aquarium",
+    "deleteTank": "Supprimer l'aquarium",
+    "value": "Valeur",
+    "theValueIsEmpty": "La valeur est vide",
+    "theValueIsNotAValidNumber": "La valeur n'est pas un nombre valid"
 }

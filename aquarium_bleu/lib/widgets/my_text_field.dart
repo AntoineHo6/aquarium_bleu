@@ -1,29 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class NameTextField extends StatefulWidget {
+class MyTextField extends StatefulWidget {
   final TextEditingController controller;
-  final bool isNameValid;
+  final bool isFieldValid;
   final Function(String)? onChanged;
   final String? errorText;
+  final int? maxLength;
+  final String? hintText;
 
-  const NameTextField({
+  const MyTextField({
     super.key,
     required this.controller,
-    required this.isNameValid,
+    required this.isFieldValid,
     this.onChanged,
     this.errorText,
+    this.maxLength,
+    this.hintText,
   });
 
   @override
-  State<NameTextField> createState() => _NameTextFieldState();
+  State<MyTextField> createState() => _MyTextFieldState();
 }
 
-class _NameTextFieldState extends State<NameTextField> {
+class _MyTextFieldState extends State<MyTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      maxLength: 50,
+      maxLength: widget.maxLength,
       controller: widget.controller,
       onChanged: widget.onChanged,
       decoration: InputDecoration(
@@ -38,9 +41,8 @@ class _NameTextFieldState extends State<NameTextField> {
             width: 0.5,
           ),
         ),
-        hintText:
-            '${AppLocalizations.of(context).name} (${AppLocalizations.of(context).required})',
-        errorText: widget.isNameValid ? null : widget.errorText,
+        hintText: widget.hintText,
+        errorText: widget.isFieldValid ? null : widget.errorText,
       ),
     );
   }

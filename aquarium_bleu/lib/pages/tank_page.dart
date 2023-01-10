@@ -1,7 +1,9 @@
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
+import 'package:aquarium_bleu/widgets/add_param_val_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TankPage extends StatefulWidget {
   final Tank tank;
@@ -27,14 +29,22 @@ class _TankPageState extends State<TankPage> {
             onSelected: (MenuItem item) {
               switch (item) {
                 case MenuItem.addMeasurement:
-                  // TODO: Handle this case.
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        const AddParamValAlertDialog(),
+                  );
                   break;
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuItem>>[
-              const PopupMenuItem<MenuItem>(
+              PopupMenuItem<MenuItem>(
                 value: MenuItem.addMeasurement,
-                child: Text('Item 1'),
+                child: Text(AppLocalizations.of(context).addParameterValue),
+              ),
+              PopupMenuItem<MenuItem>(
+                value: null,
+                child: Text(AppLocalizations.of(context).editTank),
               ),
             ],
           ),
@@ -48,9 +58,14 @@ class _TankPageState extends State<TankPage> {
             if (snapshot.hasData) {
               return Column(
                 children: snapshot.data!
-                    .map((nitrate) => ElevatedButton(
+                    .map(
+                      (nitrate) => ElevatedButton(
                         onPressed: () => null,
-                        child: Text(nitrate.amount.toString())))
+                        child: Text(
+                          "${nitrate.amount.toString()} ${nitrate.unit.toString()}",
+                        ),
+                      ),
+                    )
                     .toList(),
               );
             } else {

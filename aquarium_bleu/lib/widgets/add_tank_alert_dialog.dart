@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'name_text_field.dart';
+import 'my_text_field.dart';
 
 class AddTankAlertDialog extends StatefulWidget {
   final List<String> tankNames;
@@ -34,6 +34,9 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
 
   void _handleAdd(BuildContext context) {
     String nameModified = _nameFieldController.text.trim().toLowerCase();
+
+    // Determine the right error message to show for the name.
+    // Otherwise, create the tank.
     if (nameModified.isEmpty) {
       setState(() {
         _isNameValid = false;
@@ -60,10 +63,13 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
       content: SingleChildScrollView(
         child: ListBody(
           children: [
-            NameTextField(
+            MyTextField(
               controller: _nameFieldController,
-              isNameValid: _isNameValid,
+              isFieldValid: _isNameValid,
+              hintText:
+                  "${AppLocalizations.of(context).name} (${AppLocalizations.of(context).required})",
               errorText: _errorText,
+              maxLength: 50,
             ),
             Text("${AppLocalizations.of(context).tankType}:"),
             ListTile(

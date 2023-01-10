@@ -14,5 +14,11 @@
     "emptyName": "Empty name",
     "nameAlreadyExists": "Name already exists",
     "cancel": "Cancel",
-    "required": "Required"
+    "required": "Required",
+    "addParameterValue": "Add parameter value",
+    "editTank": "Edit tank",
+    "deleteTank": "Delete tank",
+    "value": "Value",
+    "theValueIsEmpty": "The value is empty",
+    "theValueIsNotAValidNumber": "The value is not a valid number"
 }
