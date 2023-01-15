@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-import '../models/nitrate.dart';
+import '../models/parameter.dart';
 
 class WaterParamPage extends StatefulWidget {
   final Tank tank;
@@ -19,7 +19,7 @@ class WaterParamPage extends StatefulWidget {
 }
 
 class _WaterParamPageState extends State<WaterParamPage> {
-  late Stream<List<Nitrate>> _nitrateStream;
+  late Stream<List<Parameter>> _nitrateStream;
 
   @override
   Widget build(BuildContext context) {
