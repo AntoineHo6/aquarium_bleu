@@ -1,8 +1,6 @@
 import 'package:aquarium_bleu/models/tank.dart';
-import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
-import 'package:aquarium_bleu/widgets/add_param_val_alert_dialog.dart';
+import 'package:aquarium_bleu/pages/water_param_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TankPage extends StatefulWidget {
@@ -14,64 +12,64 @@ class TankPage extends StatefulWidget {
   State<TankPage> createState() => _TankPageState();
 }
 
-enum MenuItem {
-  addMeasurement,
-}
-
 class _TankPageState extends State<TankPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.tank.name),
         actions: [
-          PopupMenuButton(
-            onSelected: (MenuItem item) {
-              switch (item) {
-                case MenuItem.addMeasurement:
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        const AddParamValAlertDialog(),
-                  );
-                  break;
-              }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuItem>>[
-              PopupMenuItem<MenuItem>(
-                value: MenuItem.addMeasurement,
-                child: Text(AppLocalizations.of(context).addParameterValue),
+          IconButton(
+            onPressed: () => null,
+            icon: const Icon(Icons.edit),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Center(
+            child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                widget.tank.name,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline2,
               ),
-              PopupMenuItem<MenuItem>(
-                value: null,
-                child: Text(AppLocalizations.of(context).editTank),
+            ),
+          ),
+          Row(
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WaterParamPage(widget.tank),
+                    ),
+                  );
+                },
+                child: Column(
+                  children: [
+                    Text(AppLocalizations.of(context).waterParameters),
+                    Icon(Icons.show_chart_rounded),
+                  ],
+                ),
+              ),
+              Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () => null,
+                    child: Text(AppLocalizations.of(context).inhabitants),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => null,
+                    child: Text(AppLocalizations.of(context).equipment),
+                  ),
+                ],
               ),
             ],
           ),
         ],
       ),
-      body: StreamBuilder(
-          stream: context
-              .watch<CloudFirestoreProvider>()
-              .readNitrates(widget.tank.docId),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Column(
-                children: snapshot.data!
-                    .map(
-                      (nitrate) => ElevatedButton(
-                        onPressed: () => null,
-                        child: Text(
-                          "${nitrate.amount.toString()} ${nitrate.unit.toString()}",
-                        ),
-                      ),
-                    )
-                    .toList(),
-              );
-            } else {
-              return Container();
-            }
-          }),
     );
   }
 }

@@ -44,13 +44,14 @@ class CloudFirestoreProvider extends ChangeNotifier {
             .toList());
   }
 
-  Stream<List<Nitrate>> readNitrates(String tankId) {
+  Stream<List<Nitrate>> readParameters(String tankId, String parameter) {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
         .collection('tanks')
         .doc(tankId)
-        .collection('nitrates')
+        .collection(parameter)
+        .orderBy("date")
         .snapshots()
         .map((event) =>
             event.docs.map((doc) => Nitrate.fromJson(doc.data())).toList());

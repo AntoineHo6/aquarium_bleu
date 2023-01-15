@@ -7,12 +7,16 @@
     "addANewTank": "Add a new tank",
     "tankName": "Tank name",
     "tankType": "Tank type",
+
     "freshwater": "Freshwater",
     "saltwater": "Saltwater",
+    
     "add": "Add",
+
     "name": "Name",
     "emptyName": "Empty name",
     "nameAlreadyExists": "Name already exists",
+    
     "cancel": "Cancel",
     "required": "Required",
     "addParameterValue": "Add parameter value",
@@ -20,5 +24,9 @@
     "deleteTank": "Delete tank",
     "value": "Value",
     "theValueIsEmpty": "The value is empty",
-    "theValueIsNotAValidNumber": "The value is not a valid number"
+    "theValueIsNotAValidNumber": "The value is not a valid number",
+
+    "waterParameters": "Water parameters",
+    "inhabitants": "Inhabitants",
+    "equipment": "Equipment"
 }

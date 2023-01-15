@@ -4,9 +4,12 @@
     "addANewTank": "Ajouter un nouvel aquarium",
     "tankName": "Nom de l'aquarium",
     "tankType": "Type d'aquarium",
+    
     "freshwater": "Eau douce",
     "saltwater": "Eau salée",
+    
     "add": "Ajouter",
+    
     "name": "Nom",
     "emptyName": "Nom vide",
     "nameAlreadyExists": "Le nom existe déjà",
@@ -17,5 +20,9 @@
     "deleteTank": "Supprimer l'aquarium",
     "value": "Valeur",
     "theValueIsEmpty": "La valeur est vide",
-    "theValueIsNotAValidNumber": "La valeur n'est pas un nombre valid"
+    "theValueIsNotAValidNumber": "La valeur n'est pas un nombre valid",
+
+    "waterParameters": "Paramètre d'eau",
+    "inhabitants": "Habitants",
+    "equipment": "Équipements"
 }
