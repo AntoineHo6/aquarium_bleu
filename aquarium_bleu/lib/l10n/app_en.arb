@@ -28,5 +28,14 @@
 
     "waterParameters": "Water parameters",
     "inhabitants": "Inhabitants",
-    "equipment": "Equipment"
+    "equipment": "Equipment",
+
+    "ammonia": "Ammonia",
+    "nitrite": "Nitrite",
+    "nitrate": "Nitrate",
+    "kh": "KH",
+    "gh": "GH",
+    "ph": "pH",
+    "tds": "TDS",
+    "temperature": "Temperature"
 }
