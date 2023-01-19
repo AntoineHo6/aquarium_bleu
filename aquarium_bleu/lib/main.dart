@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
         Locale('fr', ''),
       ],
       theme: ThemeData(
+        useMaterial3: true,
         brightness: Brightness.dark,
       ),
       initialRoute: context.watch<FirebaseAuthProvider>().initialRoute,

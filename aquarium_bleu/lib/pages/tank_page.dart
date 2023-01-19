@@ -50,7 +50,7 @@ class _TankPageState extends State<TankPage> {
                 child: Column(
                   children: [
                     Text(AppLocalizations.of(context).waterParameters),
-                    Icon(Icons.show_chart_rounded),
+                    const Icon(Icons.show_chart_rounded),
                   ],
                 ),
               ),
