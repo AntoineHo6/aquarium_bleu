@@ -4,6 +4,7 @@
       "description": "The conventional newborn programmer greeting"
     },
     "tanks": "Tanks",
+    "settings": "Settings",
     "addANewTank": "Add a new tank",
     "tankName": "Tank name",
     "tankType": "Tank type",

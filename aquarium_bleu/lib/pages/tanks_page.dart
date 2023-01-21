@@ -23,57 +23,59 @@ class _TanksPageState extends State<TanksPage> {
     return Scaffold(
       drawer: const MyDrawer(),
       body: StreamBuilder<List<Tank>>(
-          stream: context.watch<CloudFirestoreProvider>().readTanks(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    pinned: false,
-                    expandedHeight: 150.0,
-                    flexibleSpace: FlexibleSpaceBar(
-                      title: Text(
-                        AppLocalizations.of(context).tanks,
-                        style: Theme.of(context).textTheme.headline1,
-                        textScaleFactor: 0.3,
-                      ),
+        stream: context.watch<CloudFirestoreProvider>().readTanks(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  pinned: false,
+                  expandedHeight: 150.0,
+                  flexibleSpace: FlexibleSpaceBar(
+                    title: Text(
+                      AppLocalizations.of(context).tanks,
+                      style: Theme.of(context).textTheme.headline1,
+                      textScaleFactor: 0.3,
                     ),
                   ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      childCount: snapshot.data?.length,
-                      (BuildContext context, int index) {
-                        Tank tank = snapshot.data!.elementAt(index);
-                        // add tank's name to tankNames list.
-                        // Lowercase it for ez comparison
-                        _tankNames.add(tank.name.toLowerCase());
-                        return ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    TankPage(snapshot.data!.elementAt(index)),
-                              ),
-                            );
-                          },
-                          child: Text(snapshot.data!.elementAt(index).name),
-                        );
-                      },
-                    ),
+                ),
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    childCount: snapshot.data?.length,
+                    (BuildContext context, int index) {
+                      Tank tank = snapshot.data!.elementAt(index);
+                      // add tank's name to tankNames list.
+                      // Lowercase it for ez comparison
+                      _tankNames.add(tank.name.toLowerCase());
+                      return ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  TankPage(snapshot.data!.elementAt(index)),
+                            ),
+                          );
+                        },
+                        child: Text(snapshot.data!.elementAt(index).name),
+                      );
+                    },
                   ),
-                ],
-              );
-            } else {
-              // add a message that says no data available
-              return Container();
-            }
-          }),
+                ),
+              ],
+            );
+          } else {
+            // add a message that says no data available
+            return Container();
+          }
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showDialog(
           context: context,
           builder: (BuildContext context) => AddTankAlertDialog(_tankNames),
         ),
+        child: const Icon(Icons.add),
       ),
     );
   }

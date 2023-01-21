@@ -1,4 +1,4 @@
-import 'package:aquarium_bleu/pages/tanks_page.dart';
+import 'package:aquarium_bleu/pages/all_pages.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/firebase_auth_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -61,7 +61,7 @@ var customRoutes = <String, WidgetBuilder>{
     String uid = context.read<FirebaseAuthProvider>().auth.currentUser!.uid;
     context.read<CloudFirestoreProvider>().uid = uid;
 
-    return const TanksPage();
+    return const Temp();
   },
   '/sign-in': (context) {
     return SignInScreen(

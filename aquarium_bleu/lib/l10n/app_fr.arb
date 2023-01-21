@@ -1,6 +1,7 @@
 {
     "helloWorld": "Allo monde!",
     "tanks": "Aquariums",
+    "settings": "Paramètres",
     "addANewTank": "Ajouter un nouvel aquarium",
     "tankName": "Nom de l'aquarium",
     "tankType": "Type d'aquarium",
