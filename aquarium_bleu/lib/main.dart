@@ -2,7 +2,7 @@ import 'package:aquarium_bleu/pages/all_pages.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/firebase_auth_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
-import 'package:aquarium_bleu/styles/myTheme.dart';
+import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:provider/provider.dart';
