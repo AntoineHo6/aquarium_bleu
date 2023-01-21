@@ -1,10 +1,9 @@
-import 'package:aquarium_bleu/pages/tank_page.dart';
+import 'package:aquarium_bleu/models/tank.dart';
+import 'package:aquarium_bleu/pages/tanks/tank_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
+import 'package:aquarium_bleu/widgets/add_tank_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/tank.dart';
-import '../widgets/add_tank_alert_dialog.dart';
-import '../widgets/my_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TanksPage extends StatefulWidget {
@@ -21,7 +20,6 @@ class _TanksPageState extends State<TanksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MyDrawer(),
       body: StreamBuilder<List<Tank>>(
         stream: context.watch<CloudFirestoreProvider>().readTanks(),
         builder: (context, snapshot) {

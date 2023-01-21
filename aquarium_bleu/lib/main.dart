@@ -1,9 +1,12 @@
 import 'package:aquarium_bleu/pages/all_pages.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/firebase_auth_provider.dart';
+import 'package:aquarium_bleu/providers/settings_provider.dart';
+import 'package:aquarium_bleu/styles/myTheme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,15 +19,26 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => FirebaseAuthProvider()),
-        ChangeNotifierProvider(create: (_) => CloudFirestoreProvider()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+
+  prefs.then((myPrefs) {
+    bool isDarkMode = myPrefs.getBool('isDarkMode') ?? true;
+
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => FirebaseAuthProvider()),
+          ChangeNotifierProvider(create: (_) => CloudFirestoreProvider()),
+          ChangeNotifierProvider(
+            create: (_) => SettingsProvider(
+              isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            ),
+          ),
+        ],
+        child: const MyApp(),
+      ),
+    );
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -32,6 +46,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<SettingsProvider>(context);
+
     return MaterialApp(
       title: 'Aquarium Bleu',
       localizationsDelegates: const [
@@ -44,10 +60,9 @@ class MyApp extends StatelessWidget {
         Locale('en', ''),
         Locale('fr', ''),
       ],
-      theme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-      ),
+      theme: MyTheme.lightTheme,
+      darkTheme: MyTheme.darkTheme,
+      themeMode: themeProvider.getThemeMode(),
       initialRoute: context.watch<FirebaseAuthProvider>().initialRoute,
       routes: customRoutes,
     );

@@ -1,6 +1,6 @@
-import 'package:aquarium_bleu/pages/tanks_page.dart';
+import 'package:aquarium_bleu/pages/settings_page.dart';
+import 'package:aquarium_bleu/pages/tanks/tanks_page.dart';
 import 'package:flutter/material.dart';
-import '../widgets/my_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Temp extends StatefulWidget {
@@ -15,7 +15,7 @@ class _TanksPageState extends State<Temp> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     TanksPage(),
-    Text("allo"),
+    SettingsPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -41,7 +41,6 @@ class _TanksPageState extends State<Temp> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
-      drawer: const MyDrawer(),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
