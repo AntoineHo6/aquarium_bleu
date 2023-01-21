@@ -27,7 +27,9 @@
     "theValueIsNotAValidNumber": "The value is not a valid number",
 
     "waterParameters": "Water parameters",
-    "inhabitants": "Inhabitants",
+    "waterChanges": "Water changes",
+    "animals": "Animals",
+    "plants": "Plants",
     "equipment": "Equipment",
 
     "ammonia": "Ammonia",

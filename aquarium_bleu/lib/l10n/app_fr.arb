@@ -22,8 +22,10 @@
     "theValueIsEmpty": "La valeur est vide",
     "theValueIsNotAValidNumber": "La valeur n'est pas un nombre valid",
 
-    "waterParameters": "Paramètre d'eau",
-    "inhabitants": "Habitants",
+    "waterParameters": "Paramètres d'eau",
+    "waterChanges": "Changements d'eau",
+    "animals": "Animaux",
+    "plants": "Plantes",
     "equipment": "Équipements",
 
     "ammonia": "Ammoniaque",
