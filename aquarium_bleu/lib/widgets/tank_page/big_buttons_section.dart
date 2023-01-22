@@ -4,19 +4,15 @@ import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class BigButtons extends StatelessWidget {
+class BigButtonsSection extends StatelessWidget {
   final Tank tank;
 
-  const BigButtons(this.tank, {super.key});
+  const BigButtonsSection(this.tank, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
-      margin: const EdgeInsets.only(
-        left: Spacing.screenEdgeMargin,
-        right: Spacing.screenEdgeMargin,
-      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

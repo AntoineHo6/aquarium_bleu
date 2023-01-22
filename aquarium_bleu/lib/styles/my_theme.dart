@@ -12,6 +12,8 @@ class MyTheme {
       style: ButtonStyle(
         backgroundColor:
             MaterialStateProperty.all<Color>(DarkThemeColors.black06dp),
+        overlayColor:
+            MaterialStateProperty.all<Color>(DarkThemeColors.babyBlue.shade800),
       ),
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
