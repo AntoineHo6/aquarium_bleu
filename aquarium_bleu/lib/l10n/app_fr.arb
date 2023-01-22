@@ -1,34 +1,37 @@
 {
-    "helloWorld": "Allo monde!",
-    "tanks": "Aquariums",
     "settings": "Paramètres",
-    "addANewTank": "Ajouter un nouvel aquarium",
-    "tankName": "Nom de l'aquarium",
-    "tankType": "Type d'aquarium",
+    "signOut": "Déconnexion",
     
     "freshwater": "Eau douce",
     "saltwater": "Eau salée",
     
-    "add": "Ajouter",
-    
     "name": "Nom",
     "emptyName": "Nom vide",
     "nameAlreadyExists": "Le nom existe déjà",
+
+    "add": "Ajouter",
     "cancel": "Annuler",
     "required": "Obligatoire",
-    "addParameterValue": "Enregistrer un paramètre",
+
+    "addANewTank": "Ajouter un nouvel aquarium",
+    "tankName": "Nom de l'aquarium",
+    "tankType": "Type d'aquarium",
+    "tanks": "Aquariums",
     "editTank": "Modifier l'aquarium",
     "deleteTank": "Supprimer l'aquarium",
+    
     "value": "Valeur",
     "theValueIsEmpty": "La valeur est vide",
     "theValueIsNotAValidNumber": "La valeur n'est pas un nombre valid",
 
     "waterParameters": "Paramètres d'eau",
+    "addParameterValue": "Enregistrer un paramètre",
+
     "waterChanges": "Changements d'eau",
     "animals": "Animaux",
     "plants": "Plantes",
     "equipment": "Équipements",
-
+    
     "ammonia": "Ammoniaque",
     "nitrite": "Nitrite",
     "nitrate": "Nitrate",
@@ -36,5 +39,30 @@
     "gh": "GH",
     "ph": "pH",
     "tds": "TDS",
-    "temperature": "Température"
+    "temperature": "Température",
+
+    "janAbbr": "Janv.",
+    "febAbbr": "Févr.",
+    "marAbbr": "Mars",
+    "aprAbbr": "Avr.",
+    "mayAbbr": "Mai",
+    "junAbbr": "Juin",
+    "julAbbr": "Juill.",
+    "augAbbr": "Août",
+    "sepAbbr": "Sept.",
+    "octAbbr": "Oct.",
+    "novAbbr": "Nov.",
+    "decAbbr": "Déc.",
+    "jan": "Janvier",
+    "feb": "Février",
+    "mar": "Mars",
+    "apr": "Avril",
+    "may": "Mai",
+    "jun": "Juin",
+    "jul": "Juillet",
+    "aug": "Août",
+    "sep": "Septembre",
+    "oct": "Octobre",
+    "nov": "Novembre",
+    "dec": "Décembre"
 }

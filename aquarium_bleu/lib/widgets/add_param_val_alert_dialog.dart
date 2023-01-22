@@ -11,7 +11,7 @@ class AddParamValAlertDialog extends StatefulWidget {
 
 class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   late TextEditingController _valueFieldController;
-  bool _isValueValid = true;
+  final bool _isValueValid = true;
   String? _errorText;
 
   @override

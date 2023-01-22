@@ -1,33 +1,32 @@
 {
-    "helloWorld": "Hello World!",
-    "@helloWorld": {
-      "description": "The conventional newborn programmer greeting"
-    },
-    "tanks": "Tanks",
     "settings": "Settings",
-    "addANewTank": "Add a new tank",
-    "tankName": "Tank name",
-    "tankType": "Tank type",
+    "signOut": "Sign Out",
 
     "freshwater": "Freshwater",
     "saltwater": "Saltwater",
-    
-    "add": "Add",
 
     "name": "Name",
     "emptyName": "Empty name",
     "nameAlreadyExists": "Name already exists",
     
+    "add": "Add",
     "cancel": "Cancel",
     "required": "Required",
-    "addParameterValue": "Add parameter value",
+
+    "addANewTank": "Add a new tank",
+    "tankName": "Tank name",
+    "tankType": "Tank type",
+    "tanks": "Tanks",
     "editTank": "Edit tank",
     "deleteTank": "Delete tank",
+
     "value": "Value",
     "theValueIsEmpty": "The value is empty",
     "theValueIsNotAValidNumber": "The value is not a valid number",
 
     "waterParameters": "Water parameters",
+    "addParameterValue": "Add parameter value",
+
     "waterChanges": "Water changes",
     "animals": "Animals",
     "plants": "Plants",
@@ -40,5 +39,30 @@
     "gh": "GH",
     "ph": "pH",
     "tds": "TDS",
-    "temperature": "Temperature"
+    "temperature": "Temperature",
+
+    "janAbbr": "Jan.",
+    "febAbbr": "Feb.",
+    "marAbbr": "Mar.",
+    "aprAbbr": "Apr.",
+    "mayAbbr": "May",
+    "junAbbr": "Jun.",
+    "julAbbr": "Jul.",
+    "augAbbr": "Aug.",
+    "sepAbbr": "Sep.",
+    "octAbbr": "Oct.",
+    "novAbbr": "Nov.",
+    "decAbbr": "Dec.",
+    "jan": "January",
+    "feb": "February",
+    "mar": "March",
+    "apr": "April",
+    "may": "May",
+    "jun": "June",
+    "jul": "july",
+    "aug": "August",
+    "sep": "September",
+    "oct": "October",
+    "nov": "November",
+    "dec": "December"
 }

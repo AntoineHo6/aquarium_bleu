@@ -1,10 +1,11 @@
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/pages/tanks/tank_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
+import 'package:aquarium_bleu/styles/spacing.dart';
+import 'package:aquarium_bleu/utils/date_time_util.dart';
 import 'package:aquarium_bleu/widgets/add_tank_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TanksPage extends StatefulWidget {
   const TanksPage({super.key});
@@ -30,10 +31,18 @@ class _TanksPageState extends State<TanksPage> {
                   pinned: false,
                   expandedHeight: 150.0,
                   flexibleSpace: FlexibleSpaceBar(
-                    title: Text(
-                      AppLocalizations.of(context).tanks,
-                      style: Theme.of(context).textTheme.headline1,
-                      textScaleFactor: 0.3,
+                    centerTitle: true,
+                    title: Container(
+                      margin: const EdgeInsets.only(
+                        left: Spacing.screenEdgeMargin,
+                        right: Spacing.screenEdgeMargin,
+                      ),
+                      child: FittedBox(
+                        child: Text(
+                          DateTimeUtil.formattedDate(context, DateTime.now()),
+                          style: Theme.of(context).textTheme.headline1,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -45,17 +54,26 @@ class _TanksPageState extends State<TanksPage> {
                       // add tank's name to tankNames list.
                       // Lowercase it for ez comparison
                       _tankNames.add(tank.name.toLowerCase());
-                      return ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  TankPage(snapshot.data!.elementAt(index)),
-                            ),
-                          );
-                        },
-                        child: Text(snapshot.data!.elementAt(index).name),
+                      return Container(
+                        margin: const EdgeInsets.only(
+                          left: Spacing.screenEdgeMargin,
+                          right: Spacing.screenEdgeMargin,
+                        ),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    TankPage(snapshot.data!.elementAt(index)),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            snapshot.data!.elementAt(index).name,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
                       );
                     },
                   ),

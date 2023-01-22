@@ -3,14 +3,14 @@ import 'package:aquarium_bleu/pages/tanks/tanks_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class Temp extends StatefulWidget {
-  const Temp({super.key});
+class AllPages extends StatefulWidget {
+  const AllPages({super.key});
 
   @override
-  State<Temp> createState() => _TanksPageState();
+  State<AllPages> createState() => _AllPagesState();
 }
 
-class _TanksPageState extends State<Temp> {
+class _AllPagesState extends State<AllPages> {
   int _selectedIndex = 0;
 
   static const List<Widget> _widgetOptions = <Widget>[
