@@ -1,5 +1,7 @@
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
+import 'package:aquarium_bleu/models/task/interval_task.dart';
+import 'package:aquarium_bleu/models/task/task.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -55,6 +57,32 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .snapshots()
         .map((event) =>
             event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
+  }
+
+  Stream<List<IntervalTask>> readIntervalTasks(String docId) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(docId)
+        .collection('intervalTasks')
+        .orderBy("dueDate")
+        .snapshots()
+        .map((event) => event.docs
+            .map((doc) => IntervalTask.fromJson(doc.id, doc.data()))
+            .toList());
+  }
+
+  Future updateIntervalTask(IntervalTask updatedTask, String tankDocId) async {
+    final intervalTask = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankDocId)
+        .collection('intervalTasks')
+        .doc(updatedTask.docId);
+
+    intervalTask.update(updatedTask.toJson());
   }
 
   Future createTank(String name, bool isFreshWater) async {

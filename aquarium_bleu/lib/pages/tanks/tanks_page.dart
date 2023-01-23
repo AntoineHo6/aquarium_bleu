@@ -15,7 +15,7 @@ class TanksPage extends StatefulWidget {
 }
 
 class _TanksPageState extends State<TanksPage> {
-  // to avoid duplicate tank names when adding tanks
+  // used to avoid duplicate tank names when adding tanks
   final List<String> _tankNames = [];
 
   @override

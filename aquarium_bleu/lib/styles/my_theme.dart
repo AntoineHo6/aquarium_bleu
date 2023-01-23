@@ -29,6 +29,9 @@ class MyTheme {
       trackColor:
           MaterialStateProperty.all<Color>(DarkThemeColors.babyBlue.shade700),
     ),
+    checkboxTheme: CheckboxThemeData(
+      fillColor: MaterialStateProperty.all<Color>(DarkThemeColors.babyBlue),
+    ),
   );
 
   static final lightTheme = ThemeData(
