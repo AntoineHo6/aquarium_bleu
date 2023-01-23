@@ -64,5 +64,8 @@
     "sep": "Septembre",
     "oct": "Octobre",
     "nov": "Novembre",
-    "dec": "Décembre"
+    "dec": "Décembre",
+
+    "tasks": "Tâches",
+    "due": "dû"
 }

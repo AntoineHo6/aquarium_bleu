@@ -1,5 +1,5 @@
 import 'package:aquarium_bleu/models/task/interval_task.dart';
-import 'package:aquarium_bleu/widgets/task_check_card.dart';
+import 'package:aquarium_bleu/widgets/task_check_list_tile.dart';
 import 'package:flutter/material.dart';
 
 class TasksSection extends StatefulWidget {
@@ -38,7 +38,7 @@ class _TasksSectionState extends State<TasksSection> {
           ),
         ),
         for (var intervalTask in widget.intervalTasks)
-          TaskCheckCard(intervalTask, widget.tankDocId),
+          TaskCheckListTile(intervalTask, widget.tankDocId),
       ],
     );
   }

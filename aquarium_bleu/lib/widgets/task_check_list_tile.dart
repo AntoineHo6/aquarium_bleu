@@ -1,18 +1,20 @@
 import 'package:aquarium_bleu/models/task/interval_task.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
+import 'package:aquarium_bleu/utils/date_time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class TaskCheckCard extends StatefulWidget {
+class TaskCheckListTile extends StatefulWidget {
   final IntervalTask task;
   final String tankDocId;
-  const TaskCheckCard(this.task, this.tankDocId, {super.key});
+  const TaskCheckListTile(this.task, this.tankDocId, {super.key});
 
   @override
-  State<TaskCheckCard> createState() => _TaskCheckCardState();
+  State<TaskCheckListTile> createState() => _TaskCheckListTileState();
 }
 
-class _TaskCheckCardState extends State<TaskCheckCard> {
+class _TaskCheckListTileState extends State<TaskCheckListTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -46,7 +48,11 @@ class _TaskCheckCardState extends State<TaskCheckCard> {
           );
         },
       ),
-      subtitle: Text(widget.task.dueDate.toString()),
+      subtitle: Text(
+          "${AppLocalizations.of(context).due} ${DateTimeUtil.formattedDate(
+        context,
+        widget.task.dueDate,
+      )}. \nRepeat every 7 days dsd sdsadasdasda sda"),
     );
   }
 }
