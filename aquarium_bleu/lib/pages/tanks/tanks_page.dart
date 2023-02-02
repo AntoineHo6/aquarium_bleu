@@ -4,6 +4,7 @@ import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/date_time_util.dart';
 import 'package:aquarium_bleu/widgets/add_tank_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/tank_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,7 +41,7 @@ class _TanksPageState extends State<TanksPage> {
                       child: FittedBox(
                         child: Text(
                           DateTimeUtil.formattedDate(context, DateTime.now()),
-                          style: Theme.of(context).textTheme.headline1,
+                          style: Theme.of(context).textTheme.displayLarge,
                         ),
                       ),
                     ),
@@ -59,7 +60,8 @@ class _TanksPageState extends State<TanksPage> {
                           left: Spacing.screenEdgeMargin,
                           right: Spacing.screenEdgeMargin,
                         ),
-                        child: ElevatedButton(
+                        child: TankCard(
+                          name: tank.name,
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -69,10 +71,6 @@ class _TanksPageState extends State<TanksPage> {
                               ),
                             );
                           },
-                          child: Text(
-                            snapshot.data!.elementAt(index).name,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
                         ),
                       );
                     },

@@ -29,7 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
             },
             child: const Text("Sign out"),
           ),
-          Switch(
+          Switch.adaptive(
               value: settingsProvider.getThemeMode() == ThemeMode.dark
                   ? true
                   : false,

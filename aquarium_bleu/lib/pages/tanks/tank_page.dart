@@ -44,7 +44,7 @@ class _TankPageState extends State<TankPage> {
                         child: Text(
                           widget.tank.name,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headline1,
+                          style: Theme.of(context).textTheme.displayLarge,
                         ),
                       ),
                     ),

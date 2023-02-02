@@ -28,24 +28,6 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
 
   void _handleAdd(BuildContext context) {
     String valueModified = _valueFieldController.text.trim();
-
-    // Determine the right error message to show for the name.
-    // Otherwise, create the tank.
-    // if (nameModified.isEmpty) {
-    //   setState(() {
-    //     _isValueValid = false;
-    //     _errorText = AppLocalizations.of(context).emptyName;
-    //   });
-    // } else if (widget.tankNames.contains(nameModified)) {
-    //   setState(() {
-    //     _isNameValid = false;
-    //     _errorText = AppLocalizations.of(context).nameAlreadyExists;
-    //   });
-    // } else {
-    //   Provider.of<CloudFirestoreProvider>(context, listen: false)
-    //       .createTank(_nameFieldController.text, _isFreshwater!);
-    //   Navigator.pop(context);
-    // }
   }
 
   @override
