@@ -1,5 +1,4 @@
 import 'package:aquarium_bleu/providers/settings_provider.dart';
-import 'package:aquarium_bleu/styles/my_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:provider/provider.dart';
@@ -26,10 +25,6 @@ class _WaterParamChartState extends State<WaterParamChart> {
       primaryXAxis: DateTimeAxis(),
       series: <ChartSeries>[
         LineSeries(
-          color:
-              context.read<SettingsProvider>().getThemeMode() == ThemeMode.dark
-                  ? DarkThemeColors.babyBlue
-                  : null,
           animationDuration: 800,
           dataSource: widget.dataSource,
           xValueMapper: (dataPoint, _) => dataPoint.date,

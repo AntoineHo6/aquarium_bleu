@@ -30,7 +30,7 @@ class _TanksPageState extends State<TanksPage> {
               slivers: <Widget>[
                 SliverAppBar(
                   pinned: false,
-                  expandedHeight: 150.0,
+                  expandedHeight: MediaQuery.of(context).size.height * 0.2,
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
                     title: Container(

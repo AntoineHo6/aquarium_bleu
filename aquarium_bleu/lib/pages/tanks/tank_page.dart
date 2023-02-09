@@ -3,7 +3,6 @@ import 'package:aquarium_bleu/models/task/interval_task.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/tank_page/big_buttons_section.dart';
-import 'package:aquarium_bleu/widgets/tank_page/tasks_section.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,44 +25,72 @@ class _TankPageState extends State<TankPage> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
-            appBar: AppBar(
-              actions: [
-                IconButton(
-                  onPressed: () => null,
-                  icon: const Icon(Icons.edit),
-                ),
-              ],
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Center(
-                    child: Container(
-                      margin: _sectionMargins,
-                      child: FittedBox(
-                        child: Text(
-                          widget.tank.name,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.displayLarge,
-                        ),
+              // appBar: AppBar(
+              //   actions: [
+              //     IconButton(
+              //       onPressed: () => null,
+              //       icon: const Icon(Icons.edit),
+              //     ),
+              //   ],
+              // ),
+              body: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                pinned: false,
+                expandedHeight: MediaQuery.of(context).size.height * 0.2,
+                flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: true,
+                  title: Container(
+                    margin: const EdgeInsets.only(
+                      left: Spacing.screenEdgeMargin,
+                      right: Spacing.screenEdgeMargin,
+                    ),
+                    child: FittedBox(
+                      child: Text(
+                        widget.tank.name,
+                        style: Theme.of(context).textTheme.displayLarge,
                       ),
                     ),
                   ),
-                  Container(
-                    margin: _sectionMargins,
-                    child: BigButtonsSection(widget.tank),
-                  ),
-                  Container(
-                    margin: _sectionMargins,
-                    child: TasksSection(
-                      intervalTasks: snapshot.data ?? [],
-                      tankDocId: widget.tank.docId,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          );
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  childCount: 1,
+                  (BuildContext context, int index) {
+                    return Container(
+                      margin: _sectionMargins,
+                      child: BigButtonsSection(widget.tank),
+                    );
+                  },
+                ),
+              ),
+            ],
+          )
+
+              // SingleChildScrollView(
+              //   child: Column(
+              //     children: [
+              //       Center(
+              //         child: Container(
+              //           margin: _sectionMargins,
+              //           child: FittedBox(
+              //             child: Text(
+              //               widget.tank.name,
+              //               textAlign: TextAlign.center,
+              //               style: Theme.of(context).textTheme.displayLarge,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //       Container(
+              //         margin: _sectionMargins,
+              //         child: BigButtonsSection(widget.tank),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              );
         } else {
           return Container();
         }
