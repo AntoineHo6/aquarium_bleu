@@ -30,11 +30,20 @@ class _SettingsPageState extends State<SettingsPage> {
             child: const Text("Sign out"),
           ),
           Switch.adaptive(
-              value: settingsProvider.getThemeMode() == ThemeMode.dark
-                  ? true
-                  : false,
-              onChanged: (newValue) async =>
-                  await _onThemeChanged(newValue, settingsProvider))
+            value: settingsProvider.getThemeMode() == ThemeMode.dark
+                ? true
+                : false,
+            onChanged: (newValue) async =>
+                await _onThemeChanged(newValue, settingsProvider),
+          ),
+          const Text('nitrate'),
+          Switch.adaptive(
+            value: settingsProvider.getVisibleParameters()['nitrate']
+                ? true
+                : false,
+            onChanged: (newValue) async =>
+                await settingsProvider.setVisibleParam('nitrate', newValue),
+          ),
         ],
       ),
     );

@@ -1,6 +1,8 @@
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
+import 'package:aquarium_bleu/pages/water_param/add_water_param_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
+import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/widgets/water_param_chart.dart';
 import 'package:flutter/material.dart';
@@ -19,21 +21,23 @@ class WaterParamPage extends StatefulWidget {
 
 class _WaterParamPageState extends State<WaterParamPage> {
   List<String> paramCollectionsNames = [
-    Strings.ammoniaCollection,
-    Strings.nitriteCollection,
-    Strings.nitrateCollection,
-    Strings.tdsCollection,
-    Strings.phCollection
+    Strings.ammonia,
+    Strings.nitrite,
+    Strings.nitrate,
+    Strings.tds,
+    Strings.ph
   ];
 
   @override
   Widget build(BuildContext context) {
     List<Stream<List<Parameter>>> dataStreams = [
-      for (var paramCollection in paramCollectionsNames)
+      for (var paramCollectionName in paramCollectionsNames)
         context
             .watch<CloudFirestoreProvider>()
-            .readParameters(widget.tank.docId, paramCollection)
+            .readParameters(widget.tank.docId, paramCollectionName)
     ];
+
+    final settingsProvider = Provider.of<SettingsProvider>(context);
 
     return StreamBuilder<List<dynamic>>(
       stream: CombineLatestStream.list(dataStreams),
@@ -48,31 +52,29 @@ class _WaterParamPageState extends State<WaterParamPage> {
           return Scaffold(
             appBar: AppBar(
               title: Text(AppLocalizations.of(context).waterParameters),
-              actions: [
-                IconButton(
-                  onPressed: () => null,
-                  icon: const Icon(Icons.add),
-                ),
-              ],
             ),
             body: ListView(
               children: [
-                if (ammoniaData.isNotEmpty)
+                if (ammoniaData.isNotEmpty &&
+                    settingsProvider.getVisibleParameters()[Strings.ammonia])
                   WaterParamChart(
                     title: AppLocalizations.of(context).ammonia,
                     dataSource: ammoniaData,
                   ),
-                if (nitriteData.isNotEmpty)
+                if (nitriteData.isNotEmpty &&
+                    settingsProvider.getVisibleParameters()[Strings.nitrite])
                   WaterParamChart(
                     title: AppLocalizations.of(context).nitrite,
                     dataSource: nitriteData,
                   ),
-                if (nitrateData.isNotEmpty)
+                if (nitrateData.isNotEmpty &&
+                    settingsProvider.getVisibleParameters()[Strings.nitrate])
                   WaterParamChart(
                     title: AppLocalizations.of(context).nitrate,
                     dataSource: nitrateData,
                   ),
-                if (tdsData.isNotEmpty)
+                if (tdsData.isNotEmpty &&
+                    settingsProvider.getVisibleParameters()[Strings.tds])
                   Container(
                     margin: const EdgeInsets.only(left: 15.0, right: 15.0),
                     child: WaterParamChart(
@@ -80,12 +82,20 @@ class _WaterParamPageState extends State<WaterParamPage> {
                       dataSource: tdsData,
                     ),
                   ),
-                if (phData.isNotEmpty)
+                if (phData.isNotEmpty &&
+                    settingsProvider.getVisibleParameters()[Strings.ph])
                   WaterParamChart(
                     title: AppLocalizations.of(context).ph,
                     dataSource: phData,
                   ),
               ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => showDialog(
+                context: context,
+                builder: (BuildContext context) => const AddWaterParamPage(),
+              ),
+              child: const Icon(Icons.add),
             ),
           );
         } else {

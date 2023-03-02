@@ -1,6 +1,7 @@
 import 'package:aquarium_bleu/pages/all_pages.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
+import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
@@ -24,6 +25,14 @@ Future main() async {
   prefs.then((myPrefs) {
     bool isDarkMode = myPrefs.getBool('isDarkMode') ?? true;
 
+    Map visibleParameters = {
+      Strings.ammonia: myPrefs.getBool(Strings.ammonia) ?? true,
+      Strings.nitrite: myPrefs.getBool(Strings.nitrite) ?? true,
+      Strings.nitrate: myPrefs.getBool(Strings.nitrate) ?? true,
+      Strings.tds: myPrefs.getBool(Strings.tds) ?? true,
+      Strings.ph: myPrefs.getBool(Strings.ph) ?? true,
+    };
+
     runApp(
       MultiProvider(
         providers: [
@@ -31,6 +40,7 @@ Future main() async {
           ChangeNotifierProvider(
             create: (_) => SettingsProvider(
               isDarkMode ? ThemeMode.dark : ThemeMode.light,
+              visibleParameters,
             ),
           ),
         ],
@@ -45,7 +55,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<SettingsProvider>(context);
+    final settingsProvider = Provider.of<SettingsProvider>(context);
     return MaterialApp(
       title: 'Aquarium Bleu',
       localizationsDelegates: const [
@@ -55,12 +65,12 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('en', ''),
-        Locale('fr', ''),
+        Locale('en'),
+        Locale('fr'),
       ],
       theme: MyTheme.lightTheme,
       darkTheme: MyTheme.darkTheme,
-      themeMode: themeProvider.getThemeMode(),
+      themeMode: settingsProvider.getThemeMode(),
       initialRoute: initialRoute,
       routes: customRoutes,
     );

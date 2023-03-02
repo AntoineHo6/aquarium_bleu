@@ -1,6 +1,5 @@
 import 'package:aquarium_bleu/models/tank.dart';
-import 'package:aquarium_bleu/pages/tanks/water_param_page.dart';
-import 'package:aquarium_bleu/styles/spacing.dart';
+import 'package:aquarium_bleu/pages/water_param/water_param_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -17,11 +16,11 @@ class BigButtonsSection extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            flex: 50,
+            flex: 65,
             child: Column(
               children: [
                 Expanded(
-                  flex: 66,
+                  flex: 75,
                   child: SizedBox(
                     width: double.infinity,
                     child: Container(
@@ -48,7 +47,7 @@ class BigButtonsSection extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 33,
+                  flex: 25,
                   child: SizedBox(
                     width: double.infinity,
                     child: Container(
@@ -71,11 +70,11 @@ class BigButtonsSection extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 50,
+            flex: 35,
             child: Column(
               children: [
                 Expanded(
-                  flex: 33,
+                  flex: 75,
                   child: SizedBox(
                     width: double.infinity,
                     child: Container(
@@ -95,28 +94,7 @@ class BigButtonsSection extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 33,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      margin: const EdgeInsets.only(
-                        top: _marginBetweenBigButtons,
-                        left: _marginBetweenBigButtons,
-                        bottom: _marginBetweenBigButtons,
-                      ),
-                      child: ElevatedButton(
-                        style: _bigButtonsStyle,
-                        onPressed: () => null,
-                        child: Text(
-                          AppLocalizations.of(context).plants,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 33,
+                  flex: 25,
                   child: SizedBox(
                     width: double.infinity,
                     child: Container(
@@ -148,7 +126,7 @@ ButtonStyle _bigButtonsStyle = ButtonStyle(
   padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(20)),
   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
     RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(30),
+      borderRadius: BorderRadius.circular(25),
     ),
   ),
 );
