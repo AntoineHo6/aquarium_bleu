@@ -3,12 +3,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsProvider with ChangeNotifier {
   ThemeMode _themeMode;
-  final Map _visibleParam;
+  final Map _visibleParams;
 
-  SettingsProvider(this._themeMode, this._visibleParam);
+  SettingsProvider(this._themeMode, this._visibleParams);
 
   getThemeMode() => _themeMode;
-  getVisibleParameters() => _visibleParam;
+  getVisibleParams() => _visibleParams;
 
   setThemeMode(ThemeMode mode, bool isDarkMode) async {
     _themeMode = mode;
@@ -18,7 +18,7 @@ class SettingsProvider with ChangeNotifier {
   }
 
   setVisibleParam(String param, bool isVisible) async {
-    _visibleParam[param] = isVisible;
+    _visibleParams[param] = isVisible;
     var prefs = await SharedPreferences.getInstance();
     prefs.setBool(param, isVisible);
     notifyListeners();

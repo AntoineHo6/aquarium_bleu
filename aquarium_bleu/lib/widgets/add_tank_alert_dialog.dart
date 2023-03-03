@@ -2,7 +2,6 @@ import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-
 import 'my_text_field.dart';
 
 class AddTankAlertDialog extends StatefulWidget {

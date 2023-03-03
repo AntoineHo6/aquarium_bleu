@@ -4,6 +4,7 @@ import 'package:aquarium_bleu/pages/water_param/add_water_param_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
+import 'package:aquarium_bleu/widgets/add_param_val_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/water_param_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,18 +21,22 @@ class WaterParamPage extends StatefulWidget {
 }
 
 class _WaterParamPageState extends State<WaterParamPage> {
-  List<String> paramCollectionsNames = [
+  List<String> paramCollNames = [
     Strings.ammonia,
     Strings.nitrite,
     Strings.nitrate,
     Strings.tds,
-    Strings.ph
+    Strings.ph,
+    Strings.kh,
+    Strings.gh,
+    Strings.temp
   ];
 
   @override
   Widget build(BuildContext context) {
+    // List of param data streams
     List<Stream<List<Parameter>>> dataStreams = [
-      for (var paramCollectionName in paramCollectionsNames)
+      for (var paramCollectionName in paramCollNames)
         context
             .watch<CloudFirestoreProvider>()
             .readParameters(widget.tank.docId, paramCollectionName)
@@ -43,57 +48,32 @@ class _WaterParamPageState extends State<WaterParamPage> {
       stream: CombineLatestStream.list(dataStreams),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          final List<Parameter> ammoniaData = snapshot.data![0];
-          final List<Parameter> nitriteData = snapshot.data![1];
-          final List<Parameter> nitrateData = snapshot.data![2];
-          final List<Parameter> tdsData = snapshot.data![3];
-          final List<Parameter> phData = snapshot.data![4];
+          List<WaterParamChart> charts = [];
+          final Map visibleParams = settingsProvider.getVisibleParams();
+
+          for (var i = 0; i < paramCollNames.length; i++) {
+            String param = paramCollNames[i];
+            if (snapshot.data![i].isNotEmpty && visibleParams[param]) {
+              charts.add(
+                WaterParamChart(title: param, dataSource: snapshot.data![i]),
+              );
+            }
+          }
 
           return Scaffold(
             appBar: AppBar(
               title: Text(AppLocalizations.of(context).waterParameters),
             ),
-            body: ListView(
-              children: [
-                if (ammoniaData.isNotEmpty &&
-                    settingsProvider.getVisibleParameters()[Strings.ammonia])
-                  WaterParamChart(
-                    title: AppLocalizations.of(context).ammonia,
-                    dataSource: ammoniaData,
-                  ),
-                if (nitriteData.isNotEmpty &&
-                    settingsProvider.getVisibleParameters()[Strings.nitrite])
-                  WaterParamChart(
-                    title: AppLocalizations.of(context).nitrite,
-                    dataSource: nitriteData,
-                  ),
-                if (nitrateData.isNotEmpty &&
-                    settingsProvider.getVisibleParameters()[Strings.nitrate])
-                  WaterParamChart(
-                    title: AppLocalizations.of(context).nitrate,
-                    dataSource: nitrateData,
-                  ),
-                if (tdsData.isNotEmpty &&
-                    settingsProvider.getVisibleParameters()[Strings.tds])
-                  Container(
-                    margin: const EdgeInsets.only(left: 15.0, right: 15.0),
-                    child: WaterParamChart(
-                      title: AppLocalizations.of(context).tds,
-                      dataSource: tdsData,
-                    ),
-                  ),
-                if (phData.isNotEmpty &&
-                    settingsProvider.getVisibleParameters()[Strings.ph])
-                  WaterParamChart(
-                    title: AppLocalizations.of(context).ph,
-                    dataSource: phData,
-                  ),
-              ],
-            ),
+            body: ListView(children: charts),
             floatingActionButton: FloatingActionButton(
+              // onPressed: () => showDialog(
+              //   context: context,
+              //   builder: (BuildContext context) => const AddWaterParamPage(),
+              // ),
               onPressed: () => showDialog(
                 context: context,
-                builder: (BuildContext context) => const AddWaterParamPage(),
+                builder: (BuildContext context) =>
+                    const AddParamValAlertDialog(),
               ),
               child: const Icon(Icons.add),
             ),

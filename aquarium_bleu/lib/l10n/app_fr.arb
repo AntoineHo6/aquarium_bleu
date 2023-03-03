@@ -24,6 +24,7 @@
     "theValueIsEmpty": "La valeur est vide",
     "theValueIsNotAValidNumber": "La valeur n'est pas un nombre valid",
 
+    "parameter": "Paramètre",
     "waterParameters": "Paramètres d'eau",
     "addParameterValue": "Enregistrer un paramètre",
 

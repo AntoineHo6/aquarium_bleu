@@ -38,9 +38,8 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           const Text('nitrate'),
           Switch.adaptive(
-            value: settingsProvider.getVisibleParameters()['nitrate']
-                ? true
-                : false,
+            value:
+                settingsProvider.getVisibleParams()['nitrate'] ? true : false,
             onChanged: (newValue) async =>
                 await settingsProvider.setVisibleParam('nitrate', newValue),
           ),

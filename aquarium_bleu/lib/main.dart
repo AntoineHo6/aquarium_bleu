@@ -25,13 +25,37 @@ Future main() async {
   prefs.then((myPrefs) {
     bool isDarkMode = myPrefs.getBool('isDarkMode') ?? true;
 
-    Map visibleParameters = {
-      Strings.ammonia: myPrefs.getBool(Strings.ammonia) ?? true,
-      Strings.nitrite: myPrefs.getBool(Strings.nitrite) ?? true,
-      Strings.nitrate: myPrefs.getBool(Strings.nitrate) ?? true,
-      Strings.tds: myPrefs.getBool(Strings.tds) ?? true,
-      Strings.ph: myPrefs.getBool(Strings.ph) ?? true,
-    };
+    List<String> params = [
+      Strings.ammonia,
+      Strings.nitrite,
+      Strings.nitrate,
+      Strings.tds,
+      Strings.ph,
+      Strings.kh,
+      Strings.gh,
+      Strings.temp,
+      Strings.alkalinity,
+      Strings.calcium,
+      Strings.copper,
+      Strings.co2,
+      Strings.iron,
+      Strings.magnesium,
+      Strings.o2,
+      Strings.oxygen,
+      Strings.phosphate,
+      Strings.orp,
+      Strings.potassium,
+      Strings.salinity,
+      Strings.silica,
+      Strings.strontium,
+      Strings.boron,
+      Strings.iodine
+    ];
+
+    Map visibleParameters = {};
+    for (var param in params) {
+      visibleParameters[param] = myPrefs.getBool(param) ?? true;
+    }
 
     runApp(
       MultiProvider(
