@@ -1,6 +1,6 @@
 import 'package:aquarium_bleu/models/task/interval_task.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
-import 'package:aquarium_bleu/utils/date_time_util.dart';
+import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -48,8 +48,8 @@ class _TaskCheckListTileState extends State<TaskCheckListTile> {
           );
         },
       ),
-      subtitle: Text(
-          "${AppLocalizations.of(context).due} ${DateTimeUtil.formattedDate(
+      subtitle:
+          Text("${AppLocalizations.of(context).due} ${StringUtil.formattedDate(
         context,
         widget.task.dueDate,
       )}. \nRepeat every 7 days dsd sdsadasdasda sda"),

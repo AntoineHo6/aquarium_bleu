@@ -57,7 +57,7 @@ class BigButtonsSection extends StatelessWidget {
                       ),
                       child: ElevatedButton(
                         style: _bigButtonsStyle,
-                        onPressed: () => null,
+                        onPressed: () => {},
                         child: Text(
                           AppLocalizations.of(context).waterChanges,
                           style: Theme.of(context).textTheme.titleLarge,
@@ -84,7 +84,7 @@ class BigButtonsSection extends StatelessWidget {
                       ),
                       child: ElevatedButton(
                         style: _bigButtonsStyle,
-                        onPressed: () => null,
+                        onPressed: () => {},
                         child: Text(
                           AppLocalizations.of(context).animals,
                           style: Theme.of(context).textTheme.titleLarge,
@@ -104,7 +104,7 @@ class BigButtonsSection extends StatelessWidget {
                       ),
                       child: ElevatedButton(
                         style: _bigButtonsStyle,
-                        onPressed: () => null,
+                        onPressed: () => {},
                         child: Text(
                           AppLocalizations.of(context).equipment,
                           style: Theme.of(context).textTheme.titleLarge,

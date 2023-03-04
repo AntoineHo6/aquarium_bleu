@@ -9,6 +9,11 @@ class Parameter {
     required this.date,
   });
 
+  Map<String, dynamic> toJson() => {
+        'value': value,
+        'date': date,
+      };
+
   static Parameter fromJson(Map<String, dynamic> json) {
     return Parameter(
       value: json['value'].toDouble(),

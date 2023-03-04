@@ -25,35 +25,8 @@ Future main() async {
   prefs.then((myPrefs) {
     bool isDarkMode = myPrefs.getBool('isDarkMode') ?? true;
 
-    List<String> params = [
-      Strings.ammonia,
-      Strings.nitrite,
-      Strings.nitrate,
-      Strings.tds,
-      Strings.ph,
-      Strings.kh,
-      Strings.gh,
-      Strings.temp,
-      Strings.alkalinity,
-      Strings.calcium,
-      Strings.copper,
-      Strings.co2,
-      Strings.iron,
-      Strings.magnesium,
-      Strings.o2,
-      Strings.oxygen,
-      Strings.phosphate,
-      Strings.orp,
-      Strings.potassium,
-      Strings.salinity,
-      Strings.silica,
-      Strings.strontium,
-      Strings.boron,
-      Strings.iodine
-    ];
-
-    Map visibleParameters = {};
-    for (var param in params) {
+    Map<String, bool> visibleParameters = {};
+    for (var param in Strings.params) {
       visibleParameters[param] = myPrefs.getBool(param) ?? true;
     }
 

@@ -1,7 +1,5 @@
-import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:provider/provider.dart';
 
 class WaterParamChart extends StatefulWidget {
   final String title;

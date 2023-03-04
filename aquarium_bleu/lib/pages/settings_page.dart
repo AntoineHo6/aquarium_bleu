@@ -27,7 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
               FirebaseUIAuth.signOut(context: context);
               Navigator.pushReplacementNamed(context, '/sign-in');
             },
-            child: const Text("Sign out"),
+            child: Text(AppLocalizations.of(context).signOut),
           ),
           Switch.adaptive(
             value: settingsProvider.getThemeMode() == ThemeMode.dark
@@ -39,7 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
           const Text('nitrate'),
           Switch.adaptive(
             value:
-                settingsProvider.getVisibleParams()['nitrate'] ? true : false,
+                settingsProvider.getVisibleParams()['nitrate']! ? true : false,
             onChanged: (newValue) async =>
                 await settingsProvider.setVisibleParam('nitrate', newValue),
           ),

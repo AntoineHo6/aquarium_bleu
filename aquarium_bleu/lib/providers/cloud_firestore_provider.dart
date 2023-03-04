@@ -58,6 +58,20 @@ class CloudFirestoreProvider extends ChangeNotifier {
             event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
   }
 
+  Future addParameter(String tankId, String paramName, Parameter param) async {
+    final docParam = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection(paramName)
+        .doc(const Uuid().v4());
+
+    final json = param.toJson();
+
+    await docParam.set(json);
+  }
+
   Stream<List<IntervalTask>> readIntervalTasks(String docId) {
     return FirebaseFirestore.instance
         .collection('users')
@@ -84,13 +98,14 @@ class CloudFirestoreProvider extends ChangeNotifier {
     intervalTask.update(updatedTask.toJson());
   }
 
-  Future createTank(String name, bool isFreshWater) async {
+  Future addTank(String name, bool isFreshWater) async {
     final docTank = FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
         .collection('tanks')
         .doc(const Uuid().v4());
 
+    // TODO: redo
     final json = {
       'name': name,
       'isFreshwater': isFreshWater,

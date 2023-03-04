@@ -1,46 +1,45 @@
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
+import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class WaterParamPickerPage extends StatefulWidget {
-  const WaterParamPickerPage({super.key});
+  String param;
+
+  WaterParamPickerPage(this.param, {super.key});
 
   @override
   State<WaterParamPickerPage> createState() => _WaterParamPickerPageState();
 }
 
 class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
-  String? _param = 'ammonia'; // TODO: make this the last param added
-
   @override
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
     final Map visibleParams = settingsProvider.getVisibleParams();
     final List<ListTile> paramRadioBtns = [];
-
-    visibleParams.forEach(
-      (paramName, isVisible) => {
-        if (isVisible)
-          {
-            paramRadioBtns.add(
-              ListTile(
-                title: Text(paramName),
-                leading: Radio<String>(
-                  value: paramName,
-                  groupValue: _param,
-                  onChanged: (String? value) {
-                    setState(() {
-                      _param = value;
-                    });
-                  },
+    visibleParams.forEach((param, isVisible) => {
+          if (isVisible)
+            {
+              paramRadioBtns.add(
+                ListTile(
+                  title: Text(StringUtil.paramToString(context, param)),
+                  leading: Radio<String>(
+                    value: param,
+                    groupValue: widget.param,
+                    onChanged: (String? value) {
+                      setState(() {
+                        widget.param = value!;
+                      });
+                    },
+                  ),
                 ),
-              ),
-            ),
-          },
-      },
-    );
+              )
+            }
+        });
 
     return Scaffold(
       appBar: AppBar(
@@ -61,11 +60,12 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
               left: Spacing.screenEdgeMargin,
               right: Spacing.screenEdgeMargin,
               top: Spacing.betweenSections,
-              bottom: Spacing.screenEdgeMargin,
             ),
             child: ElevatedButton(
-              child: const Text('select'),
-              onPressed: () => {},
+              child: Text(AppLocalizations.of(context).select),
+              onPressed: () {
+                Navigator.pop(context, widget.param);
+              },
             ),
           ),
         ],

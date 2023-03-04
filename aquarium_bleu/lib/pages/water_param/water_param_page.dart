@@ -1,11 +1,11 @@
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
-import 'package:aquarium_bleu/pages/water_param/add_water_param_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
-import 'package:aquarium_bleu/widgets/add_param_val_alert_dialog.dart';
-import 'package:aquarium_bleu/widgets/water_param_chart.dart';
+import 'package:aquarium_bleu/utils/string_util.dart';
+import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -21,41 +21,36 @@ class WaterParamPage extends StatefulWidget {
 }
 
 class _WaterParamPageState extends State<WaterParamPage> {
-  List<String> paramCollNames = [
-    Strings.ammonia,
-    Strings.nitrite,
-    Strings.nitrate,
-    Strings.tds,
-    Strings.ph,
-    Strings.kh,
-    Strings.gh,
-    Strings.temp
-  ];
-
   @override
   Widget build(BuildContext context) {
-    // List of param data streams
-    List<Stream<List<Parameter>>> dataStreams = [
-      for (var paramCollectionName in paramCollNames)
-        context
-            .watch<CloudFirestoreProvider>()
-            .readParameters(widget.tank.docId, paramCollectionName)
-    ];
-
     final settingsProvider = Provider.of<SettingsProvider>(context);
+
+    List<String> params = [];
+    // List of param data streams
+    List<Stream<List<Parameter>>> dataStreams = [];
+    settingsProvider.getVisibleParams().forEach((param, isVisible) {
+      if (isVisible) {
+        params.add(param);
+        dataStreams.add(
+          context
+              .watch<CloudFirestoreProvider>()
+              .readParameters(widget.tank.docId, param),
+        );
+      }
+    });
 
     return StreamBuilder<List<dynamic>>(
       stream: CombineLatestStream.list(dataStreams),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<WaterParamChart> charts = [];
-          final Map visibleParams = settingsProvider.getVisibleParams();
 
-          for (var i = 0; i < paramCollNames.length; i++) {
-            String param = paramCollNames[i];
-            if (snapshot.data![i].isNotEmpty && visibleParams[param]) {
+          for (var i = 0; i < snapshot.data!.length; i++) {
+            if (snapshot.data![i].isNotEmpty) {
               charts.add(
-                WaterParamChart(title: param, dataSource: snapshot.data![i]),
+                WaterParamChart(
+                    title: StringUtil.paramToString(context, params[i]),
+                    dataSource: snapshot.data![i]),
               );
             }
           }
@@ -66,14 +61,10 @@ class _WaterParamPageState extends State<WaterParamPage> {
             ),
             body: ListView(children: charts),
             floatingActionButton: FloatingActionButton(
-              // onPressed: () => showDialog(
-              //   context: context,
-              //   builder: (BuildContext context) => const AddWaterParamPage(),
-              // ),
               onPressed: () => showDialog(
                 context: context,
                 builder: (BuildContext context) =>
-                    const AddParamValAlertDialog(),
+                    AddParamValAlertDialog(widget.tank.docId),
               ),
               child: const Icon(Icons.add),
             ),

@@ -1,8 +1,8 @@
 import 'package:aquarium_bleu/models/tank.dart';
-import 'package:aquarium_bleu/pages/tanks/tank_page.dart';
+import 'package:aquarium_bleu/pages/tank_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
-import 'package:aquarium_bleu/utils/date_time_util.dart';
+import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/add_tank_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/tank_card.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +40,7 @@ class _TanksPageState extends State<TanksPage> {
                       ),
                       child: FittedBox(
                         child: Text(
-                          DateTimeUtil.formattedDate(context, DateTime.now()),
+                          StringUtil.formattedDate(context, DateTime.now()),
                           style: Theme.of(context).textTheme.displayLarge,
                         ),
                       ),
