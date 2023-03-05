@@ -2,6 +2,7 @@ import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/pages/water_param/water_param_picker_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
+import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/num_util.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
@@ -48,9 +49,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
     _setParamBtnText();
 
     return AlertDialog(
-      title: Text(
-        AppLocalizations.of(context).addParameterValue,
-      ),
+      title: Text(AppLocalizations.of(context).addParameterValue),
       content: SingleChildScrollView(
         child: ListBody(
           children: [
@@ -180,7 +179,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
     }
 
     // check for parameter error states
-    if (_param == null) {
+    if (_param == Strings.none) {
       setState(() {
         isParamBtnInError = true;
       });
@@ -188,7 +187,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   }
 
   void _setParamBtnText() {
-    if (_param == null) {
+    if (_param == Strings.none) {
       _paramBtnText = AppLocalizations.of(context).selectParameter;
     } else {
       _paramBtnText = StringUtil.paramToString(context, _param!);

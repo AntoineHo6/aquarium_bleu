@@ -47,7 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 if (newValue == false &&
                     settingsProvider.getLastSelectedParam() ==
                         Strings.nitrate) {
-                  settingsProvider.setLastSelectedParam(null);
+                  settingsProvider.setLastSelectedParam(Strings.none);
                 }
               }),
         ],

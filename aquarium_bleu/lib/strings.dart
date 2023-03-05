@@ -51,7 +51,7 @@ class Strings {
   static const strontium = 'strontium';
   static const boron = 'boron';
   static const iodine = 'iodine';
-  // static const none = 'none';
+  static const none = 'none';
 
   // Shared Preferences
   static const isDarkMode = 'isDarkMode';

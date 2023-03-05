@@ -30,7 +30,8 @@ Future main() async {
       visibleParameters[param] = myPrefs.getBool(param) ?? true;
     }
 
-    String? lastSelectedParam = myPrefs.getString(Strings.lastSelectedParam);
+    String lastSelectedParam =
+        myPrefs.getString(Strings.lastSelectedParam) ?? Strings.none;
 
     runApp(
       MultiProvider(

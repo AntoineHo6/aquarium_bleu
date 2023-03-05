@@ -2,7 +2,6 @@ import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
-import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';

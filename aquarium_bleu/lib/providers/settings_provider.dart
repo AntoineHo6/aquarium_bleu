@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SettingsProvider with ChangeNotifier {
   ThemeMode _themeMode;
   final Map<String, bool> _visibleParams;
-  String? _lastSelectedParam;
+  String _lastSelectedParam;
 
   SettingsProvider(
     this._themeMode,
@@ -31,11 +31,11 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  setLastSelectedParam(String? newParam) async {
+  setLastSelectedParam(String newParam) async {
     _lastSelectedParam = newParam;
     var prefs = await SharedPreferences.getInstance();
     // maybe set it to a string "none" instead
-    prefs.setString(Strings.lastSelectedParam, newParam!);
+    prefs.setString(Strings.lastSelectedParam, newParam);
     notifyListeners();
   }
 }
