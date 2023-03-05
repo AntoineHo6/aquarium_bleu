@@ -42,14 +42,39 @@ class _WaterParamPageState extends State<WaterParamPage> {
       stream: CombineLatestStream.list(dataStreams),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          List<WaterParamChart> charts = [];
+          List<Widget> charts = [];
 
           for (var i = 0; i < snapshot.data!.length; i++) {
             if (snapshot.data![i].isNotEmpty) {
               charts.add(
-                WaterParamChart(
-                    title: StringUtil.paramToString(context, params[i]),
-                    dataSource: snapshot.data![i]),
+                Column(
+                  children: [
+                    IntrinsicHeight(
+                      child: Stack(
+                        children: [
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              StringUtil.paramToString(context, params[i]),
+                              style: Theme.of(context).textTheme.titleLarge,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.open_in_new_rounded),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    WaterParamChart(
+                      dataSource: snapshot.data![i],
+                    ),
+                  ],
+                ),
               );
             }
           }

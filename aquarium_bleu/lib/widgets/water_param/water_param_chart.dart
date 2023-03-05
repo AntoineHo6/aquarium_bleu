@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class WaterParamChart extends StatefulWidget {
-  final String title;
   final List<dynamic> dataSource;
 
   const WaterParamChart({
-    required this.title,
     required this.dataSource,
     super.key,
   });
@@ -19,10 +17,10 @@ class _WaterParamChartState extends State<WaterParamChart> {
   @override
   Widget build(BuildContext context) {
     return SfCartesianChart(
-      title: ChartTitle(text: widget.title),
       primaryXAxis: DateTimeAxis(),
       series: <ChartSeries>[
         LineSeries(
+          color: ColorScheme.fromSwatch().primary,
           animationDuration: 800,
           dataSource: widget.dataSource,
           xValueMapper: (dataPoint, _) => dataPoint.date,
