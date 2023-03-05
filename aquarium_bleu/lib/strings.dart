@@ -1,5 +1,5 @@
 class Strings {
-  // parameters
+  // Parameters
   static const List<String> params = [
     Strings.ammonia,
     Strings.nitrite,
@@ -51,4 +51,9 @@ class Strings {
   static const strontium = 'strontium';
   static const boron = 'boron';
   static const iodine = 'iodine';
+  // static const none = 'none';
+
+  // Shared Preferences
+  static const isDarkMode = 'isDarkMode';
+  static const lastSelectedParam = 'lastSelectedParam';
 }

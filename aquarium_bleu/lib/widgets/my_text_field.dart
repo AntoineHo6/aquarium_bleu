@@ -30,17 +30,17 @@ class _MyTextFieldState extends State<MyTextField> {
       controller: widget.controller,
       onChanged: widget.onChanged,
       decoration: InputDecoration(
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).focusColor,
-          ),
-        ),
-        enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Theme.of(context).hintColor,
-            width: 0.5,
-          ),
-        ),
+        // focusedBorder: UnderlineInputBorder(
+        //   borderSide: BorderSide(
+        //     color: Theme.of(context).focusColor,
+        //   ),
+        // ),
+        // enabledBorder: UnderlineInputBorder(
+        //   borderSide: BorderSide(
+        //     color: Theme.of(context).hintColor,
+        //     width: 0.5,
+        //   ),
+        // ),
         hintText: widget.hintText,
         errorText: widget.isFieldValid ? null : widget.errorText,
       ),

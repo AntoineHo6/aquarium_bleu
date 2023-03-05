@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class WaterParamPickerPage extends StatefulWidget {
-  String param;
+  String? param;
 
   WaterParamPickerPage(this.param, {super.key});
 

@@ -1,11 +1,11 @@
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/pages/water_param/water_param_picker_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
+import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
-import 'package:aquarium_bleu/utils/date_time_util.dart';
 import 'package:aquarium_bleu/utils/num_util.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
-import 'package:aquarium_bleu/widgets/date_picker_btn.dart';
+import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:aquarium_bleu/widgets/my_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,7 +26,9 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   late TextEditingController _valueFieldController;
   bool _isValueValid = true;
   String? _errorText;
-  String _param = 'ammonia'; // TODO: make this the last param added
+  String? _param;
+  bool isParamBtnInError = false;
+  late String _paramBtnText;
 
   @override
   void initState() {
@@ -42,6 +44,9 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
+    _param ??= Provider.of<SettingsProvider>(context).getLastSelectedParam();
+    _setParamBtnText();
+
     return AlertDialog(
       title: Text(
         AppLocalizations.of(context).addParameterValue,
@@ -61,8 +66,9 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
               margin: const EdgeInsets.only(top: Spacing.betweenSections),
               child: IconTextBtn(
                 iconData: Icons.science_outlined,
-                text: _param,
+                text: _paramBtnText,
                 onPressed: () => _handleParamPickerBtn(context),
+                isError: isParamBtnInError,
               ),
             ),
             IconTextBtn(
@@ -96,7 +102,13 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
             context: context,
             builder: (BuildContext context) => WaterParamPickerPage(_param))
         .then((value) => setState(() {
-              value != null ? _param = value : null;
+              if (value != null) {
+                _param = value;
+                // _paramBtnText = StringUtil.paramToString(context, value);
+                _setParamBtnText();
+                isParamBtnInError = false;
+              }
+              // value != null ? _param = value : null;
             }));
   }
 
@@ -124,7 +136,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   void _handleAdd(BuildContext context) {
     String value = _valueFieldController.text.trim();
 
-    if (NumUtil.isNumeric(value)) {
+    if (NumUtil.isNumeric(value) && _param != null) {
       // 1. Combine _date and _time in a DateTime for Parameter object
       DateTime paramDate = DateTime(
         _date.year,
@@ -143,20 +155,43 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
       // 3. Add parameter to db
       Provider.of<CloudFirestoreProvider>(context, listen: false).addParameter(
         widget.tankId,
-        _param,
+        _param!,
         addMe,
       );
+
+      // 4. Set selected parameter as the last used
+      Provider.of<SettingsProvider>(context, listen: false)
+          .setLastSelectedParam(_param!);
+
       Navigator.pop(context);
-    } else if (value.isEmpty) {
+    }
+
+    // check for value error states
+    if (value.isEmpty) {
       setState(() {
         _isValueValid = false;
         _errorText = AppLocalizations.of(context).theValueIsEmpty;
       });
-    } else {
+    } else if (!NumUtil.isNumeric(value)) {
       setState(() {
         _isValueValid = false;
         _errorText = AppLocalizations.of(context).theValueIsNotAValidNumber;
       });
+    }
+
+    // check for parameter error states
+    if (_param == null) {
+      setState(() {
+        isParamBtnInError = true;
+      });
+    }
+  }
+
+  void _setParamBtnText() {
+    if (_param == null) {
+      _paramBtnText = AppLocalizations.of(context).selectParameter;
+    } else {
+      _paramBtnText = StringUtil.paramToString(context, _param!);
     }
   }
 }
