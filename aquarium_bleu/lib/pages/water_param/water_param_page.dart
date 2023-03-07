@@ -3,7 +3,6 @@ import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/pages/water_param/water_param_chart_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
-import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
 import 'package:flutter/material.dart';
@@ -49,39 +48,24 @@ class _WaterParamPageState extends State<WaterParamPage> {
           for (var i = 0; i < snapshot.data!.length; i++) {
             if (snapshot.data![i].isNotEmpty) {
               charts.add(
-                Column(
-                  children: [
-                    IntrinsicHeight(
-                      child: Stack(
-                        children: [
-                          Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              StringUtil.paramToString(context, params[i]),
-                              style: Theme.of(context).textTheme.titleLarge,
-                              textAlign: TextAlign.center,
+                WaterParamChart(
+                  param: params[i],
+                  dataSource: snapshot.data![i],
+                  actions: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WaterParamChartPage(
+                              widget.tank.docId,
+                              params[i],
+                              snapshot.data![i],
                             ),
                           ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        WaterParamChartPage(params[i]),
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.open_in_new_rounded),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    WaterParamChart(
-                      dataSource: snapshot.data![i],
+                        );
+                      },
+                      icon: const Icon(Icons.open_in_new_rounded),
                     ),
                   ],
                 ),
