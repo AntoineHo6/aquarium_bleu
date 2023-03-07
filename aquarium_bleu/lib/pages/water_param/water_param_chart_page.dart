@@ -1,4 +1,5 @@
 import 'package:aquarium_bleu/models/parameter.dart';
+import 'package:aquarium_bleu/pages/water_param/edit_water_param_page.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
 import 'package:flutter/material.dart';
@@ -33,12 +34,28 @@ class _WaterParamChartPageState extends State<WaterParamChartPage> {
                         title: Text(
                           StringUtil.formattedDate(context, dataPoint.date),
                         ),
-                        subtitle: Text('time'),
+                        subtitle: Text(
+                          StringUtil.formattedTime(
+                            context,
+                            TimeOfDay.fromDateTime(dataPoint.date),
+                          ),
+                        ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(dataPoint.value.toString()),
-                            const Icon(Icons.edit),
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditWaterParamPage(dataPoint),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.edit),
+                            ),
                           ],
                         ),
                       ))

@@ -1,5 +1,6 @@
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
+import 'package:aquarium_bleu/pages/water_param/tune_chart_page.dart';
 import 'package:aquarium_bleu/pages/water_param/water_param_chart_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
@@ -76,6 +77,19 @@ class _WaterParamPageState extends State<WaterParamPage> {
           return Scaffold(
             appBar: AppBar(
               title: Text(AppLocalizations.of(context).waterParameters),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TuneChartPage(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.tune_rounded),
+                )
+              ],
             ),
             body: ListView(children: charts),
             floatingActionButton: FloatingActionButton(
