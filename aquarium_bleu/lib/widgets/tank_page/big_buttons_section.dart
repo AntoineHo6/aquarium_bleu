@@ -28,9 +28,8 @@ class BigButtonsSection extends StatelessWidget {
                         right: _marginBetweenBigButtons,
                         bottom: _marginBetweenBigButtons,
                       ),
-                      child: ElevatedButton(
-                        style: _bigButtonsStyle,
-                        onPressed: () {
+                      child: GestureDetector(
+                        onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -38,9 +37,18 @@ class BigButtonsSection extends StatelessWidget {
                             ),
                           );
                         },
-                        child: Text(
-                          AppLocalizations.of(context).waterParameters,
-                          style: Theme.of(context).textTheme.titleLarge,
+                        child: Card(
+                          elevation: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.all(_cardPadding),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                AppLocalizations.of(context).waterParameters,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -55,12 +63,14 @@ class BigButtonsSection extends StatelessWidget {
                         top: _marginBetweenBigButtons,
                         right: _marginBetweenBigButtons,
                       ),
-                      child: ElevatedButton(
-                        style: _bigButtonsStyle,
-                        onPressed: () => {},
-                        child: Text(
-                          AppLocalizations.of(context).waterChanges,
-                          style: Theme.of(context).textTheme.titleLarge,
+                      child: Card(
+                        elevation: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(_cardPadding),
+                          child: Text(
+                            AppLocalizations.of(context).waterChanges,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
                         ),
                       ),
                     ),
@@ -82,12 +92,14 @@ class BigButtonsSection extends StatelessWidget {
                         left: _marginBetweenBigButtons,
                         bottom: _marginBetweenBigButtons,
                       ),
-                      child: ElevatedButton(
-                        style: _bigButtonsStyle,
-                        onPressed: () => {},
-                        child: Text(
-                          AppLocalizations.of(context).animals,
-                          style: Theme.of(context).textTheme.titleLarge,
+                      child: Card(
+                        elevation: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(_cardPadding),
+                          child: Text(
+                            AppLocalizations.of(context).tasks,
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
                         ),
                       ),
                     ),
@@ -102,12 +114,14 @@ class BigButtonsSection extends StatelessWidget {
                         top: _marginBetweenBigButtons,
                         left: _marginBetweenBigButtons,
                       ),
-                      child: ElevatedButton(
-                        style: _bigButtonsStyle,
-                        onPressed: () => {},
-                        child: Text(
-                          AppLocalizations.of(context).equipment,
-                          style: Theme.of(context).textTheme.titleLarge,
+                      child: Card(
+                        elevation: 3,
+                        child: Padding(
+                          padding: const EdgeInsets.all(_cardPadding),
+                          child: Text(
+                            'pictures',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
                         ),
                       ),
                     ),
@@ -122,13 +136,5 @@ class BigButtonsSection extends StatelessWidget {
   }
 }
 
-ButtonStyle _bigButtonsStyle = ButtonStyle(
-  padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(20)),
-  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-    RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(25),
-    ),
-  ),
-);
-
-const double _marginBetweenBigButtons = 5;
+const double _marginBetweenBigButtons = 2.5;
+const double _cardPadding = 10;
