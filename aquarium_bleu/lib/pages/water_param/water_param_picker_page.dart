@@ -19,7 +19,7 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
   @override
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
-    final Map visibleParams = settingsProvider.getVisibleParams();
+    final Map visibleParams = settingsProvider.visibleParams;
     final List<ListTile> paramRadioBtns = [];
     visibleParams.forEach((param, isVisible) => {
           if (isVisible)

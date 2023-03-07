@@ -1,5 +1,4 @@
 import 'package:aquarium_bleu/providers/settings_provider.dart';
-import 'package:aquarium_bleu/strings.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -31,25 +30,10 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Text(AppLocalizations.of(context).signOut),
           ),
           Switch.adaptive(
-            value: settingsProvider.getThemeMode() == ThemeMode.dark
-                ? true
-                : false,
+            value: settingsProvider.themeMode == ThemeMode.dark ? true : false,
             onChanged: (newValue) async =>
                 await _onThemeChanged(newValue, settingsProvider),
           ),
-          const Text('nitrate'),
-          Switch.adaptive(
-              value: settingsProvider.getVisibleParams()['nitrate']!
-                  ? true
-                  : false,
-              onChanged: (newValue) async {
-                await settingsProvider.setVisibleParam('nitrate', newValue);
-                if (newValue == false &&
-                    settingsProvider.getLastSelectedParam() ==
-                        Strings.nitrate) {
-                  settingsProvider.setLastSelectedParam(Strings.none);
-                }
-              }),
         ],
       ),
     );

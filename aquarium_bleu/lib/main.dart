@@ -1,8 +1,10 @@
+import 'package:aquarium_bleu/enums/units_of_length.dart';
 import 'package:aquarium_bleu/pages/all_pages.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
@@ -20,9 +22,7 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-
-  prefs.then((myPrefs) {
+  SharedPreferences.getInstance().then((myPrefs) {
     bool isDarkMode = myPrefs.getBool(Strings.isDarkMode) ?? true;
 
     Map<String, bool> visibleParameters = {};
@@ -33,6 +33,9 @@ Future main() async {
     String lastSelectedParam =
         myPrefs.getString(Strings.lastSelectedParam) ?? Strings.none;
 
+    String waterParamDateRange =
+        myPrefs.getString(Strings.waterParamDateRange) ?? Strings.months1;
+
     runApp(
       MultiProvider(
         providers: [
@@ -42,6 +45,7 @@ Future main() async {
               isDarkMode ? ThemeMode.dark : ThemeMode.light,
               visibleParameters,
               lastSelectedParam,
+              waterParamDateRange,
             ),
           ),
         ],
@@ -71,7 +75,7 @@ class MyApp extends StatelessWidget {
       ],
       theme: MyTheme.lightTheme,
       darkTheme: MyTheme.darkTheme,
-      themeMode: settingsProvider.getThemeMode(),
+      themeMode: settingsProvider.themeMode,
       initialRoute: initialRoute,
       routes: customRoutes,
     );
@@ -88,7 +92,7 @@ String get initialRoute {
     return '/verify-email';
   }
 
-  return '/';
+  return '/all-pages';
 }
 
 void _initUid(BuildContext context) {
@@ -98,13 +102,6 @@ void _initUid(BuildContext context) {
 }
 
 var customRoutes = <String, WidgetBuilder>{
-  '/': (context) {
-    // Set the uid in CloudFireStoreProvider here because we enter this route
-    // when the user is logged in.
-    _initUid(context);
-
-    return const AllPages();
-  },
   '/sign-in': (context) {
     return SignInScreen(
       providers: [
@@ -119,7 +116,7 @@ var customRoutes = <String, WidgetBuilder>{
           if (!state.credential.user!.emailVerified) {
             Navigator.pushNamed(context, '/verify-email');
           } else {
-            Navigator.pushReplacementNamed(context, '/');
+            Navigator.pushReplacementNamed(context, '/all-pages');
           }
         }),
         AuthStateChangeAction<SignedIn>((context, state) {
@@ -135,7 +132,7 @@ var customRoutes = <String, WidgetBuilder>{
               }
             });
 
-            Navigator.pushReplacementNamed(context, '/');
+            Navigator.pushReplacementNamed(context, '/all-pages');
           }
         }),
       ],
@@ -165,5 +162,12 @@ var customRoutes = <String, WidgetBuilder>{
         }),
       ],
     );
+  },
+  '/all-pages': (context) {
+    // Set the uid in CloudFireStoreProvider here because we enter this route
+    // when the user is logged in.
+    _initUid(context);
+
+    return const AllPages();
   },
 };

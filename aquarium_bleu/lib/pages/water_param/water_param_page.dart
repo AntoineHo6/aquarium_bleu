@@ -28,7 +28,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
     List<String> params = [];
     // List of param data streams
     List<Stream<List<Parameter>>> dataStreams = [];
-    settingsProvider.getVisibleParams().forEach((param, isVisible) {
+    settingsProvider.visibleParams.forEach((param, isVisible) {
       if (isVisible) {
         params.add(param);
         dataStreams.add(

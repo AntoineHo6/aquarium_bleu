@@ -56,4 +56,14 @@ class Strings {
   // Shared Preferences
   static const isDarkMode = 'isDarkMode';
   static const lastSelectedParam = 'lastSelectedParam';
+  static const waterParamDateRange = 'waterParamDateRange';
+
+  // DateRange
+  static const all = 'all';
+  static const months1 = 'months1';
+  static const months2 = 'months2';
+  static const months3 = 'months3';
+  static const months6 = 'months6';
+  static const months9 = 'months9';
+  static const custom = 'custom';
 }

@@ -45,7 +45,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
-    _param ??= Provider.of<SettingsProvider>(context).getLastSelectedParam();
+    _param ??= Provider.of<SettingsProvider>(context).lastSelectedParam;
     _setParamBtnText();
 
     return AlertDialog(
