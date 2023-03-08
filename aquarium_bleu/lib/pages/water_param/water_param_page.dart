@@ -24,6 +24,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
   @override
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
+    final firestoreProvider = Provider.of<CloudFirestoreProvider>(context);
 
     List<String> params = [];
     // List of param data streams

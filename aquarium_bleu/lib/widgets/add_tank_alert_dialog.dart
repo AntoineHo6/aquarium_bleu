@@ -48,7 +48,13 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
       });
     } else {
       Provider.of<CloudFirestoreProvider>(context, listen: false)
-          .addTank(_nameFieldController.text, _isFreshwater!);
+          .addTank(_nameFieldController.text, _isFreshwater!)
+          .then(
+            (docId) =>
+                Provider.of<CloudFirestoreProvider>(context, listen: false)
+                    .addDefParamVisPrefs(docId),
+          );
+
       Navigator.pop(context);
     }
   }
