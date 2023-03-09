@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/models/task/interval_task.dart';
@@ -57,6 +59,20 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .snapshots()
         .map((event) =>
             event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> newReadParameters(
+      String tankId, String parameter) async {
+    var querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection(parameter)
+        .orderBy("date")
+        .get();
+
+    return querySnapshot.docs;
   }
 
   Future addParameter(String tankId, String paramName, Parameter param) async {
@@ -143,12 +159,14 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .collection('prefs')
         .doc('isParamVisible');
 
-    await doc.get().then((docSnapshot) {
-      if (docSnapshot.exists) {
-        Map<String, dynamic>? data = docSnapshot.data();
-        return data;
-      }
-    });
+    doc.get() => function();
+
+    // await doc.get() => then((docSnapshot) {
+    //   if (docSnapshot.exists) {
+    //     Map<String, dynamic>? data = docSnapshot.data();
+    //     return data;
+    //   }
+    // });
 
     return null;
   }

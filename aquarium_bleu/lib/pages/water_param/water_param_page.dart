@@ -4,8 +4,10 @@ import 'package:aquarium_bleu/pages/water_param/tune_chart_page.dart';
 import 'package:aquarium_bleu/pages/water_param/water_param_chart_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
+import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -40,40 +42,14 @@ class _WaterParamPageState extends State<WaterParamPage> {
       }
     });
 
-    return StreamBuilder<List<dynamic>>(
-      stream: CombineLatestStream.list(dataStreams),
+    return FutureBuilder(
+      future: firestoreProvider.readParamVisPrefs(widget.tank.docId),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          List<Widget> charts = [];
-
-          // create all charts
-          for (var i = 0; i < snapshot.data!.length; i++) {
-            if (snapshot.data![i].isNotEmpty) {
-              charts.add(
-                WaterParamChart(
-                  param: params[i],
-                  dataSource: snapshot.data![i],
-                  actions: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => WaterParamChartPage(
-                              widget.tank.docId,
-                              params[i],
-                              snapshot.data![i],
-                            ),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.open_in_new_rounded),
-                    ),
-                  ],
-                ),
-              );
-            }
-          }
+          final List<Widget> test = [
+            for (String param in Strings.params)
+              Text('${param}  ${snapshot.data![param].toString()}')
+          ];
 
           return Scaffold(
             appBar: AppBar(
@@ -92,7 +68,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                 )
               ],
             ),
-            body: ListView(children: charts),
+            body: ListView(children: test),
             floatingActionButton: FloatingActionButton(
               onPressed: () => showDialog(
                 context: context,
@@ -103,6 +79,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
             ),
           );
         } else {
+          print('shit');
           return Container();
         }
       },
