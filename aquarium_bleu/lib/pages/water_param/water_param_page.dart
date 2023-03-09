@@ -25,59 +25,75 @@ class WaterParamPage extends StatefulWidget {
 class _WaterParamPageState extends State<WaterParamPage> {
   @override
   Widget build(BuildContext context) {
-    final settingsProvider = Provider.of<SettingsProvider>(context);
     final firestoreProvider = Provider.of<CloudFirestoreProvider>(context);
-
-    List<String> params = [];
-    // List of param data streams
-    List<Stream<List<Parameter>>> dataStreams = [];
-    settingsProvider.visibleParams.forEach((param, isVisible) {
-      if (isVisible) {
-        params.add(param);
-        dataStreams.add(
-          context
-              .watch<CloudFirestoreProvider>()
-              .readParameters(widget.tank.docId, param),
-        );
-      }
-    });
 
     return FutureBuilder(
       future: firestoreProvider.readParamVisPrefs(widget.tank.docId),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final List<Widget> test = [
-            for (String param in Strings.params)
-              Text('${param}  ${snapshot.data![param].toString()}')
-          ];
+      builder: (context, snapshot1) {
+        if (snapshot1.hasData) {
+          List<Future<List<dynamic>>> futures = [];
+          List<String> visibleParams = [];
 
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(AppLocalizations.of(context).waterParameters),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TuneChartPage(),
+          for (String param in Strings.params) {
+            if (snapshot1.data![param]) {
+              futures.add(
+                firestoreProvider.newReadParameters(widget.tank.docId, param),
+              );
+              visibleParams.add(param);
+            }
+          }
+
+          return FutureBuilder(
+              future: Future.wait(futures),
+              builder: (context, snapshots2) {
+                if (snapshots2.hasData) {
+                  List<WaterParamChart> charts = [];
+                  for (var i = 0; i < snapshots2.data!.length; i++) {
+                    List<Parameter> dataPoints = [];
+                    for (var j = 0; j < snapshots2.data![i].length; j++) {
+                      dataPoints.add(
+                          Parameter.fromJson(snapshots2.data![i][j].data()));
+                    }
+                    if (dataPoints.isNotEmpty) {
+                      charts.add(
+                        WaterParamChart(
+                            param: visibleParams[i], dataSource: dataPoints),
+                      );
+                    }
+                  }
+
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: Text(AppLocalizations.of(context).waterParameters),
+                      actions: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const TuneChartPage(),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.tune_rounded),
+                        )
+                      ],
+                    ),
+                    body: ListView(children: charts),
+                    floatingActionButton: FloatingActionButton(
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            AddParamValAlertDialog(widget.tank.docId),
                       ),
-                    );
-                  },
-                  icon: const Icon(Icons.tune_rounded),
-                )
-              ],
-            ),
-            body: ListView(children: test),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () => showDialog(
-                context: context,
-                builder: (BuildContext context) =>
-                    AddParamValAlertDialog(widget.tank.docId),
-              ),
-              child: const Icon(Icons.add),
-            ),
-          );
+                      child: const Icon(Icons.add),
+                    ),
+                  );
+                } else {
+                  print('crap');
+                  return Container();
+                }
+              });
         } else {
           print('shit');
           return Container();

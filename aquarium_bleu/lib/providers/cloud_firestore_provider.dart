@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/models/task/interval_task.dart';
@@ -150,16 +148,19 @@ class CloudFirestoreProvider extends ChangeNotifier {
     await visibilityDoc.set(json);
   }
 
-  Future<Map<String, bool>?> readParamVisPrefs(String tankId) async {
-    var doc = FirebaseFirestore.instance
+  Future<Map<String, dynamic>?> readParamVisPrefs(String tankId) async {
+    var docSnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
         .collection('tanks')
         .doc(tankId)
         .collection('prefs')
-        .doc('isParamVisible');
+        .doc('isParamVisible')
+        .get();
 
-    doc.get() => function();
+    if (docSnapshot.exists) {
+      return docSnapshot.data();
+    }
 
     // await doc.get() => then((docSnapshot) {
     //   if (docSnapshot.exists) {
