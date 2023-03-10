@@ -22,8 +22,8 @@ class _TuneChartPageState extends State<TuneChartPage> {
   @override
   Widget build(BuildContext context) {
     final firestoreProvider = Provider.of<CloudFirestoreProvider>(context);
-    List<Widget> choiceChips = [];
 
+    List<Widget> choiceChips = [];
     for (String param in Strings.params) {
       choiceChips.add(ChoiceChip(
         label: Text(StringUtil.paramToString(context, param)),
@@ -39,6 +39,8 @@ class _TuneChartPageState extends State<TuneChartPage> {
       ));
     }
 
+    List<Radio> dateRanges = [];
+
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -48,6 +50,11 @@ class _TuneChartPageState extends State<TuneChartPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                AppLocalizations.of(context).dateRange,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Wrap(),
               Text(
                 AppLocalizations.of(context).visibleParameters,
                 style: Theme.of(context).textTheme.titleLarge,

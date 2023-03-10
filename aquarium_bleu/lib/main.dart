@@ -26,9 +26,6 @@ Future main() async {
     String lastSelectedParam =
         myPrefs.getString(Strings.lastSelectedParam) ?? Strings.none;
 
-    String waterParamDateRange =
-        myPrefs.getString(Strings.waterParamDateRange) ?? Strings.months1;
-
     runApp(
       MultiProvider(
         providers: [
@@ -37,7 +34,6 @@ Future main() async {
             create: (_) => SettingsProvider(
               isDarkMode ? ThemeMode.dark : ThemeMode.light,
               lastSelectedParam,
-              waterParamDateRange,
             ),
           ),
         ],

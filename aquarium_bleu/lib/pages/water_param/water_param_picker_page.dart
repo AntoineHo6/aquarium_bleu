@@ -36,26 +36,6 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
       );
     }
 
-    // visibleParams.forEach((param, isVisible) => {
-    //       if (isVisible)
-    //         {
-    //           paramRadioBtns.add(
-    //             ListTile(
-    //               title: Text(StringUtil.paramToString(context, param)),
-    //               leading: Radio<String>(
-    //                 value: param,
-    //                 groupValue: widget.param,
-    //                 onChanged: (String? value) {
-    //                   setState(() {
-    //                     widget.param = value!;
-    //                   });
-    //                 },
-    //               ),
-    //             ),
-    //           )
-    //         }
-    //     });
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).addParameterValue),
