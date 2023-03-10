@@ -1,6 +1,7 @@
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/pages/water_param/tune_chart_page.dart';
+import 'package:aquarium_bleu/pages/water_param/water_param_chart_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
@@ -50,11 +51,30 @@ class _WaterParamPageState extends State<WaterParamPage> {
 
                   // create and add chart widgets to list
                   for (var i = 0; i < snapshots2.data!.length; i++) {
+                    // visibleParams[i]: parameter name (str)
+                    // snapshots2.data![i]: data points of the parameter i
                     if (snapshots2.data![i].isNotEmpty) {
                       charts.add(
                         WaterParamChart(
                           param: visibleParams[i],
                           dataSource: snapshots2.data![i],
+                          actions: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WaterParamChartPage(
+                                      widget.tank.docId,
+                                      visibleParams[i],
+                                      snapshots2.data![i],
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.open_in_new_rounded),
+                            ),
+                          ],
                         ),
                       );
                     }
@@ -94,11 +114,11 @@ class _WaterParamPageState extends State<WaterParamPage> {
                     ),
                   );
                 } else {
-                  return Container();
+                  return const CircularProgressIndicator();
                 }
               });
         } else {
-          return Container();
+          return const CircularProgressIndicator();
         }
       },
     );

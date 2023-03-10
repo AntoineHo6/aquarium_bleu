@@ -197,7 +197,4 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   }
 }
 
-//TODO: handle case when user has ammonia as the last used parameter for ex. and
-// decides to not make is visible anymore.
-
 // TODO: allow 24h or am/pm format

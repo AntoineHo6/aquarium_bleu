@@ -36,7 +36,6 @@ Future main() async {
           ChangeNotifierProvider(
             create: (_) => SettingsProvider(
               isDarkMode ? ThemeMode.dark : ThemeMode.light,
-              // visibleParameters,
               lastSelectedParam,
               waterParamDateRange,
             ),

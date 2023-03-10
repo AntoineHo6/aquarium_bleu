@@ -55,10 +55,9 @@ class _TanksPageState extends State<TanksPage> {
                       // add tank's name to tankNames list.
                       // Lowercase it for ez comparison
                       _tankNames.add(tank.name.toLowerCase());
-                      return Container(
-                        margin: const EdgeInsets.only(
-                          left: Spacing.screenEdgeMargin,
-                          right: Spacing.screenEdgeMargin,
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Spacing.screenEdgePadding,
                         ),
                         child: TankCard(
                           name: tank.name,
