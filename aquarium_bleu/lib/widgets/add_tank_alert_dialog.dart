@@ -52,7 +52,7 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
           .then(
             (docId) =>
                 Provider.of<CloudFirestoreProvider>(context, listen: false)
-                    .addDefParamVisPrefs(docId),
+                    .addDefaultParamVisPrefs(docId),
           );
 
       Navigator.pop(context);

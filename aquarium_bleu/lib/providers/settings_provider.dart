@@ -4,13 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsProvider with ChangeNotifier {
   ThemeMode themeMode;
-  final Map<String, bool> visibleParams;
+  // final Map<String, bool> visibleParams;
   String lastSelectedParam;
   String waterParamDateRange;
 
   SettingsProvider(
     this.themeMode,
-    this.visibleParams,
+    // this.visibleParams,
     this.lastSelectedParam,
     this.waterParamDateRange,
   );
@@ -23,7 +23,7 @@ class SettingsProvider with ChangeNotifier {
   }
 
   setVisibleParam(String param, bool isVisible) async {
-    visibleParams[param] = isVisible;
+    // visibleParams[param] = isVisible;
     var prefs = await SharedPreferences.getInstance();
     prefs.setBool(param, isVisible);
     notifyListeners();

@@ -46,20 +46,21 @@ class CloudFirestoreProvider extends ChangeNotifier {
             .toList());
   }
 
-  Stream<List<Parameter>> readParameters(String tankId, String parameter) {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(_uid)
-        .collection('tanks')
-        .doc(tankId)
-        .collection(parameter)
-        .orderBy("date")
-        .snapshots()
-        .map((event) =>
-            event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
-  }
+  // DEPRECATED
+  // Stream<List<Parameter>> readParameters(String tankId, String parameter) {
+  //   return FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(_uid)
+  //       .collection('tanks')
+  //       .doc(tankId)
+  //       .collection(parameter)
+  //       .orderBy("date")
+  //       .snapshots()
+  //       .map((event) =>
+  //           event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
+  // }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> newReadParameters(
+  Future<List<Parameter>> newReadParameters(
       String tankId, String parameter) async {
     var querySnapshot = await FirebaseFirestore.instance
         .collection('users')
@@ -70,7 +71,13 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .orderBy("date")
         .get();
 
-    return querySnapshot.docs;
+    List<Parameter> data = [];
+    for (QueryDocumentSnapshot<Map<String, dynamic>> doc
+        in querySnapshot.docs) {
+      data.add(Parameter.fromJson(doc.data()));
+    }
+
+    return data;
   }
 
   Future addParameter(String tankId, String paramName, Parameter param) async {
@@ -132,7 +139,7 @@ class CloudFirestoreProvider extends ChangeNotifier {
     return docId;
   }
 
-  Future addDefParamVisPrefs(String tankId) async {
+  Future addDefaultParamVisPrefs(String tankId) async {
     final visibilityDoc = FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
@@ -159,16 +166,24 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .get();
 
     if (docSnapshot.exists) {
+      // return docSnapshot.data()!.cast<String, bool>();
       return docSnapshot.data();
     }
 
-    // await doc.get() => then((docSnapshot) {
-    //   if (docSnapshot.exists) {
-    //     Map<String, dynamic>? data = docSnapshot.data();
-    //     return data;
-    //   }
-    // });
-
     return null;
+  }
+
+  Future updateParamVis(String tankId, String param, bool isVisible) async {
+    final visibilityDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('prefs')
+        .doc('isParamVisible');
+
+    visibilityDoc.update({param: isVisible});
+
+    notifyListeners();
   }
 }

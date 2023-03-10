@@ -14,8 +14,9 @@ import 'package:provider/provider.dart';
 
 class AddParamValAlertDialog extends StatefulWidget {
   final String tankId;
+  final List<String> visibleParams;
 
-  const AddParamValAlertDialog(this.tankId, {super.key});
+  const AddParamValAlertDialog(this.tankId, this.visibleParams, {super.key});
 
   @override
   State<AddParamValAlertDialog> createState() => _AddParamValAlertDialogState();
@@ -99,7 +100,8 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   _handleParamPickerBtn(BuildContext context) {
     showDialog(
             context: context,
-            builder: (BuildContext context) => WaterParamPickerPage(_param))
+            builder: (BuildContext context) =>
+                WaterParamPickerPage(_param, widget.visibleParams))
         .then((value) => setState(() {
               if (value != null) {
                 _param = value;

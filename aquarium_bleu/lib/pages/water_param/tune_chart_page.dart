@@ -1,12 +1,12 @@
-import 'package:aquarium_bleu/providers/settings_provider.dart';
-import 'package:aquarium_bleu/strings.dart';
+import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
 
 class TuneChartPage extends StatefulWidget {
-  const TuneChartPage({super.key});
+  final String tankId;
+  final Map<String, dynamic>? visibleParams;
+
+  const TuneChartPage(this.tankId, this.visibleParams, {super.key});
 
   @override
   State<TuneChartPage> createState() => _TuneChartPageState();
@@ -15,7 +15,7 @@ class TuneChartPage extends StatefulWidget {
 class _TuneChartPageState extends State<TuneChartPage> {
   @override
   Widget build(BuildContext context) {
-    final settingsProvider = Provider.of<SettingsProvider>(context);
+    final firestoreProvider = Provider.of<CloudFirestoreProvider>(context);
 
     return Scaffold(
       appBar: AppBar(),
@@ -23,13 +23,12 @@ class _TuneChartPageState extends State<TuneChartPage> {
         children: [
           const Text('nitrate'),
           Switch.adaptive(
-              value: settingsProvider.visibleParams['nitrate']! ? true : false,
+              value: widget.visibleParams!['nitrate'],
               onChanged: (newValue) async {
-                await settingsProvider.setVisibleParam('nitrate', newValue);
-                if (newValue == false &&
-                    settingsProvider.lastSelectedParam == Strings.nitrate) {
-                  settingsProvider.setLastSelectedParam(Strings.none);
-                }
+                widget.visibleParams!['nitrate'] = newValue;
+
+                await firestoreProvider.updateParamVis(
+                    widget.tankId, 'nitrate', newValue);
               }),
         ],
       ),

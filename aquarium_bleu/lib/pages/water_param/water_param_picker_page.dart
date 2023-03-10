@@ -8,8 +8,9 @@ import 'package:provider/provider.dart';
 // ignore: must_be_immutable
 class WaterParamPickerPage extends StatefulWidget {
   String? param;
+  final List<String> visibleParams;
 
-  WaterParamPickerPage(this.param, {super.key});
+  WaterParamPickerPage(this.param, this.visibleParams, {super.key});
 
   @override
   State<WaterParamPickerPage> createState() => _WaterParamPickerPageState();
@@ -19,27 +20,45 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
   @override
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
-    final Map visibleParams = settingsProvider.visibleParams;
+    // final Map visibleParams = settingsProvider.visibleParams;
     final List<ListTile> paramRadioBtns = [];
-    visibleParams.forEach((param, isVisible) => {
-          if (isVisible)
-            {
-              paramRadioBtns.add(
-                ListTile(
-                  title: Text(StringUtil.paramToString(context, param)),
-                  leading: Radio<String>(
-                    value: param,
-                    groupValue: widget.param,
-                    onChanged: (String? value) {
-                      setState(() {
-                        widget.param = value!;
-                      });
-                    },
-                  ),
-                ),
-              )
-            }
-        });
+
+    for (String param in widget.visibleParams) {
+      paramRadioBtns.add(
+        ListTile(
+          title: Text(StringUtil.paramToString(context, param)),
+          leading: Radio<String>(
+            value: param,
+            groupValue: widget.param,
+            onChanged: (String? value) {
+              setState(() {
+                widget.param = value!;
+              });
+            },
+          ),
+        ),
+      );
+    }
+
+    // visibleParams.forEach((param, isVisible) => {
+    //       if (isVisible)
+    //         {
+    //           paramRadioBtns.add(
+    //             ListTile(
+    //               title: Text(StringUtil.paramToString(context, param)),
+    //               leading: Radio<String>(
+    //                 value: param,
+    //                 groupValue: widget.param,
+    //                 onChanged: (String? value) {
+    //                   setState(() {
+    //                     widget.param = value!;
+    //                   });
+    //                 },
+    //               ),
+    //             ),
+    //           )
+    //         }
+    //     });
 
     return Scaffold(
       appBar: AppBar(

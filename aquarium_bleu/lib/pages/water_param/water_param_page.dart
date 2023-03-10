@@ -1,17 +1,13 @@
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/pages/water_param/tune_chart_page.dart';
-import 'package:aquarium_bleu/pages/water_param/water_param_chart_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
-import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:rxdart/rxdart.dart';
 
 class WaterParamPage extends StatefulWidget {
   final Tank tank;
@@ -27,15 +23,17 @@ class _WaterParamPageState extends State<WaterParamPage> {
   Widget build(BuildContext context) {
     final firestoreProvider = Provider.of<CloudFirestoreProvider>(context);
 
+    // First futureBuilder for fetching parameter visibility
     return FutureBuilder(
       future: firestoreProvider.readParamVisPrefs(widget.tank.docId),
-      builder: (context, snapshot1) {
-        if (snapshot1.hasData) {
-          List<Future<List<dynamic>>> futures = [];
+      builder: (context, paramVisSnapshot) {
+        if (paramVisSnapshot.hasData) {
+          List<Future<List<Parameter>>> futures = [];
           List<String> visibleParams = [];
 
+          // indexes of the lists "futures" and "visibleParams" are corresponding
           for (String param in Strings.params) {
-            if (snapshot1.data![param]) {
+            if (paramVisSnapshot.data![param]) {
               futures.add(
                 firestoreProvider.newReadParameters(widget.tank.docId, param),
               );
@@ -43,21 +41,21 @@ class _WaterParamPageState extends State<WaterParamPage> {
             }
           }
 
+          // Second futureBuilder for fetching data from visible parameters
           return FutureBuilder(
               future: Future.wait(futures),
               builder: (context, snapshots2) {
                 if (snapshots2.hasData) {
                   List<WaterParamChart> charts = [];
+
+                  // create and add chart widgets to list
                   for (var i = 0; i < snapshots2.data!.length; i++) {
-                    List<Parameter> dataPoints = [];
-                    for (var j = 0; j < snapshots2.data![i].length; j++) {
-                      dataPoints.add(
-                          Parameter.fromJson(snapshots2.data![i][j].data()));
-                    }
-                    if (dataPoints.isNotEmpty) {
+                    if (snapshots2.data![i].isNotEmpty) {
                       charts.add(
                         WaterParamChart(
-                            param: visibleParams[i], dataSource: dataPoints),
+                          param: visibleParams[i],
+                          dataSource: snapshots2.data![i],
+                        ),
                       );
                     }
                   }
@@ -71,7 +69,10 @@ class _WaterParamPageState extends State<WaterParamPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const TuneChartPage(),
+                                builder: (context) => TuneChartPage(
+                                  widget.tank.docId,
+                                  paramVisSnapshot.data!,
+                                ),
                               ),
                             );
                           },
@@ -84,18 +85,19 @@ class _WaterParamPageState extends State<WaterParamPage> {
                       onPressed: () => showDialog(
                         context: context,
                         builder: (BuildContext context) =>
-                            AddParamValAlertDialog(widget.tank.docId),
+                            AddParamValAlertDialog(
+                          widget.tank.docId,
+                          visibleParams,
+                        ),
                       ),
                       child: const Icon(Icons.add),
                     ),
                   );
                 } else {
-                  print('crap');
                   return Container();
                 }
               });
         } else {
-          print('shit');
           return Container();
         }
       },

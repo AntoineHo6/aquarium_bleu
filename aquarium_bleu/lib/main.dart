@@ -23,11 +23,6 @@ Future main() async {
   SharedPreferences.getInstance().then((myPrefs) {
     bool isDarkMode = myPrefs.getBool(Strings.isDarkMode) ?? true;
 
-    Map<String, bool> visibleParameters = {};
-    for (var param in Strings.params) {
-      visibleParameters[param] = myPrefs.getBool(param) ?? true;
-    }
-
     String lastSelectedParam =
         myPrefs.getString(Strings.lastSelectedParam) ?? Strings.none;
 
@@ -41,7 +36,7 @@ Future main() async {
           ChangeNotifierProvider(
             create: (_) => SettingsProvider(
               isDarkMode ? ThemeMode.dark : ThemeMode.light,
-              visibleParameters,
+              // visibleParameters,
               lastSelectedParam,
               waterParamDateRange,
             ),
