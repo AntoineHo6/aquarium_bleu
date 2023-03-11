@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class IconTextBtn extends StatelessWidget {
   final IconData iconData;
   final String text;
-  final Function() onPressed;
+  final Function()? onPressed;
   final double spaceBetweenSize;
   final bool isError;
 
@@ -23,9 +23,7 @@ class IconTextBtn extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           side: BorderSide(
-            color: (isError
-                ? Theme.of(context).colorScheme.error
-                : Colors.transparent),
+            color: (isError ? Theme.of(context).colorScheme.error : Colors.transparent),
           ),
         ),
         child: Row(

@@ -87,6 +87,8 @@ class _WaterParamPageState extends State<WaterParamPage> {
                                 builder: (context) => TuneChartPage(
                                   widget.tank.docId,
                                   prefsSnapshot.data![0]['type'],
+                                  (prefsSnapshot.data![0]['customDateStart'] as Timestamp).toDate(),
+                                  (prefsSnapshot.data![0]['customDateEnd'] as Timestamp).toDate(),
                                   prefsSnapshot.data![1],
                                 ),
                               ),

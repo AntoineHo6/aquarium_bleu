@@ -2,17 +2,21 @@ import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
+import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// ignore: must_be_immutable
 class TuneChartPage extends StatefulWidget {
   final String tankId;
-  String currentDateRangeType;
+  final String currentDateRangeType;
+  final DateTime customDateStart;
+  final DateTime customDateEnd;
   final Map<String, dynamic>? visibleParams;
 
-  TuneChartPage(this.tankId, this.currentDateRangeType, this.visibleParams, {super.key});
+  const TuneChartPage(this.tankId, this.currentDateRangeType, this.customDateStart,
+      this.customDateEnd, this.visibleParams,
+      {super.key});
 
   @override
   State<TuneChartPage> createState() => _TuneChartPageState();
@@ -20,6 +24,17 @@ class TuneChartPage extends StatefulWidget {
 
 class _TuneChartPageState extends State<TuneChartPage> {
   bool isSelected = false;
+  late String currentDateRangeType;
+  late DateTime customDateStart;
+  late DateTime customDateEnd;
+
+  @override
+  void initState() {
+    super.initState();
+    currentDateRangeType = widget.currentDateRangeType;
+    customDateStart = widget.customDateStart;
+    customDateEnd = widget.customDateEnd;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,18 +58,18 @@ class _TuneChartPageState extends State<TuneChartPage> {
     }
 
     // populate date range radiobtns list
-    List<ListTile> dateRangeRadioBtns = [];
+    List<Widget> dateRangeRadioBtns = [];
     for (String dateRangeType in Strings.dateRangeTypes) {
       dateRangeRadioBtns.add(
         ListTile(
-          title: Text(StringUtil.dateRangeTypeToString(context, dateRangeType)), // TODO: change
+          title: Text(StringUtil.dateRangeTypeToString(context, dateRangeType)),
           leading: Radio<String>(
             value: dateRangeType,
-            groupValue: widget.currentDateRangeType,
+            groupValue: currentDateRangeType,
             onChanged: (String? value) async {
               await firestoreProvider.updateDateRangeType(widget.tankId, value!);
               setState(() {
-                widget.currentDateRangeType = value;
+                currentDateRangeType = value;
               });
             },
           ),
@@ -84,6 +99,37 @@ class _TuneChartPageState extends State<TuneChartPage> {
               const SizedBox(
                 height: Spacing.betweenSections,
               ),
+              Row(
+                children: [
+                  IconTextBtn(
+                    iconData: Icons.date_range,
+                    text: StringUtil.formattedDate(context, customDateStart),
+                    onPressed: currentDateRangeType == Strings.custom
+                        ? () => _handleCustomDateStartBtn(context)
+                        : null,
+                  ),
+                  const SizedBox(
+                    width: Spacing.betweenSections,
+                  ),
+                  Text(
+                    '-',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(
+                    width: Spacing.betweenSections,
+                  ),
+                  IconTextBtn(
+                    iconData: Icons.date_range,
+                    text: StringUtil.formattedDate(context, customDateEnd),
+                    onPressed: currentDateRangeType == Strings.custom
+                        ? () => _handleCustomDateEndBtn(context)
+                        : null,
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: Spacing.betweenSections,
+              ),
               Text(
                 AppLocalizations.of(context).visibleParameters,
                 style: Theme.of(context).textTheme.titleLarge,
@@ -97,5 +143,39 @@ class _TuneChartPageState extends State<TuneChartPage> {
         ),
       ),
     );
+  }
+
+  _handleCustomDateStartBtn(BuildContext context) {
+    showDatePicker(
+      context: context,
+      initialDate: customDateStart,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    ).then((newDate) async {
+      if (newDate != null) {
+        setState(() {
+          customDateStart = newDate;
+        });
+        await Provider.of<CloudFirestoreProvider>(context, listen: false)
+            .updateCustomStartDate(widget.tankId, newDate);
+      }
+    });
+  }
+
+  _handleCustomDateEndBtn(BuildContext context) {
+    showDatePicker(
+      context: context,
+      initialDate: customDateEnd,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    ).then((newDate) async {
+      if (newDate != null) {
+        setState(() {
+          customDateEnd = newDate;
+        });
+        Provider.of<CloudFirestoreProvider>(context, listen: false)
+            .updateCustomEndDate(widget.tankId, newDate);
+      }
+    });
   }
 }

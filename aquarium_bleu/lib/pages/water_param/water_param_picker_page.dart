@@ -3,26 +3,27 @@ import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-// ignore: must_be_immutable
 class WaterParamPickerPage extends StatefulWidget {
-  String? param;
+  final String? currentParam;
   final List<String> visibleParams;
 
-  WaterParamPickerPage(this.param, this.visibleParams, {super.key});
+  const WaterParamPickerPage(this.currentParam, this.visibleParams, {super.key});
 
   @override
   State<WaterParamPickerPage> createState() => _WaterParamPickerPageState();
 }
 
 class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
+  late String? currentParam;
+
+  @override
+  void initState() {
+    super.initState();
+    currentParam = widget.currentParam;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<ListTile> paramRadioBtns = [];
-    // print('about to loop');
-    for (String param in widget.visibleParams) {
-      // print(param);
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).addParameterValue),
@@ -40,10 +41,10 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
                       title: Text(StringUtil.paramToString(context, param)),
                       leading: Radio<String>(
                         value: param,
-                        groupValue: widget.param,
-                        onChanged: (String? value) {
+                        groupValue: currentParam,
+                        onChanged: (String? newCurrentParam) {
                           setState(() {
-                            widget.param = value!;
+                            currentParam = newCurrentParam!;
                           });
                         },
                       ),
@@ -59,7 +60,7 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
             child: ElevatedButton(
               child: Text(AppLocalizations.of(context).select),
               onPressed: () {
-                Navigator.pop(context, widget.param);
+                Navigator.pop(context, currentParam);
               },
             ),
           ),

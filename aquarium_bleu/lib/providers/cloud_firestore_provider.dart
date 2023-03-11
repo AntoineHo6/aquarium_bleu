@@ -123,7 +123,7 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .collection('intervalTasks')
         .doc(updatedTask.docId);
 
-    intervalTask.update(updatedTask.toJson());
+    await intervalTask.update(updatedTask.toJson());
   }
 
   Future<String> addTank(String name, bool isFreshWater) async {
@@ -185,7 +185,7 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .collection('prefs')
         .doc('isParamVisible');
 
-    visibilityDoc.update({param: isVisible});
+    await visibilityDoc.update({param: isVisible});
 
     notifyListeners();
   }
@@ -218,9 +218,34 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .collection('prefs')
         .doc('dateRange');
 
-    dateRangeDoc.update({'type': type});
+    await dateRangeDoc.update({'type': type});
 
     notifyListeners();
+  }
+
+  Future updateCustomStartDate(String tankId, DateTime newDate) async {
+    final dateRangeDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('prefs')
+        .doc('dateRange');
+
+    await dateRangeDoc.update({'customDateStart': newDate});
+    notifyListeners();
+  }
+
+  Future updateCustomEndDate(String tankId, DateTime newDate) async {
+    final dateRangeDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('prefs')
+        .doc('dateRange');
+
+    await dateRangeDoc.update({'customDateEnd': newDate});
   }
 
   Future addDefaultDateRangePrefs(String tankId) async {
@@ -234,7 +259,7 @@ class CloudFirestoreProvider extends ChangeNotifier {
 
     final json = {
       'type': Strings.all,
-      'customDateStart': DateTime.now(),
+      'customDateStart': DateTime.now().subtract(const Duration(days: 7)),
       'customDateEnd': DateTime.now(),
     };
 
