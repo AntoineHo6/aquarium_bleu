@@ -98,7 +98,6 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   }
 
   _handleParamPickerBtn(BuildContext context) {
-    print(widget.visibleParams);
     Navigator.push(
       context,
       MaterialPageRoute(

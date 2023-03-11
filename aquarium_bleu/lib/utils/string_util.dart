@@ -30,7 +30,7 @@ class StringUtil {
       case 12:
         return AppLocalizations.of(context).decAbbr;
       default:
-        return "ds";
+        return "bidon";
     }
   }
 

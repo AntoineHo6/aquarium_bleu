@@ -35,6 +35,7 @@ class CloudFirestoreProvider extends ChangeNotifier {
     }
   }
 
+  // TODO: should be a future builder instead
   Stream<List<Tank>> readTanks() {
     return FirebaseFirestore.instance
         .collection('users')
@@ -169,7 +170,6 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .get();
 
     if (docSnapshot.exists) {
-      // return docSnapshot.data()!.cast<String, bool>();
       return docSnapshot.data();
     }
 
@@ -189,8 +189,6 @@ class CloudFirestoreProvider extends ChangeNotifier {
 
     notifyListeners();
   }
-
-  // Future addDefaultDateRange
 
   Future readDateRangePrefs(String tankId) async {
     var docSnapshot = await FirebaseFirestore.instance

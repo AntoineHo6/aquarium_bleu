@@ -38,14 +38,14 @@ class _WaterParamPageState extends State<WaterParamPage> {
           DateTime start;
           DateTime end;
 
-          if (prefsSnapshot.data![0]['type'] != Strings.all) {
+          if (prefsSnapshot.data![0][Strings.type] != Strings.all) {
             start = _calculateDateStart(
-              prefsSnapshot.data![0]['type'],
-              prefsSnapshot.data![0]['customDateStart'] as Timestamp,
+              prefsSnapshot.data![0][Strings.type],
+              prefsSnapshot.data![0][Strings.customDateStart] as Timestamp,
             );
             end = _calculateDateEnd(
-              prefsSnapshot.data![0]['type'],
-              prefsSnapshot.data![0]['customDateEnd'] as Timestamp,
+              prefsSnapshot.data![0][Strings.type],
+              prefsSnapshot.data![0][Strings.customDateEnd] as Timestamp,
             );
 
             for (String param in Strings.params) {
@@ -86,9 +86,11 @@ class _WaterParamPageState extends State<WaterParamPage> {
                               MaterialPageRoute(
                                 builder: (context) => TuneChartPage(
                                   widget.tank.docId,
-                                  prefsSnapshot.data![0]['type'],
-                                  (prefsSnapshot.data![0]['customDateStart'] as Timestamp).toDate(),
-                                  (prefsSnapshot.data![0]['customDateEnd'] as Timestamp).toDate(),
+                                  prefsSnapshot.data![0][Strings.type],
+                                  (prefsSnapshot.data![0][Strings.customDateStart] as Timestamp)
+                                      .toDate(),
+                                  (prefsSnapshot.data![0][Strings.customDateEnd] as Timestamp)
+                                      .toDate(),
                                   prefsSnapshot.data![1],
                                 ),
                               ),
@@ -111,11 +113,11 @@ class _WaterParamPageState extends State<WaterParamPage> {
                     ),
                   );
                 } else {
-                  return const CircularProgressIndicator();
+                  return const CircularProgressIndicator.adaptive();
                 }
               });
         } else {
-          return const CircularProgressIndicator();
+          return const CircularProgressIndicator.adaptive();
         }
       },
     );

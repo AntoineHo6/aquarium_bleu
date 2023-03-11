@@ -78,8 +78,7 @@ class _TanksPageState extends State<TanksPage> {
               ],
             );
           } else {
-            // add a message that says no data available
-            return Container();
+            return const CircularProgressIndicator.adaptive();
           }
         },
       ),

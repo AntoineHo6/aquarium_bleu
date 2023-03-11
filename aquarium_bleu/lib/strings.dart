@@ -73,4 +73,9 @@ class Strings {
   static const months6 = 'months6';
   static const months9 = 'months9';
   static const custom = 'custom';
+
+  // FirestoreFields
+  static const type = 'type';
+  static const customDateStart = 'customDateStart';
+  static const customDateEnd = 'customDateEnd';
 }

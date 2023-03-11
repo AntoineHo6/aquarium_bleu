@@ -97,7 +97,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
                 children: dateRangeRadioBtns,
               ),
               const SizedBox(
-                height: Spacing.betweenSections,
+                height: 10,
               ),
               Row(
                 children: [
@@ -109,14 +109,14 @@ class _TuneChartPageState extends State<TuneChartPage> {
                         : null,
                   ),
                   const SizedBox(
-                    width: Spacing.betweenSections,
+                    width: 10,
                   ),
                   Text(
                     '-',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(
-                    width: Spacing.betweenSections,
+                    width: 10,
                   ),
                   IconTextBtn(
                     iconData: Icons.date_range,
