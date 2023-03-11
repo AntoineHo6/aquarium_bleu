@@ -98,19 +98,19 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   }
 
   _handleParamPickerBtn(BuildContext context) {
-    showDialog(
-            context: context,
-            builder: (BuildContext context) =>
-                WaterParamPickerPage(_param, widget.visibleParams))
-        .then((value) => setState(() {
-              if (value != null) {
-                _param = value;
-                // _paramBtnText = StringUtil.paramToString(context, value);
-                _setParamBtnText();
-                isParamBtnInError = false;
-              }
-              // value != null ? _param = value : null;
-            }));
+    print(widget.visibleParams);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WaterParamPickerPage(_param, widget.visibleParams),
+      ),
+    ).then((value) => setState(() {
+          if (value != null) {
+            _param = value;
+            _setParamBtnText();
+            isParamBtnInError = false;
+          }
+        }));
   }
 
   _handleDateBtn(BuildContext context) {
@@ -161,8 +161,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
       );
 
       // 4. Set selected parameter as the last used
-      Provider.of<SettingsProvider>(context, listen: false)
-          .setLastSelectedParam(_param!);
+      Provider.of<SettingsProvider>(context, listen: false).setLastSelectedParam(_param!);
 
       Navigator.pop(context);
     }

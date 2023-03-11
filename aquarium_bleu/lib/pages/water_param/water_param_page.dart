@@ -6,6 +6,7 @@ import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -24,61 +25,55 @@ class _WaterParamPageState extends State<WaterParamPage> {
   Widget build(BuildContext context) {
     final firestoreProvider = Provider.of<CloudFirestoreProvider>(context);
 
-    // First futureBuilder for fetching parameter visibility
+    // First futureBuilder for fetching prefs
     return FutureBuilder(
-      future: firestoreProvider.readParamVisPrefs(widget.tank.docId),
-      builder: (context, paramVisSnapshot) {
-        if (paramVisSnapshot.hasData) {
-          List<Future<List<Parameter>>> futures = [];
+      future: Future.wait([
+        firestoreProvider.readDateRangePrefs(widget.tank.docId),
+        firestoreProvider.readParamVisPrefs(widget.tank.docId),
+      ]),
+      builder: (context, prefsSnapshot) {
+        if (prefsSnapshot.hasData) {
+          List<Future<List<Parameter>>> paramDataFutures = [];
           List<String> visibleParams = [];
+          DateTime start;
+          DateTime end;
 
-          // indexes of the lists "futures" and "visibleParams" are corresponding
-          for (String param in Strings.params) {
-            if (paramVisSnapshot.data![param]) {
-              futures.add(
-                firestoreProvider.newReadParameters(widget.tank.docId, param),
-              );
-              visibleParams.add(param);
+          if (prefsSnapshot.data![0]['type'] != Strings.all) {
+            start = _calculateDateStart(
+              prefsSnapshot.data![0]['type'],
+              prefsSnapshot.data![0]['customDateStart'] as Timestamp,
+            );
+            end = _calculateDateEnd(
+              prefsSnapshot.data![0]['type'],
+              prefsSnapshot.data![0]['customDateEnd'] as Timestamp,
+            );
+
+            for (String param in Strings.params) {
+              if (prefsSnapshot.data![1][param]) {
+                paramDataFutures.add(
+                  firestoreProvider.readParametersWithRange(widget.tank.docId, param, start, end),
+                );
+                visibleParams.add(param);
+              }
+            }
+          } else {
+            for (String param in Strings.params) {
+              if (prefsSnapshot.data![1][param]) {
+                paramDataFutures.add(
+                  firestoreProvider.readParameters(widget.tank.docId, param),
+                );
+                visibleParams.add(param);
+              }
             }
           }
 
           // Second futureBuilder for fetching data from visible parameters
           return FutureBuilder(
-              future: Future.wait(futures),
+              future: Future.wait(paramDataFutures),
               builder: (context, snapshots2) {
                 if (snapshots2.hasData) {
-                  List<WaterParamChart> charts = [];
-
-                  // create and add chart widgets to list
-                  for (var i = 0; i < snapshots2.data!.length; i++) {
-                    // visibleParams[i]: parameter name (str)
-                    // snapshots2.data![i]: data points of the parameter i
-                    if (snapshots2.data![i].isNotEmpty) {
-                      charts.add(
-                        WaterParamChart(
-                          param: visibleParams[i],
-                          dataSource: snapshots2.data![i],
-                          actions: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => WaterParamChartPage(
-                                      widget.tank.docId,
-                                      visibleParams[i],
-                                      snapshots2.data![i],
-                                    ),
-                                  ),
-                                );
-                              },
-                              icon: const Icon(Icons.open_in_new_rounded),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  }
+                  List<WaterParamChart> charts =
+                      _createWaterParamCharts(snapshots2.data!, visibleParams);
 
                   return Scaffold(
                     appBar: AppBar(
@@ -91,7 +86,8 @@ class _WaterParamPageState extends State<WaterParamPage> {
                               MaterialPageRoute(
                                 builder: (context) => TuneChartPage(
                                   widget.tank.docId,
-                                  paramVisSnapshot.data!,
+                                  prefsSnapshot.data![0]['type'],
+                                  prefsSnapshot.data![1],
                                 ),
                               ),
                             );
@@ -104,8 +100,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                     floatingActionButton: FloatingActionButton(
                       onPressed: () => showDialog(
                         context: context,
-                        builder: (BuildContext context) =>
-                            AddParamValAlertDialog(
+                        builder: (BuildContext context) => AddParamValAlertDialog(
                           widget.tank.docId,
                           visibleParams,
                         ),
@@ -122,5 +117,66 @@ class _WaterParamPageState extends State<WaterParamPage> {
         }
       },
     );
+  }
+
+  DateTime _calculateDateStart(String type, Timestamp customDateStart) {
+    switch (type) {
+      case Strings.months1:
+        return DateTime.now().subtract(const Duration(days: 31));
+      case Strings.months2:
+        return DateTime.now().subtract(const Duration(days: 62));
+      case Strings.months3:
+        return DateTime.now().subtract(const Duration(days: 93));
+      case Strings.months6:
+        return DateTime.now().subtract(const Duration(days: 186));
+      case Strings.months9:
+        return DateTime.now().subtract(const Duration(days: 279));
+      case Strings.custom:
+        return customDateStart.toDate();
+      default:
+        return DateTime.now();
+    }
+  }
+
+  DateTime _calculateDateEnd(String type, Timestamp customDateEnd) {
+    if (type == Strings.custom) {
+      return customDateEnd.toDate();
+    }
+
+    return DateTime.now();
+  }
+
+  List<WaterParamChart> _createWaterParamCharts(
+      List<List<Parameter>> allParamData, List<String> visibleParams) {
+    List<WaterParamChart> charts = [];
+    for (var i = 0; i < allParamData.length; i++) {
+      if (allParamData[i].isNotEmpty) {
+        charts.add(
+          WaterParamChart(
+            param: visibleParams[i],
+            dataSource: allParamData[i],
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WaterParamChartPage(
+                        widget.tank.docId,
+                        visibleParams[i],
+                        allParamData[i],
+                      ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.open_in_new_rounded),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+
+    return charts;
   }
 }

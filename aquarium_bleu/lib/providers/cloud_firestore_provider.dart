@@ -41,27 +41,10 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .doc(_uid)
         .collection('tanks')
         .snapshots()
-        .map((event) => event.docs
-            .map((doc) => Tank.fromJson(doc.id, doc.data()))
-            .toList());
+        .map((event) => event.docs.map((doc) => Tank.fromJson(doc.id, doc.data())).toList());
   }
 
-  // DEPRECATED
-  // Stream<List<Parameter>> readParameters(String tankId, String parameter) {
-  //   return FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(_uid)
-  //       .collection('tanks')
-  //       .doc(tankId)
-  //       .collection(parameter)
-  //       .orderBy("date")
-  //       .snapshots()
-  //       .map((event) =>
-  //           event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
-  // }
-
-  Future<List<Parameter>> newReadParameters(
-      String tankId, String parameter) async {
+  Future<List<Parameter>> readParameters(String tankId, String parameter) async {
     var querySnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
@@ -72,8 +55,32 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .get();
 
     List<Parameter> data = [];
-    for (QueryDocumentSnapshot<Map<String, dynamic>> doc
-        in querySnapshot.docs) {
+    for (QueryDocumentSnapshot<Map<String, dynamic>> doc in querySnapshot.docs) {
+      data.add(Parameter.fromJson(doc.data()));
+    }
+
+    return data;
+  }
+
+  Future<List<Parameter>> readParametersWithRange(
+    String tankId,
+    String parameter,
+    DateTime? start,
+    DateTime end,
+  ) async {
+    var querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection(parameter)
+        .where('date', isGreaterThanOrEqualTo: start)
+        .where('date', isLessThanOrEqualTo: end)
+        .orderBy("date")
+        .get();
+
+    List<Parameter> data = [];
+    for (QueryDocumentSnapshot<Map<String, dynamic>> doc in querySnapshot.docs) {
       data.add(Parameter.fromJson(doc.data()));
     }
 
@@ -103,9 +110,8 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .collection('intervalTasks')
         .orderBy("dueDate")
         .snapshots()
-        .map((event) => event.docs
-            .map((doc) => IntervalTask.fromJson(doc.id, doc.data()))
-            .toList());
+        .map(
+            (event) => event.docs.map((doc) => IntervalTask.fromJson(doc.id, doc.data())).toList());
   }
 
   Future updateIntervalTask(IntervalTask updatedTask, String tankId) async {
@@ -122,11 +128,8 @@ class CloudFirestoreProvider extends ChangeNotifier {
 
   Future<String> addTank(String name, bool isFreshWater) async {
     final String docId = const Uuid().v4();
-    final docTank = FirebaseFirestore.instance
-        .collection('users')
-        .doc(_uid)
-        .collection('tanks')
-        .doc(docId);
+    final docTank =
+        FirebaseFirestore.instance.collection('users').doc(_uid).collection('tanks').doc(docId);
 
     // TODO: redo
     final json = {
@@ -183,6 +186,39 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .doc('isParamVisible');
 
     visibilityDoc.update({param: isVisible});
+
+    notifyListeners();
+  }
+
+  // Future addDefaultDateRange
+
+  Future readDateRangePrefs(String tankId) async {
+    var docSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('prefs')
+        .doc('dateRange')
+        .get();
+
+    if (docSnapshot.exists) {
+      return docSnapshot.data();
+    }
+
+    return null;
+  }
+
+  Future updateDateRangeType(String tankId, String type) async {
+    final dateRangeDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('prefs')
+        .doc('dateRange');
+
+    dateRangeDoc.update({'type': type});
 
     notifyListeners();
   }

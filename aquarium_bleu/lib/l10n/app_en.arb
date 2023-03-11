@@ -63,6 +63,14 @@
     "iodine": "Iodine",
 
     "dateRange": "Date range",
+    "months1": "1 Month",
+    "months2": "2 Months",
+    "months3": "3 Months",
+    "months6": "6 Months",
+    "months9": "9 Months",
+    "all": "All",
+    "custom": "Custom",
+
     "janAbbr": "Jan.",
     "febAbbr": "Feb.",
     "marAbbr": "Mar.",

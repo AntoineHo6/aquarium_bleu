@@ -63,6 +63,14 @@
     "iodine": "Iode",
 
     "dateRange": "Période",
+    "months1": "1 Mois",
+    "months2": "2 Mois",
+    "months3": "3 Mois",
+    "months6": "6 Mois",
+    "months9": "9 Mois",
+    "all": "Tout",
+    "custom": "Personnalisé",
+
     "janAbbr": "Janv.",
     "febAbbr": "Févr.",
     "marAbbr": "Mars",

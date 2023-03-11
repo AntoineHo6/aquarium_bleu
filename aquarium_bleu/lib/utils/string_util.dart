@@ -102,4 +102,23 @@ class StringUtil {
         return AppLocalizations.of(context).error;
     }
   }
+
+  static dateRangeTypeToString(BuildContext context, String dateRangeType) {
+    switch (dateRangeType) {
+      case Strings.months1:
+        return AppLocalizations.of(context).months1;
+      case Strings.months2:
+        return AppLocalizations.of(context).months2;
+      case Strings.months3:
+        return AppLocalizations.of(context).months3;
+      case Strings.months6:
+        return AppLocalizations.of(context).months6;
+      case Strings.months9:
+        return AppLocalizations.of(context).months9;
+      case Strings.all:
+        return AppLocalizations.of(context).all;
+      case Strings.custom:
+        return AppLocalizations.of(context).custom;
+    }
+  }
 }

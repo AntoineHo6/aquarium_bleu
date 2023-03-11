@@ -26,7 +26,6 @@ class Strings {
     Strings.boron,
     Strings.iodine
   ];
-
   static const ammonia = 'ammonia';
   static const nitrite = 'nitrite';
   static const nitrate = 'nitrate';
@@ -56,9 +55,17 @@ class Strings {
   // Shared Preferences
   static const isDarkMode = 'isDarkMode';
   static const lastSelectedParam = 'lastSelectedParam';
-  static const waterParamDateRange = 'waterParamDateRange';
 
   // DateRange
+  static const dateRangeTypes = [
+    Strings.months1,
+    Strings.months2,
+    Strings.months3,
+    Strings.months6,
+    Strings.months9,
+    Strings.all,
+    Strings.custom,
+  ];
   static const all = 'all';
   static const months1 = 'months1';
   static const months2 = 'months2';
