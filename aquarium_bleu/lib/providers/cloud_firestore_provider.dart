@@ -55,20 +55,11 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .orderBy("date")
         .get();
 
-    List<Parameter> data = [];
-    for (QueryDocumentSnapshot<Map<String, dynamic>> doc in querySnapshot.docs) {
-      data.add(Parameter.fromJson(doc.data()));
-    }
-
-    return data;
+    return querySnapshot.docs.map((doc) => Parameter.fromJson(doc.data())).toList();
   }
 
   Future<List<Parameter>> readParametersWithRange(
-    String tankId,
-    String parameter,
-    DateTime? start,
-    DateTime end,
-  ) async {
+      String tankId, String parameter, DateTime start, DateTime end) async {
     var querySnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
@@ -80,12 +71,7 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .orderBy("date")
         .get();
 
-    List<Parameter> data = [];
-    for (QueryDocumentSnapshot<Map<String, dynamic>> doc in querySnapshot.docs) {
-      data.add(Parameter.fromJson(doc.data()));
-    }
-
-    return data;
+    return querySnapshot.docs.map((doc) => Parameter.fromJson(doc.data())).toList();
   }
 
   Future addParameter(String tankId, String paramName, Parameter param) async {
@@ -176,7 +162,7 @@ class CloudFirestoreProvider extends ChangeNotifier {
     return null;
   }
 
-  Future updateParamVis(String tankId, String param, bool isVisible) async {
+  Future updateParamVisPrefs(String tankId, Map<String, dynamic> visibleParams) async {
     final visibilityDoc = FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
@@ -185,7 +171,7 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .collection('prefs')
         .doc('isParamVisible');
 
-    await visibilityDoc.update({param: isVisible});
+    await visibilityDoc.update(visibleParams);
 
     notifyListeners();
   }

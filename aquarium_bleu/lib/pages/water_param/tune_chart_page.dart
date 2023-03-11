@@ -27,6 +27,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
   late String currentDateRangeType;
   late DateTime customDateStart;
   late DateTime customDateEnd;
+  late Map<String, dynamic> visibleParams;
 
   @override
   void initState() {
@@ -34,6 +35,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
     currentDateRangeType = widget.currentDateRangeType;
     customDateStart = widget.customDateStart;
     customDateEnd = widget.customDateEnd;
+    visibleParams = widget.visibleParams!;
   }
 
   @override
@@ -47,12 +49,9 @@ class _TuneChartPageState extends State<TuneChartPage> {
         label: Text(StringUtil.paramToString(context, param)),
         selected: widget.visibleParams![param],
         onSelected: (newValue) async {
-          widget.visibleParams![param] = newValue;
-          await firestoreProvider.updateParamVis(
-            widget.tankId,
-            param,
-            newValue,
-          );
+          setState(() {
+            visibleParams[param] = newValue;
+          });
         },
       ));
     }
@@ -67,9 +66,8 @@ class _TuneChartPageState extends State<TuneChartPage> {
             value: dateRangeType,
             groupValue: currentDateRangeType,
             onChanged: (String? value) async {
-              await firestoreProvider.updateDateRangeType(widget.tankId, value!);
               setState(() {
-                currentDateRangeType = value;
+                currentDateRangeType = value!;
               });
             },
           ),
@@ -77,68 +75,77 @@ class _TuneChartPageState extends State<TuneChartPage> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppLocalizations.of(context).dateRange,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              GridView.count(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                childAspectRatio: 4,
-                crossAxisCount: 2,
-                children: dateRangeRadioBtns,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  IconTextBtn(
-                    iconData: Icons.date_range,
-                    text: StringUtil.formattedDate(context, customDateStart),
-                    onPressed: currentDateRangeType == Strings.custom
-                        ? () => _handleCustomDateStartBtn(context)
-                        : null,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    '-',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  IconTextBtn(
-                    iconData: Icons.date_range,
-                    text: StringUtil.formattedDate(context, customDateEnd),
-                    onPressed: currentDateRangeType == Strings.custom
-                        ? () => _handleCustomDateEndBtn(context)
-                        : null,
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: Spacing.betweenSections,
-              ),
-              Text(
-                AppLocalizations.of(context).visibleParameters,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Wrap(
-                spacing: 10,
-                children: choiceChips,
-              ),
-            ],
+    return WillPopScope(
+      onWillPop: () async {
+        await firestoreProvider.updateParamVisPrefs(widget.tankId, visibleParams);
+        await firestoreProvider.updateDateRangeType(widget.tankId, currentDateRangeType);
+        await firestoreProvider.updateCustomStartDate(widget.tankId, customDateStart);
+        await firestoreProvider.updateCustomEndDate(widget.tankId, customDateEnd);
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  AppLocalizations.of(context).dateRange,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                GridView.count(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  childAspectRatio: 4,
+                  crossAxisCount: 2,
+                  children: dateRangeRadioBtns,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    IconTextBtn(
+                      iconData: Icons.date_range,
+                      text: StringUtil.formattedDate(context, customDateStart),
+                      onPressed: currentDateRangeType == Strings.custom
+                          ? () => _handleCustomDateStartBtn(context)
+                          : null,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      '-',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    IconTextBtn(
+                      iconData: Icons.date_range,
+                      text: StringUtil.formattedDate(context, customDateEnd),
+                      onPressed: currentDateRangeType == Strings.custom
+                          ? () => _handleCustomDateEndBtn(context)
+                          : null,
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: Spacing.betweenSections,
+                ),
+                Text(
+                  AppLocalizations.of(context).visibleParameters,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                Wrap(
+                  spacing: 10,
+                  children: choiceChips,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -156,8 +163,6 @@ class _TuneChartPageState extends State<TuneChartPage> {
         setState(() {
           customDateStart = newDate;
         });
-        await Provider.of<CloudFirestoreProvider>(context, listen: false)
-            .updateCustomStartDate(widget.tankId, newDate);
       }
     });
   }
@@ -173,8 +178,6 @@ class _TuneChartPageState extends State<TuneChartPage> {
         setState(() {
           customDateEnd = newDate;
         });
-        Provider.of<CloudFirestoreProvider>(context, listen: false)
-            .updateCustomEndDate(widget.tankId, newDate);
       }
     });
   }

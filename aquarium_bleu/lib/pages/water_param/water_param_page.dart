@@ -67,6 +67,8 @@ class _WaterParamPageState extends State<WaterParamPage> {
             }
           }
 
+          print(visibleParams);
+
           // Second futureBuilder for fetching data from visible parameters
           return FutureBuilder(
               future: Future.wait(paramDataFutures),
