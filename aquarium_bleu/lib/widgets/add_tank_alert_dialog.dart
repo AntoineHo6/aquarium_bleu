@@ -49,11 +49,10 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
     } else {
       Provider.of<CloudFirestoreProvider>(context, listen: false)
           .addTank(_nameFieldController.text, _isFreshwater!)
-          .then(
-            (docId) =>
-                Provider.of<CloudFirestoreProvider>(context, listen: false)
-                    .addDefaultParamVisPrefs(docId),
-          );
+          .then((docId) {
+        Provider.of<CloudFirestoreProvider>(context, listen: false).addDefaultParamVisPrefs(docId);
+        Provider.of<CloudFirestoreProvider>(context, listen: false).addDefaultDateRangePrefs(docId);
+      });
 
       Navigator.pop(context);
     }

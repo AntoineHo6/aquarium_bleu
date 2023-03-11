@@ -222,4 +222,22 @@ class CloudFirestoreProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future addDefaultDateRangePrefs(String tankId) async {
+    final dateRangeDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('prefs')
+        .doc('dateRange');
+
+    final json = {
+      'type': Strings.all,
+      'customDateStart': DateTime.now(),
+      'customDateEnd': DateTime.now(),
+    };
+
+    await dateRangeDoc.set(json);
+  }
 }
