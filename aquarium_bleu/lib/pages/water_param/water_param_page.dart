@@ -3,6 +3,7 @@ import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/pages/water_param/tune_chart_page.dart';
 import 'package:aquarium_bleu/pages/water_param/water_param_chart_page.dart';
 import 'package:aquarium_bleu/strings.dart';
+import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -81,7 +82,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
             stream: CombineLatestStream.list(dataStreams),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List<WaterParamChart> charts = _createWaterParamCharts(snapshot.data!);
+                List<Widget> charts = _createWaterParamCharts(snapshot.data!);
 
                 return Scaffold(
                   appBar: AppBar(
@@ -157,31 +158,34 @@ class _WaterParamPageState extends State<WaterParamPage> {
     return DateTime.now();
   }
 
-  List<WaterParamChart> _createWaterParamCharts(List<List<Parameter>> allParamData) {
-    List<WaterParamChart> charts = [];
+  List<Widget> _createWaterParamCharts(List<List<Parameter>> allParamData) {
+    List<Widget> charts = [];
     for (var i = 0; i < allParamData.length; i++) {
       if (allParamData[i].isNotEmpty) {
         charts.add(
-          WaterParamChart(
-            param: allParamData[i][0].type,
-            dataSource: allParamData[i],
-            actions: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => WaterParamChartPage(
-                        widget.tankId,
-                        allParamData[i][0].type,
-                        allParamData[i],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
+            child: WaterParamChart(
+              param: allParamData[i][0].type,
+              dataSource: allParamData[i],
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WaterParamChartPage(
+                          widget.tankId,
+                          allParamData[i][0].type,
+                          allParamData[i],
+                        ),
                       ),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.open_in_new_rounded),
-              ),
-            ],
+                    );
+                  },
+                  icon: const Icon(Icons.open_in_new_rounded),
+                ),
+              ],
+            ),
           ),
         );
       }

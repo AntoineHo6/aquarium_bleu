@@ -15,7 +15,7 @@ class Tank {
 
   Map<String, dynamic> toJson() => {
         'name': name,
-        'isFreshwater': isFreshwater, // check
+        'isFreshwater': isFreshwater,
         // 'dimensions': dimensions, // rework
       };
 
@@ -24,9 +24,7 @@ class Tank {
       docId,
       name: json['name'],
       isFreshwater: json['isFreshwater'],
-      dimensions: json['dimensions'] == null
-          ? null
-          : Dimensions.fromJson(json['dimensions']),
+      dimensions: json['dimensions'] == null ? null : Dimensions.fromJson(json['dimensions']),
     );
   }
 }
