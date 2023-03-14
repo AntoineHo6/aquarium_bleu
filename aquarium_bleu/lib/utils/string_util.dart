@@ -1,3 +1,5 @@
+import 'package:aquarium_bleu/enums/date_range_type.dart';
+import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -48,76 +50,77 @@ class StringUtil {
     return '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
   }
 
-  static paramToString(BuildContext context, String param) {
-    switch (param) {
-      case Strings.ammonia:
+  // TODO: use enum as input
+  static paramTypeToString(BuildContext context, WaterParamType paramType) {
+    switch (paramType) {
+      case WaterParamType.ammonia:
         return AppLocalizations.of(context).ammonia;
-      case Strings.nitrite:
+      case WaterParamType.nitrite:
         return AppLocalizations.of(context).nitrite;
-      case Strings.nitrate:
+      case WaterParamType.nitrate:
         return AppLocalizations.of(context).nitrate;
-      case Strings.tds:
+      case WaterParamType.tds:
         return AppLocalizations.of(context).tds;
-      case Strings.ph:
+      case WaterParamType.ph:
         return AppLocalizations.of(context).ph;
-      case Strings.kh:
+      case WaterParamType.kh:
         return AppLocalizations.of(context).kh;
-      case Strings.gh:
+      case WaterParamType.gh:
         return AppLocalizations.of(context).gh;
-      case Strings.temp:
+      case WaterParamType.temp:
         return AppLocalizations.of(context).temp;
-      case Strings.alkalinity:
+      case WaterParamType.alkalinity:
         return AppLocalizations.of(context).alkalinity;
-      case Strings.calcium:
+      case WaterParamType.calcium:
         return AppLocalizations.of(context).calcium;
-      case Strings.copper:
+      case WaterParamType.copper:
         return AppLocalizations.of(context).copper;
-      case Strings.co2:
+      case WaterParamType.co2:
         return AppLocalizations.of(context).co2;
-      case Strings.iron:
+      case WaterParamType.iron:
         return AppLocalizations.of(context).iron;
-      case Strings.magnesium:
+      case WaterParamType.magnesium:
         return AppLocalizations.of(context).magnesium;
-      case Strings.o2:
+      case WaterParamType.o2:
         return AppLocalizations.of(context).o2;
-      case Strings.oxygen:
+      case WaterParamType.oxygen:
         return AppLocalizations.of(context).oxygen;
-      case Strings.phosphate:
+      case WaterParamType.phosphate:
         return AppLocalizations.of(context).phosphate;
-      case Strings.orp:
+      case WaterParamType.orp:
         return AppLocalizations.of(context).orp;
-      case Strings.potassium:
+      case WaterParamType.potassium:
         return AppLocalizations.of(context).potassium;
-      case Strings.salinity:
+      case WaterParamType.salinity:
         return AppLocalizations.of(context).salinity;
-      case Strings.silica:
+      case WaterParamType.silica:
         return AppLocalizations.of(context).silica;
-      case Strings.strontium:
+      case WaterParamType.strontium:
         return AppLocalizations.of(context).strontium;
-      case Strings.boron:
+      case WaterParamType.boron:
         return AppLocalizations.of(context).boron;
-      case Strings.iodine:
+      case WaterParamType.iodine:
         return AppLocalizations.of(context).iodine;
       default:
         return AppLocalizations.of(context).error;
     }
   }
 
-  static dateRangeTypeToString(BuildContext context, String dateRangeType) {
+  static dateRangeTypeToString(BuildContext context, DateRangeType dateRangeType) {
     switch (dateRangeType) {
-      case Strings.months1:
+      case DateRangeType.months1:
         return AppLocalizations.of(context).months1;
-      case Strings.months2:
+      case DateRangeType.months2:
         return AppLocalizations.of(context).months2;
-      case Strings.months3:
+      case DateRangeType.months3:
         return AppLocalizations.of(context).months3;
-      case Strings.months6:
+      case DateRangeType.months6:
         return AppLocalizations.of(context).months6;
-      case Strings.months9:
+      case DateRangeType.months9:
         return AppLocalizations.of(context).months9;
-      case Strings.all:
+      case DateRangeType.all:
         return AppLocalizations.of(context).all;
-      case Strings.custom:
+      case DateRangeType.custom:
         return AppLocalizations.of(context).custom;
     }
   }

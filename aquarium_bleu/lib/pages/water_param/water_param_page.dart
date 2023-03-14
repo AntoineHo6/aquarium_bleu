@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
@@ -34,14 +35,6 @@ class _WaterParamPageState extends State<WaterParamPage> {
       builder: (context, prefsSnapshots) {
         if (prefsSnapshots.hasData) {
           Map<String, dynamic>? paramVisibility = prefsSnapshots.data![0].data();
-          // List<String> visibleParams = [];
-
-          // for (String param in Strings.params) {
-          //   if (prefsSnapshots.data![0].data()![param]) {
-          //     visibleParams.add(param);
-          //   }
-          // }
-
           String dateRangeType = prefsSnapshots.data![1][Strings.type];
 
           DateTime start = _calculateDateStart(
@@ -96,7 +89,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                             MaterialPageRoute(
                               builder: (context) => TuneChartPage(
                                 widget.tankId,
-                                prefsSnapshots.data![1][Strings.type],
+                                DateRangeType.values.byName(prefsSnapshots.data![1][Strings.type]),
                                 start,
                                 end,
                                 paramVisibility,
@@ -167,7 +160,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
             child: WaterParamChart(
-              param: allParamData[i][0].type.getStr,
+              param: allParamData[i][0].type,
               dataSource: allParamData[i],
               actions: [
                 IconButton(

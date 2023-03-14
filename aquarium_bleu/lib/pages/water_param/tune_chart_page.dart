@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/strings.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TuneChartPage extends StatefulWidget {
   final String tankId;
-  final String currentDateRangeType;
+  final DateRangeType currentDateRangeType;
   final DateTime customDateStart;
   final DateTime customDateEnd;
   final Map<String, dynamic>? visibleParams;
@@ -24,7 +25,7 @@ class TuneChartPage extends StatefulWidget {
 
 class _TuneChartPageState extends State<TuneChartPage> {
   bool isSelected = false;
-  late String currentDateRangeType;
+  late DateRangeType currentDateRangeType;
   late DateTime customDateStart;
   late DateTime customDateEnd;
   late Map<String, dynamic> visibleParams;
@@ -44,7 +45,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
     List<Widget> choiceChips = [];
     for (var paramType in WaterParamType.values) {
       choiceChips.add(ChoiceChip(
-        label: Text(StringUtil.paramToString(context, paramType.getStr)), // TODO: use enum
+        label: Text(StringUtil.paramTypeToString(context, paramType)),
         selected: widget.visibleParams![paramType.getStr],
         onSelected: (newValue) async {
           setState(() {
@@ -56,14 +57,14 @@ class _TuneChartPageState extends State<TuneChartPage> {
 
     // populate date range radiobtns list
     List<Widget> dateRangeRadioBtns = [];
-    for (String dateRangeType in Strings.dateRangeTypes) {
+    for (var dateRangeType in DateRangeType.values) {
       dateRangeRadioBtns.add(
         ListTile(
           title: Text(StringUtil.dateRangeTypeToString(context, dateRangeType)),
-          leading: Radio<String>(
+          leading: Radio<DateRangeType>(
             value: dateRangeType,
             groupValue: currentDateRangeType,
-            onChanged: (String? value) async {
+            onChanged: (DateRangeType? value) async {
               setState(() {
                 currentDateRangeType = value!;
               });
@@ -108,7 +109,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
                     IconTextBtn(
                       iconData: Icons.date_range,
                       text: StringUtil.formattedDate(context, customDateStart),
-                      onPressed: currentDateRangeType == Strings.custom
+                      onPressed: currentDateRangeType == DateRangeType.custom
                           ? () => _handleCustomDateStartBtn(context)
                           : null,
                     ),
@@ -125,7 +126,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
                     IconTextBtn(
                       iconData: Icons.date_range,
                       text: StringUtil.formattedDate(context, customDateEnd),
-                      onPressed: currentDateRangeType == Strings.custom
+                      onPressed: currentDateRangeType == DateRangeType.custom
                           ? () => _handleCustomDateEndBtn(context)
                           : null,
                     )

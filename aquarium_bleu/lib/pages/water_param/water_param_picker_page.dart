@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
@@ -5,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WaterParamPickerPage extends StatefulWidget {
-  final String? currentParam;
+  final WaterParamType? currentParam;
   final Map<String, dynamic>? paramVisibility;
 
   const WaterParamPickerPage(this.currentParam, this.paramVisibility, {super.key});
@@ -15,8 +16,8 @@ class WaterParamPickerPage extends StatefulWidget {
 }
 
 class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
-  late String? currentParam;
-  late List<String> visibleParamStrs = [];
+  late WaterParamType? currentParam;
+  late List<WaterParamType> visibleParamTypes = [];
 
   @override
   void initState() {
@@ -25,7 +26,7 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
 
     for (var paramType in WaterParamType.values) {
       if (widget.paramVisibility![paramType.getStr]) {
-        visibleParamStrs.add(paramType.getStr);
+        visibleParamTypes.add(paramType);
       }
     }
   }
@@ -44,13 +45,13 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
             shrinkWrap: true,
             childAspectRatio: 5,
             crossAxisCount: 2,
-            children: visibleParamStrs
-                .map((param) => ListTile(
-                      title: Text(StringUtil.paramToString(context, param)), //TODO: use enum
-                      leading: Radio<String>(
-                        value: param,
+            children: visibleParamTypes
+                .map((paramType) => ListTile(
+                      title: Text(StringUtil.paramTypeToString(context, paramType)), //TODO: use enum
+                      leading: Radio<WaterParamType>(
+                        value: paramType,
                         groupValue: currentParam,
-                        onChanged: (String? newCurrentParam) {
+                        onChanged: (WaterParamType? newCurrentParam) {
                           setState(() {
                             currentParam = newCurrentParam!;
                           });

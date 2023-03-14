@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
@@ -182,7 +183,7 @@ class FirestoreStuff {
         .snapshots();
   }
 
-  static Future updateDateRangeType(String tankId, String type) async {
+  static Future updateDateRangeType(String tankId, DateRangeType type) async {
     final dateRangeDoc = FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -191,7 +192,7 @@ class FirestoreStuff {
         .collection('prefs')
         .doc('dateRange');
 
-    await dateRangeDoc.update({'type': type});
+    await dateRangeDoc.update({'type': type.getStr});
   }
 
   static Future updateCustomStartDate(String tankId, DateTime newDate) async {

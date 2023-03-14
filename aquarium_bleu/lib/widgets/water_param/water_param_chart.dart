@@ -1,9 +1,10 @@
+import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class WaterParamChart extends StatefulWidget {
-  final String param;
+  final WaterParamType param;
   final List<dynamic> dataSource;
   final List<Widget> actions;
 
@@ -29,7 +30,7 @@ class _WaterParamChartState extends State<WaterParamChart> {
               Align(
                 alignment: Alignment.center,
                 child: Text(
-                  StringUtil.paramToString(context, widget.param),
+                  StringUtil.paramTypeToString(context, widget.param),
                   style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),

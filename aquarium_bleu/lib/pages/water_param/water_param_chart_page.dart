@@ -25,7 +25,7 @@ class _WaterParamChartPageState extends State<WaterParamChartPage> {
         child: Column(
           children: [
             WaterParamChart(
-              param: widget.param.getStr,
+              param: widget.param,
               dataSource: widget.dataSource,
             ),
             Column(

@@ -78,6 +78,8 @@ extension WaterParamTypeStr on WaterParamType {
         return Strings.boron;
       case WaterParamType.iodine:
         return Strings.iodine;
+      default:
+        return Strings.none;
     }
   }
 }

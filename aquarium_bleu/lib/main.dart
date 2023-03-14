@@ -23,7 +23,7 @@ Future main() async {
   SharedPreferences.getInstance().then((myPrefs) {
     bool isDarkMode = myPrefs.getBool(Strings.isDarkMode) ?? true;
 
-    String lastSelectedParam = myPrefs.getString(Strings.lastSelectedParam) ?? Strings.none;
+    String? lastSelectedParam = myPrefs.getString(Strings.lastSelectedParam);
 
     runApp(
       MultiProvider(

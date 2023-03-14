@@ -29,7 +29,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   late TextEditingController _valueFieldController;
   bool _isValueValid = true;
   String? _errorText;
-  String? _param;
+  WaterParamType? _param;
   bool isParamBtnInError = false;
   late String _paramBtnText;
 
@@ -37,6 +37,13 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   void initState() {
     super.initState();
     _valueFieldController = TextEditingController();
+
+    String? lastSelectedParam =
+        Provider.of<SettingsProvider>(context, listen: false).lastSelectedParam;
+
+    if (lastSelectedParam != null) {
+      _param = WaterParamType.values.byName(lastSelectedParam);
+    }
   }
 
   @override
@@ -47,7 +54,6 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
-    _param ??= Provider.of<SettingsProvider>(context).lastSelectedParam;
     _setParamBtnText();
 
     return AlertDialog(
@@ -149,7 +155,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
 
       // 2. Create parameter object
       Parameter addMe = Parameter(
-        type: WaterParamType.values.byName(_param!),
+        type: _param!,
         value: double.parse(value),
         date: paramDate,
       );
@@ -157,12 +163,12 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
       // 3. Add parameter to db
       FirestoreStuff.addParameter(
         widget.tankId,
-        _param!,
+        _param!.getStr,
         addMe,
       );
 
       // 4. Set selected parameter as the last used
-      Provider.of<SettingsProvider>(context, listen: false).setLastSelectedParam(_param!);
+      Provider.of<SettingsProvider>(context, listen: false).setLastSelectedParam(_param!.getStr);
 
       Navigator.pop(context);
     }
@@ -181,7 +187,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
     }
 
     // check for parameter error states
-    if (_param == Strings.none) {
+    if (_param == null) {
       setState(() {
         isParamBtnInError = true;
       });
@@ -189,10 +195,10 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   }
 
   void _setParamBtnText() {
-    if (_param == Strings.none) {
+    if (_param == null) {
       _paramBtnText = AppLocalizations.of(context).selectParameter;
     } else {
-      _paramBtnText = StringUtil.paramToString(context, _param!);
+      _paramBtnText = StringUtil.paramTypeToString(context, _param!);
     }
   }
 }

@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsProvider with ChangeNotifier {
   ThemeMode themeMode;
-  String lastSelectedParam;
+  String? lastSelectedParam;
 
   SettingsProvider(
     this.themeMode,
