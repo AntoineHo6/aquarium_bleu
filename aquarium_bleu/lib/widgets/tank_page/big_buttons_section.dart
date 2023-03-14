@@ -33,7 +33,7 @@ class BigButtonsSection extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => WaterParamPage(tank),
+                              builder: (context) => WaterParamPage(tank.docId),
                             ),
                           );
                         },

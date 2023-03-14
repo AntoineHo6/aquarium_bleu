@@ -1,5 +1,4 @@
 import 'package:aquarium_bleu/models/parameter.dart';
-import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/pages/water_param/tune_chart_page.dart';
 import 'package:aquarium_bleu/pages/water_param/water_param_chart_page.dart';
 import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
@@ -13,9 +12,9 @@ import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class WaterParamPage extends StatefulWidget {
-  final Tank tank;
+  final String tankId;
 
-  const WaterParamPage(this.tank, {super.key});
+  const WaterParamPage(this.tankId, {super.key});
 
   @override
   State<WaterParamPage> createState() => _WaterParamPageState();
@@ -28,8 +27,8 @@ class _WaterParamPageState extends State<WaterParamPage> {
 
     List<Stream<DocumentSnapshot<Map<String, dynamic>>>> prefsStreams = [];
 
-    prefsStreams.add(firestoreProvider.readParamVisPrefs(widget.tank.docId));
-    prefsStreams.add(firestoreProvider.readDateRangePrefs(widget.tank.docId));
+    prefsStreams.add(firestoreProvider.readParamVisPrefs(widget.tankId));
+    prefsStreams.add(firestoreProvider.readDateRangePrefs(widget.tankId));
 
     return StreamBuilder(
       stream: CombineLatestStream.list(prefsStreams),
@@ -38,11 +37,11 @@ class _WaterParamPageState extends State<WaterParamPage> {
           Map<String, dynamic>? paramvisibility = prefsSnapshots.data![0].data();
           List<String> visibleParams = [];
 
-          prefsSnapshots.data![0].data()!.forEach((param, isVisible) {
-            if (isVisible) {
+          for (String param in Strings.params) {
+            if (prefsSnapshots.data![0].data()![param]) {
               visibleParams.add(param);
             }
-          });
+          }
 
           String dateRangeType = prefsSnapshots.data![1][Strings.type];
 
@@ -61,7 +60,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
               if (paramvisibility![param]) {
                 dataStreams.add(
                   context.watch<CloudFirestoreProvider>().readParametersWithRange(
-                        widget.tank.docId,
+                        widget.tankId,
                         param,
                         start,
                         end,
@@ -73,7 +72,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
             for (String param in Strings.params) {
               if (prefsSnapshots.data![0][param]) {
                 dataStreams.add(
-                  context.watch<CloudFirestoreProvider>().readParameters(widget.tank.docId, param),
+                  context.watch<CloudFirestoreProvider>().readParameters(widget.tankId, param),
                 );
               }
             }
@@ -97,7 +96,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => TuneChartPage(
-                                widget.tank.docId,
+                                widget.tankId,
                                 prefsSnapshots.data![1][Strings.type],
                                 start,
                                 end,
@@ -115,7 +114,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                     onPressed: () => showDialog(
                       context: context,
                       builder: (BuildContext context) => AddParamValAlertDialog(
-                        widget.tank.docId,
+                        widget.tankId,
                         visibleParams,
                       ),
                     ),
@@ -176,7 +175,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => WaterParamChartPage(
-                        widget.tank.docId,
+                        widget.tankId,
                         allParamData[i][0].type,
                         allParamData[i],
                       ),
