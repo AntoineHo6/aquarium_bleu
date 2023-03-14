@@ -1,7 +1,6 @@
-import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
+import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
 import 'my_text_field.dart';
 
 class AddTankAlertDialog extends StatefulWidget {
@@ -47,11 +46,9 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
         _errorText = AppLocalizations.of(context).nameAlreadyExists;
       });
     } else {
-      Provider.of<CloudFirestoreProvider>(context, listen: false)
-          .addTank(_nameFieldController.text, _isFreshwater!)
-          .then((docId) {
-        Provider.of<CloudFirestoreProvider>(context, listen: false).addDefaultParamVisPrefs(docId);
-        Provider.of<CloudFirestoreProvider>(context, listen: false).addDefaultDateRangePrefs(docId);
+      FirestoreStuff.addTank(_nameFieldController.text, _isFreshwater!).then((docId) {
+        FirestoreStuff.addDefaultParamVisPrefs(docId);
+        FirestoreStuff.addDefaultDateRangePrefs(docId);
       });
 
       Navigator.pop(context);

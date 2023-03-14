@@ -1,11 +1,11 @@
-import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../firestore_stuff.dart';
 
 class TuneChartPage extends StatefulWidget {
   final String tankId;
@@ -40,8 +40,6 @@ class _TuneChartPageState extends State<TuneChartPage> {
 
   @override
   Widget build(BuildContext context) {
-    final firestoreProvider = Provider.of<CloudFirestoreProvider>(context);
-
     // populate choiceChips list
     List<Widget> choiceChips = [];
     for (String param in Strings.params) {
@@ -77,10 +75,10 @@ class _TuneChartPageState extends State<TuneChartPage> {
 
     return WillPopScope(
       onWillPop: () async {
-        await firestoreProvider.updateParamVisPrefs(widget.tankId, visibleParams);
-        await firestoreProvider.updateDateRangeType(widget.tankId, currentDateRangeType);
-        await firestoreProvider.updateCustomStartDate(widget.tankId, customDateStart);
-        await firestoreProvider.updateCustomEndDate(widget.tankId, customDateEnd);
+        await FirestoreStuff.updateParamVisPrefs(widget.tankId, visibleParams);
+        await FirestoreStuff.updateDateRangeType(widget.tankId, currentDateRangeType);
+        await FirestoreStuff.updateCustomStartDate(widget.tankId, customDateStart);
+        await FirestoreStuff.updateCustomEndDate(widget.tankId, customDateEnd);
         return true;
       },
       child: Scaffold(

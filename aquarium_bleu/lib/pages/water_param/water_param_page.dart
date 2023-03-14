@@ -1,14 +1,13 @@
+import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/pages/water_param/tune_chart_page.dart';
 import 'package:aquarium_bleu/pages/water_param/water_param_chart_page.dart';
-import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class WaterParamPage extends StatefulWidget {
@@ -23,12 +22,10 @@ class WaterParamPage extends StatefulWidget {
 class _WaterParamPageState extends State<WaterParamPage> {
   @override
   Widget build(BuildContext context) {
-    final firestoreProvider = Provider.of<CloudFirestoreProvider>(context);
-
     List<Stream<DocumentSnapshot<Map<String, dynamic>>>> prefsStreams = [];
 
-    prefsStreams.add(firestoreProvider.readParamVisPrefs(widget.tankId));
-    prefsStreams.add(firestoreProvider.readDateRangePrefs(widget.tankId));
+    prefsStreams.add(FirestoreStuff.readParamVisPrefs(widget.tankId));
+    prefsStreams.add(FirestoreStuff.readDateRangePrefs(widget.tankId));
 
     return StreamBuilder(
       stream: CombineLatestStream.list(prefsStreams),
@@ -59,12 +56,12 @@ class _WaterParamPageState extends State<WaterParamPage> {
             for (String param in Strings.params) {
               if (paramvisibility![param]) {
                 dataStreams.add(
-                  context.watch<CloudFirestoreProvider>().readParametersWithRange(
-                        widget.tankId,
-                        param,
-                        start,
-                        end,
-                      ),
+                  FirestoreStuff.readParametersWithRange(
+                    widget.tankId,
+                    param,
+                    start,
+                    end,
+                  ),
                 );
               }
             }
@@ -72,7 +69,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
             for (String param in Strings.params) {
               if (prefsSnapshots.data![0][param]) {
                 dataStreams.add(
-                  context.watch<CloudFirestoreProvider>().readParameters(widget.tankId, param),
+                  FirestoreStuff.readParameters(widget.tankId, param),
                 );
               }
             }

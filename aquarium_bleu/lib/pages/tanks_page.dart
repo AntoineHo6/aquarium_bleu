@@ -1,12 +1,11 @@
+import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/pages/tank_page.dart';
-import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/add_tank_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/tank_card.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class TanksPage extends StatefulWidget {
   const TanksPage({super.key});
@@ -23,7 +22,7 @@ class _TanksPageState extends State<TanksPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<List<Tank>>(
-        stream: context.watch<CloudFirestoreProvider>().readTanks(),
+        stream: FirestoreStuff.readTanks(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return CustomScrollView(
@@ -65,8 +64,7 @@ class _TanksPageState extends State<TanksPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    TankPage(snapshot.data!.elementAt(index)),
+                                builder: (context) => TankPage(snapshot.data!.elementAt(index)),
                               ),
                             );
                           },

@@ -1,5 +1,5 @@
+import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/pages/all_pages.dart';
-import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
@@ -23,13 +23,11 @@ Future main() async {
   SharedPreferences.getInstance().then((myPrefs) {
     bool isDarkMode = myPrefs.getBool(Strings.isDarkMode) ?? true;
 
-    String lastSelectedParam =
-        myPrefs.getString(Strings.lastSelectedParam) ?? Strings.none;
+    String lastSelectedParam = myPrefs.getString(Strings.lastSelectedParam) ?? Strings.none;
 
     runApp(
       MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => CloudFirestoreProvider()),
           ChangeNotifierProvider(
             create: (_) => SettingsProvider(
               isDarkMode ? ThemeMode.dark : ThemeMode.light,
@@ -86,7 +84,7 @@ String get initialRoute {
 void _initUid(BuildContext context) {
   final FirebaseAuth auth = FirebaseAuth.instance;
   String uid = auth.currentUser!.uid;
-  context.read<CloudFirestoreProvider>().uid = uid;
+  FirestoreStuff.uid = uid;
 }
 
 var customRoutes = <String, WidgetBuilder>{
@@ -95,8 +93,7 @@ var customRoutes = <String, WidgetBuilder>{
       providers: [
         EmailAuthProvider(),
         GoogleProvider(
-          clientId:
-              '36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com',
+          clientId: '36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com',
         ),
       ],
       actions: [
@@ -111,12 +108,9 @@ var customRoutes = <String, WidgetBuilder>{
           if (!state.user!.emailVerified) {
             Navigator.pushNamed(context, '/verify-email');
           } else {
-            Provider.of<CloudFirestoreProvider>(context, listen: false)
-                .checkIfDocExists(state.user!.uid)
-                .then((value) {
+            FirestoreStuff.checkIfDocExists(state.user!.uid).then((value) {
               if (!value) {
-                Provider.of<CloudFirestoreProvider>(context, listen: false)
-                    .writeNewUser(state.user!.uid, state.user!.email);
+                FirestoreStuff.writeNewUser(state.user!.uid, state.user!.email);
               }
             });
 

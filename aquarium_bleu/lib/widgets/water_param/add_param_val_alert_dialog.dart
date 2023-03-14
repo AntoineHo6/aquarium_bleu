@@ -1,6 +1,6 @@
+import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/pages/water_param/water_param_picker_page.dart';
-import 'package:aquarium_bleu/providers/cloud_firestore_provider.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
@@ -154,7 +154,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
       );
 
       // 3. Add parameter to db
-      Provider.of<CloudFirestoreProvider>(context, listen: false).addParameter(
+      FirestoreStuff.addParameter(
         widget.tankId,
         _param!,
         addMe,
