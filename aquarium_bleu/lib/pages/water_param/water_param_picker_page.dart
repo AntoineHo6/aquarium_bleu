@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:flutter/material.dart';
@@ -5,9 +6,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class WaterParamPickerPage extends StatefulWidget {
   final String? currentParam;
-  final List<String> visibleParams;
+  final Map<String, dynamic>? paramVisibility;
 
-  const WaterParamPickerPage(this.currentParam, this.visibleParams, {super.key});
+  const WaterParamPickerPage(this.currentParam, this.paramVisibility, {super.key});
 
   @override
   State<WaterParamPickerPage> createState() => _WaterParamPickerPageState();
@@ -15,11 +16,18 @@ class WaterParamPickerPage extends StatefulWidget {
 
 class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
   late String? currentParam;
+  late List<String> visibleParamStrs = [];
 
   @override
   void initState() {
     super.initState();
     currentParam = widget.currentParam;
+
+    for (var paramType in WaterParamType.values) {
+      if (widget.paramVisibility![paramType.getStr]) {
+        visibleParamStrs.add(paramType.getStr);
+      }
+    }
   }
 
   @override
@@ -36,9 +44,9 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
             shrinkWrap: true,
             childAspectRatio: 5,
             crossAxisCount: 2,
-            children: widget.visibleParams
+            children: visibleParamStrs
                 .map((param) => ListTile(
-                      title: Text(StringUtil.paramToString(context, param)),
+                      title: Text(StringUtil.paramToString(context, param)), //TODO: use enum
                       leading: Radio<String>(
                         value: param,
                         groupValue: currentParam,

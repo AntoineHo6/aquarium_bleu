@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/pages/water_param/water_param_picker_page.dart';
@@ -14,9 +15,9 @@ import 'package:provider/provider.dart';
 
 class AddParamValAlertDialog extends StatefulWidget {
   final String tankId;
-  final List<String> visibleParams;
+  final Map<String, dynamic>? paramVisibility;
 
-  const AddParamValAlertDialog(this.tankId, this.visibleParams, {super.key});
+  const AddParamValAlertDialog(this.tankId, this.paramVisibility, {super.key});
 
   @override
   State<AddParamValAlertDialog> createState() => _AddParamValAlertDialogState();
@@ -101,7 +102,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => WaterParamPickerPage(_param, widget.visibleParams),
+        builder: (context) => WaterParamPickerPage(_param, widget.paramVisibility),
       ),
     ).then((value) => setState(() {
           if (value != null) {
@@ -148,7 +149,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
 
       // 2. Create parameter object
       Parameter addMe = Parameter(
-        type: _param!,
+        type: WaterParamType.values.byName(_param!),
         value: double.parse(value),
         date: paramDate,
       );

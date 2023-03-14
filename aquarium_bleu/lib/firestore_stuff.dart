@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/models/task/interval_task.dart';
@@ -39,26 +40,26 @@ class FirestoreStuff {
         .map((event) => event.docs.map((doc) => Tank.fromJson(doc.id, doc.data())).toList());
   }
 
-  static Stream<List<Parameter>> readParameters(String tankId, String parameter) {
+  static Stream<List<Parameter>> readParameters(String tankId, WaterParamType param) {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .collection('tanks')
         .doc(tankId)
-        .collection(parameter)
+        .collection(param.getStr)
         .orderBy("date")
         .snapshots()
         .map((event) => event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
   }
 
   static Stream<List<Parameter>> readParametersWithRange(
-      String tankId, String parameter, DateTime start, DateTime end) {
+      String tankId, WaterParamType parameter, DateTime start, DateTime end) {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .collection('tanks')
         .doc(tankId)
-        .collection(parameter)
+        .collection(parameter.getStr)
         .where('date', isGreaterThanOrEqualTo: start)
         .where('date', isLessThanOrEqualTo: end)
         .orderBy("date")
@@ -131,7 +132,7 @@ class FirestoreStuff {
         .doc('isParamVisible');
 
     final json = {
-      for (String param in Strings.params) param: true,
+      for (var paramType in WaterParamType.values) paramType.getStr: true,
     };
 
     await visibilityDoc.set(json);

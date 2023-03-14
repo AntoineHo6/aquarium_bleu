@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/pages/water_param/tune_chart_page.dart';
@@ -32,14 +33,14 @@ class _WaterParamPageState extends State<WaterParamPage> {
       stream: CombineLatestStream.list(prefsStreams),
       builder: (context, prefsSnapshots) {
         if (prefsSnapshots.hasData) {
-          Map<String, dynamic>? paramvisibility = prefsSnapshots.data![0].data();
-          List<String> visibleParams = [];
+          Map<String, dynamic>? paramVisibility = prefsSnapshots.data![0].data();
+          // List<String> visibleParams = [];
 
-          for (String param in Strings.params) {
-            if (prefsSnapshots.data![0].data()![param]) {
-              visibleParams.add(param);
-            }
-          }
+          // for (String param in Strings.params) {
+          //   if (prefsSnapshots.data![0].data()![param]) {
+          //     visibleParams.add(param);
+          //   }
+          // }
 
           String dateRangeType = prefsSnapshots.data![1][Strings.type];
 
@@ -54,12 +55,12 @@ class _WaterParamPageState extends State<WaterParamPage> {
 
           List<Stream<List<Parameter>>> dataStreams = [];
           if (prefsSnapshots.data![1][Strings.type] != Strings.all) {
-            for (String param in Strings.params) {
-              if (paramvisibility![param]) {
+            for (var type in WaterParamType.values) {
+              if (paramVisibility![type.getStr]) {
                 dataStreams.add(
                   FirestoreStuff.readParametersWithRange(
                     widget.tankId,
-                    param,
+                    type,
                     start,
                     end,
                   ),
@@ -67,10 +68,10 @@ class _WaterParamPageState extends State<WaterParamPage> {
               }
             }
           } else {
-            for (String param in Strings.params) {
-              if (prefsSnapshots.data![0][param]) {
+            for (var type in WaterParamType.values) {
+              if (prefsSnapshots.data![0][type.getStr]) {
                 dataStreams.add(
-                  FirestoreStuff.readParameters(widget.tankId, param),
+                  FirestoreStuff.readParameters(widget.tankId, type),
                 );
               }
             }
@@ -98,7 +99,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                                 prefsSnapshots.data![1][Strings.type],
                                 start,
                                 end,
-                                paramvisibility,
+                                paramVisibility,
                               ),
                             ),
                           );
@@ -113,7 +114,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                       context: context,
                       builder: (BuildContext context) => AddParamValAlertDialog(
                         widget.tankId,
-                        visibleParams,
+                        paramVisibility,
                       ),
                     ),
                     child: const Icon(Icons.add),
@@ -166,7 +167,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
             child: WaterParamChart(
-              param: allParamData[i][0].type,
+              param: allParamData[i][0].type.getStr,
               dataSource: allParamData[i],
               actions: [
                 IconButton(

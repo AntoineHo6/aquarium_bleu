@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
@@ -41,13 +42,13 @@ class _TuneChartPageState extends State<TuneChartPage> {
   Widget build(BuildContext context) {
     // populate choiceChips list
     List<Widget> choiceChips = [];
-    for (String param in Strings.params) {
+    for (var paramType in WaterParamType.values) {
       choiceChips.add(ChoiceChip(
-        label: Text(StringUtil.paramToString(context, param)),
-        selected: widget.visibleParams![param],
+        label: Text(StringUtil.paramToString(context, paramType.getStr)), // TODO: use enum
+        selected: widget.visibleParams![paramType.getStr],
         onSelected: (newValue) async {
           setState(() {
-            visibleParams[param] = newValue;
+            visibleParams[paramType.getStr] = newValue;
           });
         },
       ));

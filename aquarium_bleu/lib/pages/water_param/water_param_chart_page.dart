@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/pages/water_param/edit_water_param_page.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
@@ -6,11 +7,10 @@ import 'package:flutter/material.dart';
 
 class WaterParamChartPage extends StatefulWidget {
   final String tankId;
-  final String param;
+  final WaterParamType param;
   final List<Parameter> dataSource;
 
-  const WaterParamChartPage(this.tankId, this.param, this.dataSource,
-      {super.key});
+  const WaterParamChartPage(this.tankId, this.param, this.dataSource, {super.key});
 
   @override
   State<WaterParamChartPage> createState() => _WaterParamChartPageState();
@@ -25,7 +25,7 @@ class _WaterParamChartPageState extends State<WaterParamChartPage> {
         child: Column(
           children: [
             WaterParamChart(
-              param: widget.param,
+              param: widget.param.getStr,
               dataSource: widget.dataSource,
             ),
             Column(
@@ -49,8 +49,7 @@ class _WaterParamChartPageState extends State<WaterParamChartPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditWaterParamPage(dataPoint),
+                                    builder: (context) => EditWaterParamPage(dataPoint),
                                   ),
                                 );
                               },

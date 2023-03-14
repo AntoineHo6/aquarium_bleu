@@ -1,7 +1,8 @@
+import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Parameter {
-  final String type;
+  final WaterParamType type;
   final double value;
   final DateTime date;
 
@@ -12,14 +13,14 @@ class Parameter {
   });
 
   Map<String, dynamic> toJson() => {
-        'type': type,
+        'type': type.getStr,
         'value': value,
         'date': date,
       };
 
   static Parameter fromJson(Map<String, dynamic> json) {
     return Parameter(
-      type: json['type'].toString(),
+      type: WaterParamType.values.byName(json['type']),
       value: json['value'].toDouble(),
       date: (json['date'] as Timestamp).toDate(),
     );

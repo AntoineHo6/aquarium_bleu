@@ -1,31 +1,31 @@
 class Strings {
   // Parameters
-  static const List<String> params = [
-    Strings.ammonia,
-    Strings.nitrite,
-    Strings.nitrate,
-    Strings.tds,
-    Strings.ph,
-    Strings.kh,
-    Strings.gh,
-    Strings.temp,
-    Strings.alkalinity,
-    Strings.calcium,
-    Strings.copper,
-    Strings.co2,
-    Strings.iron,
-    Strings.magnesium,
-    Strings.o2,
-    Strings.oxygen,
-    Strings.phosphate,
-    Strings.orp,
-    Strings.potassium,
-    Strings.salinity,
-    Strings.silica,
-    Strings.strontium,
-    Strings.boron,
-    Strings.iodine
-  ];
+  // static const List<String> params = [
+  //   Strings.ammonia,
+  //   Strings.nitrite,
+  //   Strings.nitrate,
+  //   Strings.tds,
+  //   Strings.ph,
+  //   Strings.kh,
+  //   Strings.gh,
+  //   Strings.temp,
+  //   Strings.alkalinity,
+  //   Strings.calcium,
+  //   Strings.copper,
+  //   Strings.co2,
+  //   Strings.iron,
+  //   Strings.magnesium,
+  //   Strings.o2,
+  //   Strings.oxygen,
+  //   Strings.phosphate,
+  //   Strings.orp,
+  //   Strings.potassium,
+  //   Strings.salinity,
+  //   Strings.silica,
+  //   Strings.strontium,
+  //   Strings.boron,
+  //   Strings.iodine
+  // ];
   static const ammonia = 'ammonia';
   static const nitrite = 'nitrite';
   static const nitrate = 'nitrate';
