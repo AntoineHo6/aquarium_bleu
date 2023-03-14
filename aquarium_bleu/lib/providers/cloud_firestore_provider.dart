@@ -35,7 +35,6 @@ class CloudFirestoreProvider extends ChangeNotifier {
     }
   }
 
-  // TODO: should be a future builder instead
   Stream<List<Tank>> readTanks() {
     return FirebaseFirestore.instance
         .collection('users')
@@ -45,22 +44,21 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .map((event) => event.docs.map((doc) => Tank.fromJson(doc.id, doc.data())).toList());
   }
 
-  Future<List<Parameter>> readParameters(String tankId, String parameter) async {
-    var querySnapshot = await FirebaseFirestore.instance
+  Stream<List<Parameter>> readParameters(String tankId, String parameter) {
+    return FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
         .collection('tanks')
         .doc(tankId)
         .collection(parameter)
         .orderBy("date")
-        .get();
-
-    return querySnapshot.docs.map((doc) => Parameter.fromJson(doc.data())).toList();
+        .snapshots()
+        .map((event) => event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
   }
 
-  Future<List<Parameter>> readParametersWithRange(
-      String tankId, String parameter, DateTime start, DateTime end) async {
-    var querySnapshot = await FirebaseFirestore.instance
+  Stream<List<Parameter>> readParametersWithRange(
+      String tankId, String parameter, DateTime start, DateTime end) {
+    return FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
         .collection('tanks')
@@ -69,9 +67,8 @@ class CloudFirestoreProvider extends ChangeNotifier {
         .where('date', isGreaterThanOrEqualTo: start)
         .where('date', isLessThanOrEqualTo: end)
         .orderBy("date")
-        .get();
-
-    return querySnapshot.docs.map((doc) => Parameter.fromJson(doc.data())).toList();
+        .snapshots()
+        .map((event) => event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
   }
 
   Future addParameter(String tankId, String paramName, Parameter param) async {
@@ -145,21 +142,15 @@ class CloudFirestoreProvider extends ChangeNotifier {
     await visibilityDoc.set(json);
   }
 
-  Future<Map<String, dynamic>?> readParamVisPrefs(String tankId) async {
-    var docSnapshot = await FirebaseFirestore.instance
+  Stream<DocumentSnapshot<Map<String, dynamic>>> readParamVisPrefs(String tankId) {
+    return FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
         .collection('tanks')
         .doc(tankId)
         .collection('prefs')
         .doc('isParamVisible')
-        .get();
-
-    if (docSnapshot.exists) {
-      return docSnapshot.data();
-    }
-
-    return null;
+        .snapshots();
   }
 
   Future updateParamVisPrefs(String tankId, Map<String, dynamic> visibleParams) async {
@@ -176,21 +167,25 @@ class CloudFirestoreProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future readDateRangePrefs(String tankId) async {
-    var docSnapshot = await FirebaseFirestore.instance
+  Stream<DocumentSnapshot<Map<String, dynamic>>> readDateRangePrefs(String tankId) {
+    return FirebaseFirestore.instance
         .collection('users')
         .doc(_uid)
         .collection('tanks')
         .doc(tankId)
         .collection('prefs')
         .doc('dateRange')
-        .get();
+        .snapshots();
+  }
 
-    if (docSnapshot.exists) {
-      return docSnapshot.data();
-    }
-
-    return null;
+  Stream<QuerySnapshot<Map<String, dynamic>>> readTankPrefs(String tankId) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('prefs')
+        .snapshots();
   }
 
   Future updateDateRangeType(String tankId, String type) async {

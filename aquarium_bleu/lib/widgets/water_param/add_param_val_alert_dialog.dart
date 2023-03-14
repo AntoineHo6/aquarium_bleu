@@ -148,6 +148,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
 
       // 2. Create parameter object
       Parameter addMe = Parameter(
+        type: _param!,
         value: double.parse(value),
         date: paramDate,
       );

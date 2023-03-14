@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
 
 class WaterParamPage extends StatefulWidget {
   final Tank tank;
@@ -25,99 +26,107 @@ class _WaterParamPageState extends State<WaterParamPage> {
   Widget build(BuildContext context) {
     final firestoreProvider = Provider.of<CloudFirestoreProvider>(context);
 
-    // First futureBuilder for fetching prefs
-    return FutureBuilder(
-      future: Future.wait([
-        firestoreProvider.readDateRangePrefs(widget.tank.docId),
-        firestoreProvider.readParamVisPrefs(widget.tank.docId),
-      ]),
-      builder: (context, prefsSnapshot) {
-        if (prefsSnapshot.hasData) {
-          List<Future<List<Parameter>>> paramDataFutures = [];
+    List<Stream<DocumentSnapshot<Map<String, dynamic>>>> prefsStreams = [];
+
+    prefsStreams.add(firestoreProvider.readParamVisPrefs(widget.tank.docId));
+    prefsStreams.add(firestoreProvider.readDateRangePrefs(widget.tank.docId));
+
+    return StreamBuilder(
+      stream: CombineLatestStream.list(prefsStreams),
+      builder: (context, prefsSnapshots) {
+        if (prefsSnapshots.hasData) {
+          Map<String, dynamic>? paramvisibility = prefsSnapshots.data![0].data();
           List<String> visibleParams = [];
-          DateTime start;
-          DateTime end;
 
-          if (prefsSnapshot.data![0][Strings.type] != Strings.all) {
-            start = _calculateDateStart(
-              prefsSnapshot.data![0][Strings.type],
-              prefsSnapshot.data![0][Strings.customDateStart] as Timestamp,
-            );
-            end = _calculateDateEnd(
-              prefsSnapshot.data![0][Strings.type],
-              prefsSnapshot.data![0][Strings.customDateEnd] as Timestamp,
-            );
+          prefsSnapshots.data![0].data()!.forEach((param, isVisible) {
+            if (isVisible) {
+              visibleParams.add(param);
+            }
+          });
 
+          String dateRangeType = prefsSnapshots.data![1][Strings.type];
+
+          DateTime start = _calculateDateStart(
+            dateRangeType,
+            (prefsSnapshots.data![1][Strings.customDateStart] as Timestamp),
+          );
+          DateTime end = _calculateDateEnd(
+            dateRangeType,
+            (prefsSnapshots.data![1][Strings.customDateEnd] as Timestamp),
+          );
+
+          List<Stream<List<Parameter>>> dataStreams = [];
+          if (prefsSnapshots.data![1][Strings.type] != Strings.all) {
             for (String param in Strings.params) {
-              if (prefsSnapshot.data![1][param]) {
-                paramDataFutures.add(
-                  firestoreProvider.readParametersWithRange(widget.tank.docId, param, start, end),
+              if (paramvisibility![param]) {
+                dataStreams.add(
+                  context.watch<CloudFirestoreProvider>().readParametersWithRange(
+                        widget.tank.docId,
+                        param,
+                        start,
+                        end,
+                      ),
                 );
-                visibleParams.add(param);
               }
             }
           } else {
             for (String param in Strings.params) {
-              if (prefsSnapshot.data![1][param]) {
-                paramDataFutures.add(
-                  firestoreProvider.readParameters(widget.tank.docId, param),
+              if (prefsSnapshots.data![0][param]) {
+                dataStreams.add(
+                  context.watch<CloudFirestoreProvider>().readParameters(widget.tank.docId, param),
                 );
-                visibleParams.add(param);
               }
             }
           }
 
-          print(visibleParams);
+          // add condition if no param is visible. Return a different body with a message
 
-          // Second futureBuilder for fetching data from visible parameters
-          return FutureBuilder(
-              future: Future.wait(paramDataFutures),
-              builder: (context, snapshots2) {
-                if (snapshots2.hasData) {
-                  List<WaterParamChart> charts =
-                      _createWaterParamCharts(snapshots2.data!, visibleParams);
+          return StreamBuilder(
+            stream: CombineLatestStream.list(dataStreams),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<WaterParamChart> charts = _createWaterParamCharts(snapshot.data!);
 
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: Text(AppLocalizations.of(context).waterParameters),
-                      actions: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => TuneChartPage(
-                                  widget.tank.docId,
-                                  prefsSnapshot.data![0][Strings.type],
-                                  (prefsSnapshot.data![0][Strings.customDateStart] as Timestamp)
-                                      .toDate(),
-                                  (prefsSnapshot.data![0][Strings.customDateEnd] as Timestamp)
-                                      .toDate(),
-                                  prefsSnapshot.data![1],
-                                ),
+                return Scaffold(
+                  appBar: AppBar(
+                    title: Text(AppLocalizations.of(context).waterParameters),
+                    actions: [
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TuneChartPage(
+                                widget.tank.docId,
+                                prefsSnapshots.data![1][Strings.type],
+                                start,
+                                end,
+                                paramvisibility,
                               ),
-                            );
-                          },
-                          icon: const Icon(Icons.tune_rounded),
-                        )
-                      ],
-                    ),
-                    body: ListView(children: charts),
-                    floatingActionButton: FloatingActionButton(
-                      onPressed: () => showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AddParamValAlertDialog(
-                          widget.tank.docId,
-                          visibleParams,
-                        ),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.tune_rounded),
+                      )
+                    ],
+                  ),
+                  body: ListView(children: charts),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) => AddParamValAlertDialog(
+                        widget.tank.docId,
+                        visibleParams,
                       ),
-                      child: const Icon(Icons.add),
                     ),
-                  );
-                } else {
-                  return const CircularProgressIndicator.adaptive();
-                }
-              });
+                    child: const Icon(Icons.add),
+                  ),
+                );
+              } else {
+                return const CircularProgressIndicator.adaptive();
+              }
+            },
+          );
         } else {
           return const CircularProgressIndicator.adaptive();
         }
@@ -152,14 +161,13 @@ class _WaterParamPageState extends State<WaterParamPage> {
     return DateTime.now();
   }
 
-  List<WaterParamChart> _createWaterParamCharts(
-      List<List<Parameter>> allParamData, List<String> visibleParams) {
+  List<WaterParamChart> _createWaterParamCharts(List<List<Parameter>> allParamData) {
     List<WaterParamChart> charts = [];
     for (var i = 0; i < allParamData.length; i++) {
       if (allParamData[i].isNotEmpty) {
         charts.add(
           WaterParamChart(
-            param: visibleParams[i],
+            param: allParamData[i][0].type,
             dataSource: allParamData[i],
             actions: [
               IconButton(
@@ -169,7 +177,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                     MaterialPageRoute(
                       builder: (context) => WaterParamChartPage(
                         widget.tank.docId,
-                        visibleParams[i],
+                        allParamData[i][0].type,
                         allParamData[i],
                       ),
                     ),
