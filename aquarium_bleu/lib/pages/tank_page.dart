@@ -28,11 +28,8 @@ class _TankPageState extends State<TankPage> {
                 opacity: const AlwaysStoppedAnimation(0.15),
               ),
               centerTitle: true,
-              title: Container(
-                margin: const EdgeInsets.only(
-                  left: Spacing.screenEdgeMargin,
-                  right: Spacing.screenEdgeMargin,
-                ),
+              title: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
                 child: FittedBox(
                   child: Text(
                     widget.tank.name,
@@ -52,8 +49,11 @@ class _TankPageState extends State<TankPage> {
             delegate: SliverChildBuilderDelegate(
               childCount: 1,
               (BuildContext context, int index) {
-                return Container(
-                  margin: _sectionMargins,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Spacing.screenEdgePadding,
+                    vertical: Spacing.betweenSections,
+                  ),
                   child: BigButtonsSection(widget.tank),
                 );
               },
@@ -64,10 +64,3 @@ class _TankPageState extends State<TankPage> {
     );
   }
 }
-
-const EdgeInsets _sectionMargins = EdgeInsets.fromLTRB(
-  Spacing.screenEdgeMargin,
-  Spacing.betweenSections,
-  Spacing.screenEdgeMargin,
-  Spacing.betweenSections,
-);

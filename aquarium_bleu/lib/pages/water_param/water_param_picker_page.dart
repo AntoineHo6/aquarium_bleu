@@ -1,4 +1,3 @@
-import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
@@ -47,7 +46,7 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
             crossAxisCount: 2,
             children: visibleParamTypes
                 .map((paramType) => ListTile(
-                      title: Text(StringUtil.paramTypeToString(context, paramType)), //TODO: use enum
+                      title: Text(StringUtil.paramTypeToString(context, paramType)),
                       leading: Radio<WaterParamType>(
                         value: paramType,
                         groupValue: currentParam,
@@ -61,9 +60,10 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
                 .toList(),
           ),
           Container(
+            // tODO: use padding
             margin: const EdgeInsets.only(
-              left: Spacing.screenEdgeMargin,
-              right: Spacing.screenEdgeMargin,
+              left: Spacing.screenEdgePadding,
+              right: Spacing.screenEdgePadding,
               top: Spacing.betweenSections,
             ),
             child: ElevatedButton(

@@ -35,38 +35,37 @@ class _WaterParamPageState extends State<WaterParamPage> {
       builder: (context, prefsSnapshots) {
         if (prefsSnapshots.hasData) {
           Map<String, dynamic>? paramVisibility = prefsSnapshots.data![0].data();
-          String dateRangeType = prefsSnapshots.data![1][Strings.type];
+
+          DateRangeType dateRangeType =
+              DateRangeType.values.byName(prefsSnapshots.data![1][Strings.type]);
+
+          DateTime customDateStart =
+              (prefsSnapshots.data![1][Strings.customDateStart] as Timestamp).toDate();
+
+          DateTime customDateEnd =
+              (prefsSnapshots.data![1][Strings.customDateEnd] as Timestamp).toDate();
+
+          List<Stream<List<Parameter>>> dataStreams = [];
 
           DateTime start = _calculateDateStart(
             dateRangeType,
-            (prefsSnapshots.data![1][Strings.customDateStart] as Timestamp),
+            customDateStart,
           );
           DateTime end = _calculateDateEnd(
             dateRangeType,
-            (prefsSnapshots.data![1][Strings.customDateEnd] as Timestamp),
+            customDateEnd,
           );
 
-          List<Stream<List<Parameter>>> dataStreams = [];
-          if (prefsSnapshots.data![1][Strings.type] != Strings.all) {
-            for (var type in WaterParamType.values) {
-              if (paramVisibility![type.getStr]) {
-                dataStreams.add(
-                  FirestoreStuff.readParametersWithRange(
-                    widget.tankId,
-                    type,
-                    start,
-                    end,
-                  ),
-                );
-              }
-            }
-          } else {
-            for (var type in WaterParamType.values) {
-              if (prefsSnapshots.data![0][type.getStr]) {
-                dataStreams.add(
-                  FirestoreStuff.readParameters(widget.tankId, type),
-                );
-              }
+          for (var type in WaterParamType.values) {
+            if (paramVisibility![type.getStr]) {
+              dataStreams.add(
+                FirestoreStuff.readParametersWithRange(
+                  widget.tankId,
+                  type,
+                  start,
+                  end,
+                ),
+              );
             }
           }
 
@@ -90,8 +89,8 @@ class _WaterParamPageState extends State<WaterParamPage> {
                               builder: (context) => TuneChartPage(
                                 widget.tankId,
                                 DateRangeType.values.byName(prefsSnapshots.data![1][Strings.type]),
-                                start,
-                                end,
+                                customDateStart,
+                                customDateEnd,
                                 paramVisibility,
                               ),
                             ),
@@ -125,31 +124,36 @@ class _WaterParamPageState extends State<WaterParamPage> {
     );
   }
 
-  DateTime _calculateDateStart(String type, Timestamp customDateStart) {
+  DateTime _calculateDateStart(DateRangeType type, DateTime customDateStart) {
     switch (type) {
-      case Strings.months1:
+      case DateRangeType.months1:
         return DateTime.now().subtract(const Duration(days: 31));
-      case Strings.months2:
+      case DateRangeType.months2:
         return DateTime.now().subtract(const Duration(days: 62));
-      case Strings.months3:
+      case DateRangeType.months3:
         return DateTime.now().subtract(const Duration(days: 93));
-      case Strings.months6:
+      case DateRangeType.months6:
         return DateTime.now().subtract(const Duration(days: 186));
-      case Strings.months9:
+      case DateRangeType.months9:
         return DateTime.now().subtract(const Duration(days: 279));
-      case Strings.custom:
-        return customDateStart.toDate();
+      case DateRangeType.all:
+        return DateTime(2000);
+      case DateRangeType.custom:
+        return customDateStart;
       default:
         return DateTime.now();
     }
   }
 
-  DateTime _calculateDateEnd(String type, Timestamp customDateEnd) {
-    if (type == Strings.custom) {
-      return customDateEnd.toDate();
+  DateTime _calculateDateEnd(DateRangeType type, DateTime customDateEnd) {
+    switch (type) {
+      case DateRangeType.all:
+        return DateTime(2100);
+      case DateRangeType.custom:
+        return customDateEnd;
+      default:
+        return DateTime.now();
     }
-
-    return DateTime.now();
   }
 
   List<Widget> _createWaterParamCharts(List<List<Parameter>> allParamData) {

@@ -1,7 +1,6 @@
 import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
-import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
@@ -96,6 +95,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
                 ),
                 GridView.count(
                   physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(0),
                   shrinkWrap: true,
                   childAspectRatio: 4,
                   crossAxisCount: 2,
@@ -139,6 +139,9 @@ class _TuneChartPageState extends State<TuneChartPage> {
                   AppLocalizations.of(context).visibleParameters,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
                 Wrap(
                   spacing: 10,
                   children: choiceChips,
@@ -181,3 +184,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
     });
   }
 }
+
+
+// TODO: fix bug when changing date range type from custom to another, it resets the start date
+// to today's date

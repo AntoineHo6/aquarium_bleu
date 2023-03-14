@@ -32,11 +32,8 @@ class _TanksPageState extends State<TanksPage> {
                   expandedHeight: MediaQuery.of(context).size.height * 0.2,
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
-                    title: Container(
-                      margin: const EdgeInsets.only(
-                        left: Spacing.screenEdgeMargin,
-                        right: Spacing.screenEdgeMargin,
-                      ),
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
                       child: FittedBox(
                         child: Text(
                           StringUtil.formattedDate(context, DateTime.now()),

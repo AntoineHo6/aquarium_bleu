@@ -1,6 +1,5 @@
 import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
-import 'package:aquarium_bleu/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -50,7 +49,6 @@ class StringUtil {
     return '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
   }
 
-  // TODO: use enum as input
   static paramTypeToString(BuildContext context, WaterParamType paramType) {
     switch (paramType) {
       case WaterParamType.ammonia:

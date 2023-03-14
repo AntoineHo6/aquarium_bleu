@@ -41,17 +41,17 @@ class FirestoreStuff {
         .map((event) => event.docs.map((doc) => Tank.fromJson(doc.id, doc.data())).toList());
   }
 
-  static Stream<List<Parameter>> readParameters(String tankId, WaterParamType param) {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('tanks')
-        .doc(tankId)
-        .collection(param.getStr)
-        .orderBy("date")
-        .snapshots()
-        .map((event) => event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
-  }
+  // static Stream<List<Parameter>> readParameters(String tankId, WaterParamType param) {
+  //   return FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(uid)
+  //       .collection('tanks')
+  //       .doc(tankId)
+  //       .collection(param.getStr)
+  //       .orderBy("date")
+  //       .snapshots()
+  //       .map((event) => event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
+  // }
 
   static Stream<List<Parameter>> readParametersWithRange(
       String tankId, WaterParamType parameter, DateTime start, DateTime end) {
@@ -68,13 +68,13 @@ class FirestoreStuff {
         .map((event) => event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
   }
 
-  static Future addParameter(String tankId, String paramName, Parameter param) async {
+  static Future addParameter(String tankId, Parameter param) async {
     final docParam = FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .collection('tanks')
         .doc(tankId)
-        .collection(paramName)
+        .collection(param.type.getStr)
         .doc(const Uuid().v4());
 
     final json = param.toJson();

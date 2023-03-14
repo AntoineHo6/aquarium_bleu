@@ -31,8 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           Switch.adaptive(
             value: settingsProvider.themeMode == ThemeMode.dark ? true : false,
-            onChanged: (newValue) async =>
-                await _onThemeChanged(newValue, settingsProvider),
+            onChanged: (newValue) async => await _onThemeChanged(newValue, settingsProvider),
           ),
         ],
       ),
@@ -40,8 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 
-Future<void> _onThemeChanged(
-    bool isDarkMode, SettingsProvider settingsProvider) async {
+Future<void> _onThemeChanged(bool isDarkMode, SettingsProvider settingsProvider) async {
   (isDarkMode)
       ? await settingsProvider.setThemeMode(ThemeMode.dark, isDarkMode)
       : await settingsProvider.setThemeMode(ThemeMode.light, isDarkMode);
