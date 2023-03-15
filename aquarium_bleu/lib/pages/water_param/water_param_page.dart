@@ -69,8 +69,6 @@ class _WaterParamPageState extends State<WaterParamPage> {
             }
           }
 
-          // add condition if no param is visible. Return a different body with a message
-
           return StreamBuilder(
             stream: CombineLatestStream.list(dataStreams),
             builder: (context, snapshot) {

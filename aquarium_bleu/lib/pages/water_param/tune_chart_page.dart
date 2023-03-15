@@ -28,6 +28,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
   late DateTime customDateStart;
   late DateTime customDateEnd;
   late Map<String, dynamic> visibleParams;
+  late int numOfVisibleParams;
 
   @override
   void initState() {
@@ -36,24 +37,16 @@ class _TuneChartPageState extends State<TuneChartPage> {
     customDateStart = widget.customDateStart;
     customDateEnd = widget.customDateEnd;
     visibleParams = widget.visibleParams!;
+    numOfVisibleParams = 0;
+    for (var paramType in WaterParamType.values) {
+      if (widget.visibleParams![paramType.getStr]) {
+        numOfVisibleParams++;
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // populate choiceChips list
-    List<Widget> choiceChips = [];
-    for (var paramType in WaterParamType.values) {
-      choiceChips.add(ChoiceChip(
-        label: Text(StringUtil.paramTypeToString(context, paramType)),
-        selected: widget.visibleParams![paramType.getStr],
-        onSelected: (newValue) async {
-          setState(() {
-            visibleParams[paramType.getStr] = newValue;
-          });
-        },
-      ));
-    }
-
     // populate date range radiobtns list
     List<Widget> dateRangeRadioBtns = [];
     for (var dateRangeType in DateRangeType.values) {
@@ -71,6 +64,29 @@ class _TuneChartPageState extends State<TuneChartPage> {
           ),
         ),
       );
+    }
+
+    // populate choiceChips list && count number of visible parameters
+    List<Widget> choiceChips = [];
+    for (var paramType in WaterParamType.values) {
+      choiceChips.add(ChoiceChip(
+        label: Text(StringUtil.paramTypeToString(context, paramType)),
+        selected: widget.visibleParams![paramType.getStr],
+        onSelected: (isVisible) {
+          setState(() {
+            if (numOfVisibleParams > 1 && !isVisible) {
+              numOfVisibleParams--;
+              visibleParams[paramType.getStr] = isVisible;
+            } else if (isVisible) {
+              numOfVisibleParams++;
+              visibleParams[paramType.getStr] = isVisible;
+            } else {
+              // animate a nono animation to show that there has to be at least 1 visible param.
+              print('nono');
+            }
+          });
+        },
+      ));
     }
 
     return WillPopScope(
