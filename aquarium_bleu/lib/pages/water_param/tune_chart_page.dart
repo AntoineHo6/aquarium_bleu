@@ -82,7 +82,6 @@ class _TuneChartPageState extends State<TuneChartPage> {
               visibleParams[paramType.getStr] = isVisible;
             } else {
               // animate a nono animation to show that there has to be at least 1 visible param.
-              print('nono');
             }
           });
         },

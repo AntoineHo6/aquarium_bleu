@@ -39,9 +39,9 @@ class _WaterParamPageState extends State<WaterParamPage> {
           DateRangeType dateRangeType =
               DateRangeType.values.byName(prefsSnapshots.data![1][Strings.type]);
 
+          // should only convert to date if actually in custom date range type
           DateTime customDateStart =
               (prefsSnapshots.data![1][Strings.customDateStart] as Timestamp).toDate();
-
           DateTime customDateEnd =
               (prefsSnapshots.data![1][Strings.customDateEnd] as Timestamp).toDate();
 
@@ -59,12 +59,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
           for (var type in WaterParamType.values) {
             if (paramVisibility![type.getStr]) {
               dataStreams.add(
-                FirestoreStuff.readParametersWithRange(
-                  widget.tankId,
-                  type,
-                  start,
-                  end,
-                ),
+                FirestoreStuff.readParametersWithRange(widget.tankId, type, start, end),
               );
             }
           }
@@ -73,7 +68,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
             stream: CombineLatestStream.list(dataStreams),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List<Widget> charts = _createWaterParamCharts(snapshot.data!);
+                List<Widget> charts = _createWaterParamCharts(snapshot.data!, start, end);
 
                 return Scaffold(
                   appBar: AppBar(
@@ -154,7 +149,8 @@ class _WaterParamPageState extends State<WaterParamPage> {
     }
   }
 
-  List<Widget> _createWaterParamCharts(List<List<Parameter>> allParamData) {
+  List<Widget> _createWaterParamCharts(
+      List<List<Parameter>> allParamData, DateTime start, DateTime end) {
     List<Widget> charts = [];
     for (var i = 0; i < allParamData.length; i++) {
       if (allParamData[i].isNotEmpty) {
@@ -173,7 +169,8 @@ class _WaterParamPageState extends State<WaterParamPage> {
                         builder: (context) => WaterParamChartPage(
                           widget.tankId,
                           allParamData[i][0].type,
-                          allParamData[i],
+                          start,
+                          end,
                         ),
                       ),
                     );
