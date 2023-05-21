@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/pages/settings/theme_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,21 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: Column(
         children: [
+          ListTile(
+            title: Text(AppLocalizations.of(context).theme),
+            subtitle: settingsProvider.themeMode == ThemeMode.dark
+                ? Text(AppLocalizations.of(context).dark)
+                : Text(AppLocalizations.of(context).light),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ThemePage(),
+                ),
+              );
+            },
+          ),
           ElevatedButton(
             onPressed: () {
               FirebaseUIAuth.signOut(context: context);

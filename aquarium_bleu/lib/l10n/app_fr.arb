@@ -1,5 +1,8 @@
 {
     "settings": "Paramètres",
+    "theme": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
     "signOut": "Déconnexion",
     
     "freshwater": "Eau douce",

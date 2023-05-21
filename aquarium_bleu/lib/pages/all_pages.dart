@@ -1,4 +1,4 @@
-import 'package:aquarium_bleu/pages/settings_page.dart';
+import 'package:aquarium_bleu/pages/settings/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:aquarium_bleu/pages/tanks_page.dart';

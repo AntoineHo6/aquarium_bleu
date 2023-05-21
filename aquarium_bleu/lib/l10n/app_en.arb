@@ -1,5 +1,8 @@
 {
     "settings": "Settings",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
     "signOut": "Sign Out",
 
     "freshwater": "Freshwater",
