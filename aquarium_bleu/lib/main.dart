@@ -21,7 +21,7 @@ Future main() async {
   );
 
   SharedPreferences.getInstance().then((myPrefs) {
-    bool isDarkMode = myPrefs.getBool(Strings.isDarkMode) ?? true;
+    String themeStr = myPrefs.getString(Strings.theme) ?? Strings.system;
 
     String? lastSelectedParam = myPrefs.getString(Strings.lastSelectedParam);
 
@@ -30,7 +30,7 @@ Future main() async {
         providers: [
           ChangeNotifierProvider(
             create: (_) => SettingsProvider(
-              isDarkMode ? ThemeMode.dark : ThemeMode.light,
+              themeStr,
               lastSelectedParam,
             ),
           ),

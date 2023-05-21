@@ -3,18 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsProvider with ChangeNotifier {
-  ThemeMode themeMode;
+  ThemeMode? themeMode;
   String? lastSelectedParam;
 
-  SettingsProvider(
-    this.themeMode,
-    this.lastSelectedParam,
-  );
+  SettingsProvider(String themeStr, this.lastSelectedParam) {
+    switch (themeStr) {
+      case Strings.system:
+        themeMode = ThemeMode.system;
+        break;
+      case Strings.light:
+        themeMode = ThemeMode.light;
+        break;
+      default:
+        themeMode = ThemeMode.dark;
+    }
+  }
 
-  setThemeMode(ThemeMode mode, bool isDarkMode) async {
+  setThemeMode(ThemeMode mode, String themeStr) async {
     themeMode = mode;
     var prefs = await SharedPreferences.getInstance();
-    prefs.setBool(Strings.isDarkMode, isDarkMode);
+    prefs.setString(Strings.theme, themeStr);
     notifyListeners();
   }
 

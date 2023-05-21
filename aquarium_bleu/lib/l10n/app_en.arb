@@ -3,6 +3,7 @@
     "theme": "Theme",
     "light": "Light",
     "dark": "Dark",
+    "system": "System",
     "signOut": "Sign Out",
 
     "freshwater": "Freshwater",

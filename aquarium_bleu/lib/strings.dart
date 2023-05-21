@@ -27,7 +27,11 @@ class Strings {
   static const none = 'none';
 
   // Shared Preferences
-  static const isDarkMode = 'isDarkMode';
+  static const theme = 'theme';
+  static const system = 'system';
+  static const light = 'light';
+  static const dark = 'dark';
+  // static const isDarkMode = 'isDarkMode';
   static const lastSelectedParam = 'lastSelectedParam';
 
   // Date range types
