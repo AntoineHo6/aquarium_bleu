@@ -96,7 +96,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
         await FirestoreStuff.updateDateRangeType(widget.tankId, currentDateRangeType);
         await FirestoreStuff.updateCustomStartDate(widget.tankId, customDateStart);
         await FirestoreStuff.updateCustomEndDate(widget.tankId, customDateEnd);
-        await FirestoreStuff.updateParamVisPrefs(widget.tankId, visibleParams);
+        await FirestoreStuff.updateParamVis(widget.tankId, visibleParams);
         await FirestoreStuff.updateShowWaterChanges(widget.tankId, showWaterChanges);
         return true;
       },

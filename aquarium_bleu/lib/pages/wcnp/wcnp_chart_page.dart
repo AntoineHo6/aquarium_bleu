@@ -1,7 +1,7 @@
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
-import 'package:aquarium_bleu/pages/water_param/edit_water_param_page.dart';
+import 'package:aquarium_bleu/pages/wcnp/edit_param_page.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +11,10 @@ class WaterParamChartPage extends StatefulWidget {
   final WaterParamType param;
   final DateTime start;
   final DateTime end;
+  final List<DateTime> plotBandDates;
 
-  const WaterParamChartPage(this.tankId, this.param, this.start, this.end, {super.key});
+  const WaterParamChartPage(this.tankId, this.param, this.start, this.end, this.plotBandDates,
+      {super.key});
 
   @override
   State<WaterParamChartPage> createState() => _WaterParamChartPageState();
@@ -22,7 +24,7 @@ class _WaterParamChartPageState extends State<WaterParamChartPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Parameter>>(
-        stream: FirestoreStuff.readParametersWithRange(
+        stream: FirestoreStuff.readParamWithRange(
             widget.tankId, widget.param, widget.start, widget.end),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
@@ -34,8 +36,14 @@ class _WaterParamChartPageState extends State<WaterParamChartPage> {
                     WaterParamChart(
                       param: widget.param,
                       dataSource: snapshot.data!,
+                      plotBandDates: widget.plotBandDates,
                     ),
-                    Column(children: _dataPointsTiles(snapshot.data!)),
+                    Column(
+                      children: _dataPointsTiles(snapshot.data!),
+                    ),
+                    // Column(
+                    //   children: _waterChangeTiles(),
+                    // ),
                   ],
                 ),
               ),

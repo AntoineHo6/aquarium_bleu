@@ -2,8 +2,8 @@ import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
-import 'package:aquarium_bleu/pages/water_param/tune_chart_page.dart';
-import 'package:aquarium_bleu/pages/water_param/water_param_chart_page.dart';
+import 'package:aquarium_bleu/pages/wcnp/wcnp_tune_page.dart';
+import 'package:aquarium_bleu/pages/wcnp/wcnp_chart_page.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
@@ -29,9 +29,9 @@ class _WaterParamPageState extends State<WaterParamPage> {
   Widget build(BuildContext context) {
     List<Stream<DocumentSnapshot<Map<String, dynamic>>>> prefsStreams = [];
 
-    prefsStreams.add(FirestoreStuff.readParamVisPrefs(widget.tankId));
-    prefsStreams.add(FirestoreStuff.readDateRangePrefs(widget.tankId));
-    prefsStreams.add(FirestoreStuff.readShowWaterChangePrefs(widget.tankId));
+    prefsStreams.add(FirestoreStuff.readParamVis(widget.tankId));
+    prefsStreams.add(FirestoreStuff.readDateRangeWcnpPrefs(widget.tankId));
+    prefsStreams.add(FirestoreStuff.readShowWaterChanges(widget.tankId));
 
     return StreamBuilder(
       stream: CombineLatestStream.list(prefsStreams),
@@ -62,7 +62,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
           for (var type in WaterParamType.values) {
             if (paramVisibility![type.getStr]) {
               dataStreams.add(
-                FirestoreStuff.readParametersWithRange(widget.tankId, type, start, end),
+                FirestoreStuff.readParamWithRange(widget.tankId, type, start, end),
               );
             }
           }
@@ -87,7 +87,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
 
                         return Scaffold(
                             appBar: AppBar(
-                              title: Text(AppLocalizations.of(context).parametersAndWaterChanges),
+                              title: Text(AppLocalizations.of(context).waterChangesAndParameters),
                               actions: [
                                 IconButton(
                                   onPressed: () {
@@ -214,6 +214,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                           allParamData[i][0].type,
                           start,
                           end,
+                          showWaterChanges ? plotBandDates : [],
                         ),
                       ),
                     );

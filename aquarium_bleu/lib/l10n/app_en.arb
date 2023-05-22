@@ -37,7 +37,7 @@
     "selectParameter": "Select parameter",
     "visibleParameters": "Visible parameters",
     
-    "parametersAndWaterChanges": "Parameters & water changes",
+    "waterChangesAndParameters": "Water changes & parameters",
     "waterChanges": "Water changes",
     "addWaterChange": "Add water change",
     "showWaterChanges": "Show water changes",

@@ -45,7 +45,7 @@
     "selectParameter": "Selectionner un paramètre",
     "visibleParameters": "Paramètres visibles",
 
-    "parametersAndWaterChanges": "Parameters & water changes",
+    "waterChangesAndParameters": "Changements d'eau et paramètres",
     "waterChanges": "Changements d'eau",
     "addWaterChange": "Ajouter un changement d'eau",
     "showWaterChanges": "Voir les changements d'eau",

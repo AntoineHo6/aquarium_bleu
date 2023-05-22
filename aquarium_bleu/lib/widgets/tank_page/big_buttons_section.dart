@@ -1,5 +1,5 @@
 import 'package:aquarium_bleu/models/tank.dart';
-import 'package:aquarium_bleu/pages/water_param/water_param_page.dart';
+import 'package:aquarium_bleu/pages/wcnp/wcnp_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -44,7 +44,7 @@ class BigButtonsSection extends StatelessWidget {
                             child: Align(
                               alignment: Alignment.topLeft,
                               child: Text(
-                                AppLocalizations.of(context).parametersAndWaterChanges,
+                                AppLocalizations.of(context).waterChangesAndParameters,
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                             ),

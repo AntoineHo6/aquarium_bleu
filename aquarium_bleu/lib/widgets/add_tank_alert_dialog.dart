@@ -47,8 +47,7 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
       });
     } else {
       FirestoreStuff.addTank(_nameFieldController.text, _isFreshwater!).then((docId) {
-        FirestoreStuff.addDefaultParamVisPrefs(docId);
-        FirestoreStuff.addDefaultDateRangePrefs(docId);
+        FirestoreStuff.addDefaultWcnpPrefs(docId);
       });
 
       Navigator.pop(context);

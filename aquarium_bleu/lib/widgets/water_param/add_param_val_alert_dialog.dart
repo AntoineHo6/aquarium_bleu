@@ -1,7 +1,7 @@
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
-import 'package:aquarium_bleu/pages/water_param/water_param_picker_page.dart';
+import 'package:aquarium_bleu/pages/wcnp/param_picker_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/num_util.dart';
@@ -11,6 +11,7 @@ import 'package:aquarium_bleu/widgets/my_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class AddParamValAlertDialog extends StatefulWidget {
   final String tankId;
@@ -154,6 +155,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
 
       // 2. Create parameter object
       Parameter addMe = Parameter(
+        docId: const Uuid().v4(),
         type: _param!,
         value: double.parse(value),
         date: paramDate,
