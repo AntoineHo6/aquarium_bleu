@@ -16,6 +16,15 @@
     "add": "Ajouter",
     "cancel": "Annuler",
     "required": "Obligatoire",
+
+    "optional": "{gender, select, male{optionnel} female{optionnelle} other{}}",
+    "@pronoun": {
+        "placeholders": {
+            "gender": {
+                "type": "String"
+            }
+        }
+    },
     "select": "Sélectionner",
     "error": "Erreur",
 
@@ -36,7 +45,10 @@
     "selectParameter": "Selectionner un paramètre",
     "visibleParameters": "Paramètres visibles",
 
+    "parametersAndWaterChanges": "Parameters & water changes",
     "waterChanges": "Changements d'eau",
+    "addWaterChange": "Ajouter un changement d'eau",
+    "waterChangePercent": "% du changement d'eau",
     "animals": "Animaux",
     "plants": "Plantes",
     "equipment": "Équipements",

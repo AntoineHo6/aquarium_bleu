@@ -44,7 +44,7 @@ class BigButtonsSection extends StatelessWidget {
                             child: Align(
                               alignment: Alignment.topLeft,
                               child: Text(
-                                AppLocalizations.of(context).waterParameters,
+                                AppLocalizations.of(context).parametersAndWaterChanges,
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                             ),

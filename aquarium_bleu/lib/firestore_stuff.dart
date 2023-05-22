@@ -82,6 +82,36 @@ class FirestoreStuff {
     await docParam.set(json);
   }
 
+  static Stream<List<DateTime>> readWaterChangesWithRange(
+      String tankId, DateTime start, DateTime end) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('waterChanges')
+        .where('date', isGreaterThanOrEqualTo: start)
+        .where('date', isLessThanOrEqualTo: end)
+        .orderBy("date")
+        .snapshots()
+        .map((event) =>
+            event.docs.map((doc) => (doc.data()['date'] as Timestamp).toDate()).toList());
+  }
+
+  static Future addWaterChange(String tankId, DateTime dateTime) async {
+    final docWaterChange = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('waterChanges')
+        .doc(const Uuid().v4());
+
+    await docWaterChange.set({
+      'date': dateTime,
+    });
+  }
+
   static Stream<List<IntervalTask>> readIntervalTasks(String docId) {
     return FirebaseFirestore.instance
         .collection('users')

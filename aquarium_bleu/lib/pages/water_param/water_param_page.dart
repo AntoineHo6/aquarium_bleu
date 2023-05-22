@@ -7,10 +7,12 @@ import 'package:aquarium_bleu/pages/water_param/water_param_chart_page.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/water_param/add_water_change_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:rxdart/rxdart.dart';
 
 class WaterParamPage extends StatefulWidget {
@@ -65,53 +67,89 @@ class _WaterParamPageState extends State<WaterParamPage> {
           }
 
           return StreamBuilder(
-            stream: CombineLatestStream.list(dataStreams),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<Widget> charts = _createWaterParamCharts(snapshot.data!, start, end);
+              stream: FirestoreStuff.readWaterChangesWithRange(widget.tankId, start, end),
+              builder: (context, waterChangeSnapshot) {
+                if (waterChangeSnapshot.hasData) {
+                  return StreamBuilder(
+                    stream: CombineLatestStream.list(dataStreams),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<Widget> charts = _createWaterParamCharts(
+                          snapshot.data!,
+                          waterChangeSnapshot.data!,
+                          start,
+                          end,
+                        );
 
-                return Scaffold(
-                  appBar: AppBar(
-                    title: Text(AppLocalizations.of(context).waterParameters),
-                    actions: [
-                      IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TuneChartPage(
-                                widget.tankId,
-                                DateRangeType.values.byName(prefsSnapshots.data![1][Strings.type]),
-                                customDateStart,
-                                customDateEnd,
-                                paramVisibility,
-                              ),
+                        return Scaffold(
+                            appBar: AppBar(
+                              title: Text(AppLocalizations.of(context).parametersAndWaterChanges),
+                              actions: [
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => TuneChartPage(
+                                          widget.tankId,
+                                          DateRangeType.values
+                                              .byName(prefsSnapshots.data![1][Strings.type]),
+                                          customDateStart,
+                                          customDateEnd,
+                                          paramVisibility,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.tune_rounded),
+                                )
+                              ],
                             ),
-                          );
-                        },
-                        icon: const Icon(Icons.tune_rounded),
-                      )
-                    ],
-                  ),
-                  body: ListView(children: charts),
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (BuildContext context) => AddParamValAlertDialog(
-                        widget.tankId,
-                        paramVisibility,
-                      ),
-                    ),
-                    child: const Icon(Icons.add),
-                  ),
-                );
-              } else {
-                return const CircularProgressIndicator.adaptive();
-              }
-            },
-          );
+                            body: ListView(children: charts),
+                            floatingActionButton: SpeedDial(
+                              icon: Icons.add,
+                              children: [
+                                SpeedDialChild(
+                                  child: const Icon(Icons.show_chart_outlined),
+                                  label: AppLocalizations.of(context).addParameterValue,
+                                  backgroundColor: Colors.orange,
+                                  onTap: () => showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => AddParamValAlertDialog(
+                                      widget.tankId,
+                                      paramVisibility,
+                                    ),
+                                  ),
+                                ),
+                                SpeedDialChild(
+                                  child: const Icon(Icons.water_drop),
+                                  label: AppLocalizations.of(context).addWaterChange,
+                                  backgroundColor: Colors.lightBlue,
+                                  onTap: () => showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AddWaterChangeAlertDialog(widget.tankId),
+                                  ),
+                                ),
+                              ],
+                            ));
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        );
+                      }
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                }
+              });
         } else {
-          return const CircularProgressIndicator.adaptive();
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
+          );
         }
       },
     );
@@ -149,8 +187,8 @@ class _WaterParamPageState extends State<WaterParamPage> {
     }
   }
 
-  List<Widget> _createWaterParamCharts(
-      List<List<Parameter>> allParamData, DateTime start, DateTime end) {
+  List<Widget> _createWaterParamCharts(List<List<Parameter>> allParamData,
+      List<DateTime> plotBandDates, DateTime start, DateTime end) {
     List<Widget> charts = [];
     for (var i = 0; i < allParamData.length; i++) {
       if (allParamData[i].isNotEmpty) {
@@ -178,6 +216,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                   icon: const Icon(Icons.open_in_new_rounded),
                 ),
               ],
+              plotBandDates: plotBandDates,
             ),
           ),
         );

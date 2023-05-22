@@ -41,7 +41,9 @@ class _WaterParamChartPageState extends State<WaterParamChartPage> {
               ),
             );
           } else {
-            return const CircularProgressIndicator();
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
           }
         });
   }

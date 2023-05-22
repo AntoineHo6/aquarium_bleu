@@ -68,14 +68,14 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
               maxLength: 10,
               errorText: _errorText,
             ),
-            Container(
-              margin: const EdgeInsets.only(top: Spacing.betweenSections),
-              child: IconTextBtn(
-                iconData: Icons.science_outlined,
-                text: _paramBtnText,
-                onPressed: () => _handleParamPickerBtn(context),
-                isError: isParamBtnInError,
-              ),
+            const SizedBox(
+              height: Spacing.betweenSections,
+            ),
+            IconTextBtn(
+              iconData: Icons.science_outlined,
+              text: _paramBtnText,
+              onPressed: () => _handleParamPickerBtn(context),
+              isError: isParamBtnInError,
             ),
             IconTextBtn(
               iconData: Icons.calendar_today,

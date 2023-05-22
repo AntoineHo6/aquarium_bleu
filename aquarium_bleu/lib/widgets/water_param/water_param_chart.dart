@@ -7,11 +7,13 @@ class WaterParamChart extends StatefulWidget {
   final WaterParamType param;
   final List<dynamic> dataSource;
   final List<Widget> actions;
+  final List<DateTime> plotBandDates;
 
   const WaterParamChart({
     required this.param,
     required this.dataSource,
     this.actions = const [],
+    this.plotBandDates = const [],
     super.key,
   });
 
@@ -46,7 +48,19 @@ class _WaterParamChartState extends State<WaterParamChart> {
           ),
         ),
         SfCartesianChart(
-          primaryXAxis: DateTimeAxis(),
+          primaryXAxis: DateTimeAxis(
+            plotBands: widget.plotBandDates
+                .map(
+                  (dateTime) => PlotBand(
+                    start: dateTime,
+                    end: dateTime,
+                    shouldRenderAboveSeries: true,
+                    borderWidth: 1.5,
+                    borderColor: Colors.red,
+                  ),
+                )
+                .toList(),
+          ),
           series: <ChartSeries>[
             LineSeries(
               color: ColorScheme.fromSwatch().primary,

@@ -1,6 +1,5 @@
 import 'package:aquarium_bleu/pages/settings/theme_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
-import 'package:aquarium_bleu/strings.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

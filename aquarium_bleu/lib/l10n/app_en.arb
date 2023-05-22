@@ -16,6 +16,7 @@
     "add": "Add",
     "cancel": "Cancel",
     "required": "Required",
+    "optional": "Optional",
     "select": "Select",
     "error": "Error",
 
@@ -35,8 +36,11 @@
     "addParameterValue": "Add parameter value",
     "selectParameter": "Select parameter",
     "visibleParameters": "Visible parameters",
-
+    
+    "parametersAndWaterChanges": "Parameters & water changes",
     "waterChanges": "Water changes",
+    "addWaterChange": "Add water change",
+    "waterChangePercent": "Water change %",
     "animals": "Animals",
     "plants": "Plants",
     "equipment": "Equipment",
