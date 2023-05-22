@@ -13,9 +13,10 @@ class TuneChartPage extends StatefulWidget {
   final DateTime customDateStart;
   final DateTime customDateEnd;
   final Map<String, dynamic>? visibleParams;
+  final bool showWaterChanges;
 
   const TuneChartPage(this.tankId, this.currentDateRangeType, this.customDateStart,
-      this.customDateEnd, this.visibleParams,
+      this.customDateEnd, this.visibleParams, this.showWaterChanges,
       {super.key});
 
   @override
@@ -29,6 +30,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
   late DateTime customDateEnd;
   late Map<String, dynamic> visibleParams;
   late int numOfVisibleParams;
+  late bool showWaterChanges;
 
   @override
   void initState() {
@@ -43,6 +45,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
         numOfVisibleParams++;
       }
     }
+    showWaterChanges = widget.showWaterChanges;
   }
 
   @override
@@ -90,10 +93,11 @@ class _TuneChartPageState extends State<TuneChartPage> {
 
     return WillPopScope(
       onWillPop: () async {
-        await FirestoreStuff.updateParamVisPrefs(widget.tankId, visibleParams);
         await FirestoreStuff.updateDateRangeType(widget.tankId, currentDateRangeType);
         await FirestoreStuff.updateCustomStartDate(widget.tankId, customDateStart);
         await FirestoreStuff.updateCustomEndDate(widget.tankId, customDateEnd);
+        await FirestoreStuff.updateParamVisPrefs(widget.tankId, visibleParams);
+        await FirestoreStuff.updateShowWaterChanges(widget.tankId, showWaterChanges);
         return true;
       },
       child: Scaffold(
@@ -161,6 +165,22 @@ class _TuneChartPageState extends State<TuneChartPage> {
                   spacing: 10,
                   children: choiceChips,
                 ),
+                const SizedBox(
+                  height: Spacing.betweenSections,
+                ),
+                Text(
+                  AppLocalizations.of(context).showWaterChanges,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Switch.adaptive(
+                  value: showWaterChanges,
+                  onChanged: (newValue) => setState(() {
+                    showWaterChanges = !showWaterChanges;
+                  }),
+                ),
               ],
             ),
           ),
@@ -199,7 +219,3 @@ class _TuneChartPageState extends State<TuneChartPage> {
     });
   }
 }
-
-
-// TODO: fix bug when changing date range type from custom to another, it resets the start date
-// to today's date

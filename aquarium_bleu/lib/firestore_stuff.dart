@@ -266,4 +266,27 @@ class FirestoreStuff {
 
     await dateRangeDoc.set(json);
   }
+
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> readShowWaterChangePrefs(String tankId) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('prefs')
+        .doc('showWaterChange')
+        .snapshots();
+  }
+
+  static Future updateShowWaterChanges(String tankId, bool newValue) async {
+    final dateRangeDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('prefs')
+        .doc('showWaterChange');
+
+    await dateRangeDoc.update({'value': newValue});
+  }
 }

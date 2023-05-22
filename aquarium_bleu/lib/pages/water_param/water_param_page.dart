@@ -31,6 +31,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
 
     prefsStreams.add(FirestoreStuff.readParamVisPrefs(widget.tankId));
     prefsStreams.add(FirestoreStuff.readDateRangePrefs(widget.tankId));
+    prefsStreams.add(FirestoreStuff.readShowWaterChangePrefs(widget.tankId));
 
     return StreamBuilder(
       stream: CombineLatestStream.list(prefsStreams),
@@ -66,6 +67,8 @@ class _WaterParamPageState extends State<WaterParamPage> {
             }
           }
 
+          bool showWaterChanges = (prefsSnapshots.data![2]['value']);
+
           return StreamBuilder(
               stream: FirestoreStuff.readWaterChangesWithRange(widget.tankId, start, end),
               builder: (context, waterChangeSnapshot) {
@@ -77,6 +80,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                         List<Widget> charts = _createWaterParamCharts(
                           snapshot.data!,
                           waterChangeSnapshot.data!,
+                          showWaterChanges,
                           start,
                           end,
                         );
@@ -97,6 +101,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                                           customDateStart,
                                           customDateEnd,
                                           paramVisibility,
+                                          showWaterChanges,
                                         ),
                                       ),
                                     );
@@ -188,7 +193,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
   }
 
   List<Widget> _createWaterParamCharts(List<List<Parameter>> allParamData,
-      List<DateTime> plotBandDates, DateTime start, DateTime end) {
+      List<DateTime> plotBandDates, bool showWaterChanges, DateTime start, DateTime end) {
     List<Widget> charts = [];
     for (var i = 0; i < allParamData.length; i++) {
       if (allParamData[i].isNotEmpty) {
@@ -216,7 +221,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                   icon: const Icon(Icons.open_in_new_rounded),
                 ),
               ],
-              plotBandDates: plotBandDates,
+              plotBandDates: showWaterChanges ? plotBandDates : [],
             ),
           ),
         );
