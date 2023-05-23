@@ -17,16 +17,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:rxdart/rxdart.dart';
 
-class WaterParamPage extends StatefulWidget {
+class WcnpPage extends StatefulWidget {
   final String tankId;
 
-  const WaterParamPage(this.tankId, {super.key});
+  const WcnpPage(this.tankId, {super.key});
 
   @override
-  State<WaterParamPage> createState() => _WaterParamPageState();
+  State<WcnpPage> createState() => _WcnpPageState();
 }
 
-class _WaterParamPageState extends State<WaterParamPage> {
+class _WcnpPageState extends State<WcnpPage> {
   @override
   Widget build(BuildContext context) {
     List<Stream<DocumentSnapshot<Map<String, dynamic>>>> prefsStreams = [];
@@ -102,7 +102,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => TuneChartPage(
+                                          builder: (context) => WcnpTunePage(
                                             widget.tankId,
                                             DateRangeType.values
                                                 .byName(prefsSnapshots.data![1][Strings.type]),
@@ -235,7 +235,7 @@ class _WaterParamPageState extends State<WaterParamPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => WaterParamChartPage(
+                        builder: (context) => WcnpChartPage(
                           widget.tankId,
                           allParamData[i][0].type,
                           start,

@@ -7,7 +7,7 @@ import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class TuneChartPage extends StatefulWidget {
+class WcnpTunePage extends StatefulWidget {
   final String tankId;
   final DateRangeType currentDateRangeType;
   final DateTime customDateStart;
@@ -15,15 +15,15 @@ class TuneChartPage extends StatefulWidget {
   final Map<String, dynamic>? visibleParams;
   final bool showWaterChanges;
 
-  const TuneChartPage(this.tankId, this.currentDateRangeType, this.customDateStart,
+  const WcnpTunePage(this.tankId, this.currentDateRangeType, this.customDateStart,
       this.customDateEnd, this.visibleParams, this.showWaterChanges,
       {super.key});
 
   @override
-  State<TuneChartPage> createState() => _TuneChartPageState();
+  State<WcnpTunePage> createState() => _WcnpTunePageState();
 }
 
-class _TuneChartPageState extends State<TuneChartPage> {
+class _WcnpTunePageState extends State<WcnpTunePage> {
   bool isSelected = false;
   late DateRangeType currentDateRangeType;
   late DateTime customDateStart;

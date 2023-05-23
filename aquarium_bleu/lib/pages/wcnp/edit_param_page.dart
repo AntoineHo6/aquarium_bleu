@@ -2,16 +2,16 @@ import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:flutter/material.dart';
 
-class EditWaterParamPage extends StatefulWidget {
+class EditParamPage extends StatefulWidget {
   final String tankId;
   final Parameter dataPoint;
-  const EditWaterParamPage(this.tankId, this.dataPoint, {super.key});
+  const EditParamPage(this.tankId, this.dataPoint, {super.key});
 
   @override
-  State<EditWaterParamPage> createState() => _EditWaterParamPageState();
+  State<EditParamPage> createState() => _EditParamPageState();
 }
 
-class _EditWaterParamPageState extends State<EditWaterParamPage> {
+class _EditParamPageState extends State<EditParamPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

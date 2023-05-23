@@ -12,122 +12,64 @@ class BigButtonsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            flex: 60,
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 100,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      margin: const EdgeInsets.only(
-                        right: _marginBetweenBigButtons,
-                        bottom: _marginBetweenBigButtons,
+            flex: 50,
+            child: SizedBox(
+              width: double.infinity,
+              child: Container(
+                margin: const EdgeInsets.only(
+                  right: _marginBetweenBigButtons,
+                  bottom: _marginBetweenBigButtons,
+                ),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WcnpPage(tank.docId),
                       ),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => WaterParamPage(tank.docId),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          elevation: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.all(_cardPadding),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                AppLocalizations.of(context).waterChangesAndParameters,
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                            ),
-                          ),
+                    );
+                  },
+                  child: Card(
+                    elevation: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.all(_cardPadding),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          AppLocalizations.of(context).waterChangesAndParameters,
+                          style: Theme.of(context).textTheme.headlineSmall,
                         ),
                       ),
                     ),
                   ),
                 ),
-                // Expanded(
-                //   flex: 25,
-                //   child: SizedBox(
-                //     width: double.infinity,
-                //     child: Container(
-                //       margin: const EdgeInsets.only(
-                //         top: _marginBetweenBigButtons,
-                //         right: _marginBetweenBigButtons,
-                //       ),
-                //       child: Card(
-                //         elevation: 3,
-                //         child: Padding(
-                //           padding: const EdgeInsets.all(_cardPadding),
-                //           child: Text(
-                //             AppLocalizations.of(context).waterChanges,
-                //             style: Theme.of(context).textTheme.titleLarge,
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-              ],
+              ),
             ),
           ),
           Expanded(
-            flex: 40,
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 75,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      margin: const EdgeInsets.only(
-                        left: _marginBetweenBigButtons,
-                        bottom: _marginBetweenBigButtons,
-                      ),
-                      child: Card(
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(_cardPadding),
-                          child: Text(
-                            AppLocalizations.of(context).tasks,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                        ),
-                      ),
+            flex: 50,
+            child: SizedBox(
+              width: double.infinity,
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: _marginBetweenBigButtons,
+                  bottom: _marginBetweenBigButtons,
+                ),
+                child: Card(
+                  elevation: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.all(_cardPadding),
+                    child: Text(
+                      AppLocalizations.of(context).tasks,
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 25,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      margin: const EdgeInsets.only(
-                        top: _marginBetweenBigButtons,
-                        left: _marginBetweenBigButtons,
-                      ),
-                      child: Card(
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(_cardPadding),
-                          child: Text(
-                            'pictures',
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ],

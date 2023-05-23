@@ -7,21 +7,21 @@ import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
 import 'package:flutter/material.dart';
 
-class WaterParamChartPage extends StatefulWidget {
+class WcnpChartPage extends StatefulWidget {
   final String tankId;
   final WaterParamType paramType;
   final DateTime start;
   final DateTime end;
   final List<WaterChange> waterChanges;
 
-  const WaterParamChartPage(this.tankId, this.paramType, this.start, this.end, this.waterChanges,
+  const WcnpChartPage(this.tankId, this.paramType, this.start, this.end, this.waterChanges,
       {super.key});
 
   @override
-  State<WaterParamChartPage> createState() => _WaterParamChartPageState();
+  State<WcnpChartPage> createState() => _WcnpChartPageState();
 }
 
-class _WaterParamChartPageState extends State<WaterParamChartPage> {
+class _WcnpChartPageState extends State<WcnpChartPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Parameter>>(
@@ -80,7 +80,7 @@ class _WaterParamChartPageState extends State<WaterParamChartPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EditWaterParamPage(widget.tankId, dataPoint),
+                    builder: (context) => EditParamPage(widget.tankId, dataPoint),
                   ),
                 );
               },
