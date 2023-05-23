@@ -169,7 +169,7 @@ class _TuneChartPageState extends State<TuneChartPage> {
                   height: Spacing.betweenSections,
                 ),
                 Text(
-                  AppLocalizations.of(context).showWaterChanges,
+                  AppLocalizations.of(context).showWaterChangeLines,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(

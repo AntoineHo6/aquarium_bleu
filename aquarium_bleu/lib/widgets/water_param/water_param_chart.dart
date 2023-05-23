@@ -1,19 +1,20 @@
 import 'package:aquarium_bleu/enums/water_param_type.dart';
+import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class WaterParamChart extends StatefulWidget {
-  final WaterParamType param;
+  final WaterParamType paramType;
   final List<dynamic> dataSource;
   final List<Widget> actions;
-  final List<DateTime> plotBandDates;
+  final List<WaterChange> waterChanges;
 
   const WaterParamChart({
-    required this.param,
-    required this.dataSource,
+    required this.paramType,
+    this.dataSource = const [],
     this.actions = const [],
-    this.plotBandDates = const [],
+    this.waterChanges = const [],
     super.key,
   });
 
@@ -32,7 +33,7 @@ class _WaterParamChartState extends State<WaterParamChart> {
               Align(
                 alignment: Alignment.center,
                 child: Text(
-                  StringUtil.paramTypeToString(context, widget.param),
+                  StringUtil.paramTypeToString(context, widget.paramType),
                   style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),
@@ -49,11 +50,11 @@ class _WaterParamChartState extends State<WaterParamChart> {
         ),
         SfCartesianChart(
           primaryXAxis: DateTimeAxis(
-            plotBands: widget.plotBandDates
+            plotBands: widget.waterChanges
                 .map(
-                  (dateTime) => PlotBand(
-                    start: dateTime,
-                    end: dateTime,
+                  (wc) => PlotBand(
+                    start: wc.date,
+                    end: wc.date,
                     shouldRenderAboveSeries: true,
                     borderWidth: 1.5,
                     borderColor: Colors.red,

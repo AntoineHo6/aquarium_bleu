@@ -16,11 +16,11 @@ class BigButtonsSection extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            flex: 65,
+            flex: 60,
             child: Column(
               children: [
                 Expanded(
-                  flex: 75,
+                  flex: 100,
                   child: SizedBox(
                     width: double.infinity,
                     child: Container(
@@ -54,33 +54,33 @@ class BigButtonsSection extends StatelessWidget {
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 25,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Container(
-                      margin: const EdgeInsets.only(
-                        top: _marginBetweenBigButtons,
-                        right: _marginBetweenBigButtons,
-                      ),
-                      child: Card(
-                        elevation: 3,
-                        child: Padding(
-                          padding: const EdgeInsets.all(_cardPadding),
-                          child: Text(
-                            AppLocalizations.of(context).waterChanges,
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // Expanded(
+                //   flex: 25,
+                //   child: SizedBox(
+                //     width: double.infinity,
+                //     child: Container(
+                //       margin: const EdgeInsets.only(
+                //         top: _marginBetweenBigButtons,
+                //         right: _marginBetweenBigButtons,
+                //       ),
+                //       child: Card(
+                //         elevation: 3,
+                //         child: Padding(
+                //           padding: const EdgeInsets.all(_cardPadding),
+                //           child: Text(
+                //             AppLocalizations.of(context).waterChanges,
+                //             style: Theme.of(context).textTheme.titleLarge,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
           Expanded(
-            flex: 35,
+            flex: 40,
             child: Column(
               children: [
                 Expanded(

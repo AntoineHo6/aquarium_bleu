@@ -1,6 +1,7 @@
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
+import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/pages/wcnp/edit_param_page.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
@@ -8,12 +9,12 @@ import 'package:flutter/material.dart';
 
 class WaterParamChartPage extends StatefulWidget {
   final String tankId;
-  final WaterParamType param;
+  final WaterParamType paramType;
   final DateTime start;
   final DateTime end;
-  final List<DateTime> plotBandDates;
+  final List<WaterChange> waterChanges;
 
-  const WaterParamChartPage(this.tankId, this.param, this.start, this.end, this.plotBandDates,
+  const WaterParamChartPage(this.tankId, this.paramType, this.start, this.end, this.waterChanges,
       {super.key});
 
   @override
@@ -25,7 +26,7 @@ class _WaterParamChartPageState extends State<WaterParamChartPage> {
   Widget build(BuildContext context) {
     return StreamBuilder<List<Parameter>>(
         stream: FirestoreStuff.readParamWithRange(
-            widget.tankId, widget.param, widget.start, widget.end),
+            widget.tankId, widget.paramType, widget.start, widget.end),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Scaffold(
@@ -34,9 +35,9 @@ class _WaterParamChartPageState extends State<WaterParamChartPage> {
                 child: Column(
                   children: [
                     WaterParamChart(
-                      param: widget.param,
+                      paramType: widget.paramType,
                       dataSource: snapshot.data!,
-                      plotBandDates: widget.plotBandDates,
+                      waterChanges: widget.waterChanges,
                     ),
                     Column(
                       children: _dataPointsTiles(snapshot.data!),
@@ -79,7 +80,7 @@ class _WaterParamChartPageState extends State<WaterParamChartPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EditWaterParamPage(dataPoint),
+                    builder: (context) => EditWaterParamPage(widget.tankId, dataPoint),
                   ),
                 );
               },

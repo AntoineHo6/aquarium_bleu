@@ -1,8 +1,10 @@
 import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:uuid/uuid.dart';
 
 class AddWaterChangeAlertDialog extends StatefulWidget {
   final String tankId;
@@ -58,9 +60,11 @@ class _AddWaterChangeAlertDialogState extends State<AddWaterChangeAlertDialog> {
       _time.minute,
     );
 
+    WaterChange waterChange = WaterChange(docId: const Uuid().v4(), date: dateTime);
+
     FirestoreStuff.addWaterChange(
       widget.tankId,
-      dateTime,
+      waterChange,
     );
 
     Navigator.pop(context);

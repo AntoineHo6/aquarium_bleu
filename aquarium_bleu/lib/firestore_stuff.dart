@@ -3,6 +3,7 @@ import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/models/task/interval_task.dart';
+import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
@@ -82,7 +83,19 @@ class FirestoreStuff {
     await docParam.set(json);
   }
 
-  static Stream<List<DateTime>> readWaterChangesWithRange(
+  static Future deleteParam(String tankId, Parameter param) async {
+    final paramDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection(param.type.getStr)
+        .doc(param.docId);
+
+    await paramDoc.delete();
+  }
+
+  static Stream<List<WaterChange>> readWaterChangesWithRange(
       String tankId, DateTime start, DateTime end) {
     return FirebaseFirestore.instance
         .collection('users')
@@ -92,24 +105,21 @@ class FirestoreStuff {
         .collection('waterChanges')
         .where('date', isGreaterThanOrEqualTo: start)
         .where('date', isLessThanOrEqualTo: end)
-        .orderBy("date")
+        .orderBy("date", descending: true)
         .snapshots()
-        .map((event) =>
-            event.docs.map((doc) => (doc.data()['date'] as Timestamp).toDate()).toList());
+        .map((event) => event.docs.map((doc) => WaterChange.fromJson(doc.id, doc.data())).toList());
   }
 
-  static Future addWaterChange(String tankId, DateTime dateTime) async {
+  static Future addWaterChange(String tankId, WaterChange waterChange) async {
     final docWaterChange = FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .collection('tanks')
         .doc(tankId)
         .collection('waterChanges')
-        .doc(const Uuid().v4());
+        .doc(waterChange.docId);
 
-    await docWaterChange.set({
-      'date': dateTime,
-    });
+    await docWaterChange.set(waterChange.toJson());
   }
 
   static Stream<List<IntervalTask>> readIntervalTasks(String docId) {
