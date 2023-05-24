@@ -6,11 +6,10 @@ import 'package:aquarium_bleu/models/task/interval_task.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
 
 class FirestoreStuff {
-  static late String uid;
-
   static writeNewUser(String? uid, String? email) async {
     uid = uid!;
     final docUser = FirebaseFirestore.instance.collection('users').doc(uid);
@@ -36,7 +35,7 @@ class FirestoreStuff {
   static Stream<List<Tank>> readTanks() {
     return FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .snapshots()
         .map((event) => event.docs.map((doc) => Tank.fromJson(doc.id, doc.data())).toList());
@@ -58,7 +57,7 @@ class FirestoreStuff {
       String tankId, WaterParamType parameter, DateTime start, DateTime end) {
     return FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection(parameter.getStr)
@@ -72,7 +71,7 @@ class FirestoreStuff {
   static Future addParameter(String tankId, Parameter param) async {
     final docParam = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection(param.type.getStr)
@@ -86,7 +85,7 @@ class FirestoreStuff {
   static Future deleteParam(String tankId, Parameter param) async {
     final paramDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection(param.type.getStr)
@@ -99,7 +98,7 @@ class FirestoreStuff {
       String tankId, DateTime start, DateTime end) {
     return FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('waterChanges')
@@ -113,7 +112,7 @@ class FirestoreStuff {
   static Future addWaterChange(String tankId, WaterChange waterChange) async {
     final docWaterChange = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('waterChanges')
@@ -125,7 +124,7 @@ class FirestoreStuff {
   static Stream<List<IntervalTask>> readIntervalTasks(String docId) {
     return FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(docId)
         .collection('intervalTasks')
@@ -138,7 +137,7 @@ class FirestoreStuff {
   static Future updateIntervalTask(IntervalTask updatedTask, String tankId) async {
     final intervalTask = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('intervalTasks')
@@ -149,8 +148,11 @@ class FirestoreStuff {
 
   static Future<String> addTank(String name, bool isFreshWater) async {
     final String docId = const Uuid().v4();
-    final docTank =
-        FirebaseFirestore.instance.collection('users').doc(uid).collection('tanks').doc(docId);
+    final docTank = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(docId);
 
     // TODO: redo
     final json = {
@@ -166,7 +168,7 @@ class FirestoreStuff {
   static Stream<DocumentSnapshot<Map<String, dynamic>>> readParamVis(String tankId) {
     return FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('wcnpPrefs')
@@ -177,7 +179,7 @@ class FirestoreStuff {
   static Future updateParamVis(String tankId, Map<String, dynamic> visibleParams) async {
     final visibilityDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('wcnpPrefs')
@@ -189,7 +191,7 @@ class FirestoreStuff {
   static Stream<DocumentSnapshot<Map<String, dynamic>>> readDateRangeWcnpPrefs(String tankId) {
     return FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('wcnpPrefs')
@@ -200,7 +202,7 @@ class FirestoreStuff {
   static Future updateDateRangeType(String tankId, DateRangeType type) async {
     final dateRangeDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('wcnpPrefs')
@@ -212,7 +214,7 @@ class FirestoreStuff {
   static Future updateCustomStartDate(String tankId, DateTime newDate) async {
     final dateRangeDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('wcnpPrefs')
@@ -224,7 +226,7 @@ class FirestoreStuff {
   static Future updateCustomEndDate(String tankId, DateTime newDate) async {
     final dateRangeDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('wcnpPrefs')
@@ -237,7 +239,7 @@ class FirestoreStuff {
     // 1. Add date range pref
     final dateRangeDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('wcnpPrefs')
@@ -254,7 +256,7 @@ class FirestoreStuff {
     // 2. Add param visibility pref
     final visibilityDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('wcnpPrefs')
@@ -269,7 +271,7 @@ class FirestoreStuff {
     // 3. Add show water change pref
     final showWaterChangesDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('wcnpPrefs')
@@ -285,7 +287,7 @@ class FirestoreStuff {
   static Stream<DocumentSnapshot<Map<String, dynamic>>> readShowWaterChanges(String tankId) {
     return FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('wcnpPrefs')
@@ -296,7 +298,7 @@ class FirestoreStuff {
   static Future updateShowWaterChanges(String tankId, bool newValue) async {
     final dateRangeDoc = FirebaseFirestore.instance
         .collection('users')
-        .doc(uid)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
         .collection('wcnpPrefs')

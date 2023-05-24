@@ -1,5 +1,8 @@
+import 'package:aquarium_bleu/pages/settings/sign_in_page.dart';
 import 'package:aquarium_bleu/pages/settings/theme_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,6 +19,25 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
+
+    Widget btn = FirebaseAuth.instance.currentUser!.isAnonymous
+        ? ElevatedButton(
+            child: Text('Sign in'),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SignInPage(),
+                ),
+              );
+            },
+          )
+        : ElevatedButton(
+            child: Text(AppLocalizations.of(context).signOut),
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+            },
+          );
 
     return Scaffold(
       appBar: AppBar(
@@ -38,13 +60,14 @@ class _SettingsPageState extends State<SettingsPage> {
               );
             },
           ),
-          ElevatedButton(
-            onPressed: () {
-              FirebaseUIAuth.signOut(context: context);
-              Navigator.pushReplacementNamed(context, '/sign-in');
-            },
-            child: Text(AppLocalizations.of(context).signOut),
-          ),
+          btn,
+          // ElevatedButton(
+          //   onPressed: () {
+          // FirebaseUIAuth.signOut(context: context);
+          // Navigator.pushReplacementNamed(context, '/sign-in');
+          //   },
+          //   child: Text(AppLocalizations.of(context).signOut),
+          // ),
         ],
       ),
     );

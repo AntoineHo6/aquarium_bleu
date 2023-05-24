@@ -20,6 +20,14 @@ Future main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  FirebaseUIAuth.configureProviders([
+    EmailAuthProvider(),
+    GoogleProvider(
+        clientId: '36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com'),
+  ]);
+
+  await FirebaseAuth.instance.signInAnonymously();
+
   SharedPreferences.getInstance().then((myPrefs) {
     String themeStr = myPrefs.getString(Strings.theme) ?? Strings.system;
 
@@ -43,10 +51,10 @@ Future main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
+
     return MaterialApp(
       title: 'Aquarium Bleu',
       localizationsDelegates: const [
@@ -62,94 +70,37 @@ class MyApp extends StatelessWidget {
       theme: MyTheme.lightTheme,
       darkTheme: MyTheme.darkTheme,
       themeMode: settingsProvider.themeMode,
-      initialRoute: initialRoute,
-      routes: customRoutes,
+      initialRoute: '/all-pages',
+      routes: {
+        // '/verify-email': (context) {
+        //   return EmailVerificationScreen(
+        //     // headerBuilder: headerIcon(Icons.verified),
+        //     // sideBuilder: sideIcon(Icons.verified),
+
+        //     // actionCodeSettings:
+        //     //     context.watch<FirebaseAuthProvider>().actionCodeSettings,
+        //     actionCodeSettings: ActionCodeSettings(
+        //       url: 'https://aquariumbleu.page.link',
+        //       // handleCodeInApp: true,
+        //       // androidMinimumVersion: '1',
+        //       // androidPackageName: 'com.example.aquarium_bleu',
+        //       // iOSBundleId: 'io.flutter.plugins.fireabaseUiExample',
+        //     ),
+        //     actions: [
+        //       EmailVerifiedAction(() {
+        //         Navigator.pushReplacementNamed(context, '/profile');
+        //       }),
+        //       AuthCancelledAction((context) {
+        //         FirebaseUIAuth.signOut(context: context);
+        //         Navigator.pushReplacementNamed(context, '/sign-in');
+        //       }),
+        //     ],
+        //   );
+        // },
+        '/all-pages': (context) {
+          return const AllPages();
+        },
+      },
     );
   }
 }
-
-String get initialRoute {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  if (auth.currentUser == null || auth.currentUser!.isAnonymous) {
-    return '/sign-in';
-  }
-
-  if (!auth.currentUser!.emailVerified && auth.currentUser!.email != null) {
-    return '/verify-email';
-  }
-
-  return '/all-pages';
-}
-
-void _initUid(BuildContext context) {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  String uid = auth.currentUser!.uid;
-  FirestoreStuff.uid = uid;
-}
-
-var customRoutes = <String, WidgetBuilder>{
-  '/sign-in': (context) {
-    return SignInScreen(
-      providers: [
-        EmailAuthProvider(),
-        GoogleProvider(
-          clientId: '36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com',
-        ),
-      ],
-      actions: [
-        AuthStateChangeAction<UserCreated>((context, state) {
-          if (!state.credential.user!.emailVerified) {
-            Navigator.pushNamed(context, '/verify-email');
-          } else {
-            Navigator.pushReplacementNamed(context, '/all-pages');
-          }
-        }),
-        AuthStateChangeAction<SignedIn>((context, state) {
-          if (!state.user!.emailVerified) {
-            Navigator.pushNamed(context, '/verify-email');
-          } else {
-            FirestoreStuff.checkIfDocExists(state.user!.uid).then((value) {
-              if (!value) {
-                FirestoreStuff.writeNewUser(state.user!.uid, state.user!.email);
-              }
-            });
-
-            Navigator.pushReplacementNamed(context, '/all-pages');
-          }
-        }),
-      ],
-    );
-  },
-  '/verify-email': (context) {
-    return EmailVerificationScreen(
-      // headerBuilder: headerIcon(Icons.verified),
-      // sideBuilder: sideIcon(Icons.verified),
-
-      // actionCodeSettings:
-      //     context.watch<FirebaseAuthProvider>().actionCodeSettings,
-      actionCodeSettings: ActionCodeSettings(
-        url: 'https://aquariumbleu.page.link',
-        // handleCodeInApp: true,
-        // androidMinimumVersion: '1',
-        // androidPackageName: 'com.example.aquarium_bleu',
-        // iOSBundleId: 'io.flutter.plugins.fireabaseUiExample',
-      ),
-      actions: [
-        EmailVerifiedAction(() {
-          Navigator.pushReplacementNamed(context, '/profile');
-        }),
-        AuthCancelledAction((context) {
-          FirebaseUIAuth.signOut(context: context);
-          Navigator.pushReplacementNamed(context, '/sign-in');
-        }),
-      ],
-    );
-  },
-  '/all-pages': (context) {
-    // Set the uid in CloudFireStoreProvider here because we enter this route
-    // when the user is logged in.
-    _initUid(context);
-
-    return const AllPages();
-  },
-};
