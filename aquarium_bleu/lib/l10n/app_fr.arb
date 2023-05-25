@@ -4,7 +4,9 @@
     "light": "Clair",
     "dark": "Sombre",
     "system": "Système",
+    "signIn": "Connexion",
     "signOut": "Déconnexion",
+    "noAccountConnected": "Aucun compte connecté",
     
     "freshwater": "Eau douce",
     "saltwater": "Eau salée",

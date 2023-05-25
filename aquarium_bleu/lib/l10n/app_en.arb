@@ -4,7 +4,9 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System",
+    "signIn": "Sign In",
     "signOut": "Sign Out",
+    "noAccountConnected": "No account connected",
 
     "freshwater": "Freshwater",
     "saltwater": "Saltwater",

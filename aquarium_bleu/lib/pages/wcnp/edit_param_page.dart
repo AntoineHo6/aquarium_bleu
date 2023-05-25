@@ -26,7 +26,7 @@ class _EditParamPageState extends State<EditParamPage> {
           )
         ],
       ),
-      body: Column(),
+      body: const Column(),
     );
   }
 }

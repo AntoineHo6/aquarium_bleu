@@ -1,6 +1,6 @@
-import 'package:aquarium_bleu/pages/settings/sign_in_page.dart';
 import 'package:aquarium_bleu/pages/settings/theme_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
+import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,25 +20,19 @@ class _SettingsPageState extends State<SettingsPage> {
 
     Widget btn = FirebaseAuth.instance.currentUser!.isAnonymous
         ? ElevatedButton(
-            child: Text('Sign in'),
+            child: Text(AppLocalizations.of(context).signIn),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SignInPage(),
-                ),
-              ).then((value) {
-                setState(() {});
-              });
+              Navigator.pushNamed(context, '/sign-in');
             },
           )
         : ElevatedButton(
             child: Text(AppLocalizations.of(context).signOut),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              await FirebaseAuth.instance.signInAnonymously();
-
-              setState(() {});
+            onPressed: () {
+              FirebaseAuth.instance
+                  .signOut()
+                  .then((value) => FirebaseAuth.instance.signInAnonymously().then(
+                        (value) => setState(() {}),
+                      ));
             },
           );
 
@@ -46,33 +40,44 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).settings),
       ),
-      body: Column(
-        children: [
-          Text(FirebaseAuth.instance.currentUser!.email ?? 'Anonymous'),
-          ListTile(
-            title: Text(AppLocalizations.of(context).theme),
-            subtitle: settingsProvider.themeMode == ThemeMode.dark
-                ? Text(AppLocalizations.of(context).dark)
-                : Text(AppLocalizations.of(context).light),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ThemePage(),
-                ),
-              );
-            },
-          ),
-          btn,
-          // ElevatedButton(
-          //   onPressed: () {
-          // FirebaseUIAuth.signOut(context: context);
-          // Navigator.pushReplacementNamed(context, '/sign-in');
-          //   },
-          //   child: Text(AppLocalizations.of(context).signOut),
-          // ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(Spacing.screenEdgePadding),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                  FirebaseAuth.instance.currentUser!.email ??
+                      AppLocalizations.of(context).noAccountConnected,
+                  style: Theme.of(context).textTheme.headlineSmall),
+            ),
+            const SizedBox(
+              height: Spacing.betweenSections,
+            ),
+            ListTile(
+              title: Text(AppLocalizations.of(context).theme),
+              subtitle: settingsProvider.themeMode == ThemeMode.dark
+                  ? Text(AppLocalizations.of(context).dark)
+                  : Text(AppLocalizations.of(context).light),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ThemePage(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(
+              height: Spacing.betweenSections,
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: btn,
+            ),
+          ],
+        ),
       ),
     );
   }

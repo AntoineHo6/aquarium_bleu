@@ -27,6 +27,15 @@ HeaderBuilder headerIcon(IconData icon) {
   };
 }
 
+HeaderBuilder backBtn() {
+  return (context, constraints, shrinkOffset) {
+    return const Align(
+      alignment: Alignment.topLeft,
+      child: BackButton(),
+    );
+  };
+}
+
 SideBuilder sideImage(String assetName) {
   return (context, constraints) {
     return Center(
