@@ -1,4 +1,3 @@
-import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/pages/all_pages.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
@@ -14,14 +13,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+final actionCodeSettings = ActionCodeSettings(
+  url: 'https://aquariumbleu.page.link',
+  handleCodeInApp: true,
+  androidMinimumVersion: '1',
+  androidPackageName: 'com.example.aquarium_bleu',
+  iOSBundleId: 'io.flutter.plugins.fireabaseUiExample',
+);
+final emailLinkProviderConfig = EmailLinkAuthProvider(actionCodeSettings: actionCodeSettings);
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FirebaseUIAuth.configureProviders([
     EmailAuthProvider(),
+    emailLinkProviderConfig,
     GoogleProvider(
         clientId: '36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com'),
   ]);

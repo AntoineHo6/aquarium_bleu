@@ -1,3 +1,5 @@
+import 'package:aquarium_bleu/main.dart';
+import 'package:aquarium_bleu/styles/sign_in_decorations.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
@@ -13,19 +15,6 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
-    // final mfaAction = AuthStateChangeAction<MFARequired>(
-    //   (context, state) async {
-    //     final nav = Navigator.of(context);
-
-    //     await startMFAVerification(
-    //       resolver: state.resolver,
-    //       context: context,
-    //     );
-
-    //     nav.pushReplacementNamed('/profile');
-    //   },
-    // );
-
     return Scaffold(
       appBar: AppBar(),
       body: SignInScreen(
@@ -36,13 +25,13 @@ class _SignInPageState extends State<SignInPage> {
           ),
         ],
         actions: [
-          ForgotPasswordAction((context, email) {
-            Navigator.pushNamed(
-              context,
-              '/forgot-password',
-              arguments: {'email': email},
-            );
-          }),
+          // ForgotPasswordAction((context, email) {
+          //   Navigator.pushNamed(
+          //     context,
+          //     '/forgot-password',
+          //     arguments: {'email': email},
+          //   );
+          // }),
           VerifyPhoneAction((context, _) {
             Navigator.pushNamed(context, '/phone');
           }),
@@ -50,6 +39,11 @@ class _SignInPageState extends State<SignInPage> {
             if (!state.user!.emailVerified) {
               openEmailVerfScreen(context);
             } else {
+              // TODO: if user signs in with an existing acc from an anonymous one,
+              //       ask if they want to migrate current data or not
+              // 1. if yes, copy tanks (make an algorithm)
+              // 2. paste tanks to existing user account
+
               Navigator.pop(context);
             }
           }),
@@ -67,10 +61,9 @@ class _SignInPageState extends State<SignInPage> {
               Navigator.pop(context);
             }
           }),
-          // mfaAction,
-          EmailLinkSignInAction((context) {
-            Navigator.pushReplacementNamed(context, '/email-link-sign-in');
-          }),
+          // EmailLinkSignInAction((context) {
+          //   Navigator.pushReplacementNamed(context, '/email-link-sign-in');
+          // }),
         ],
       ),
     );
@@ -82,29 +75,24 @@ void openEmailVerfScreen(BuildContext context) {
     context,
     MaterialPageRoute(
       builder: (context) => EmailVerificationScreen(
-        // headerBuilder: headerIcon(Icons.verified),
-        // sideBuilder: sideIcon(Icons.verified),
-
-        // actionCodeSettings:
-        //     context.watch<FirebaseAuthProvider>().actionCodeSettings,
-        actionCodeSettings: ActionCodeSettings(
-          url: 'https://aquariumbleu.page.link',
-          // handleCodeInApp: true,
-          // androidMinimumVersion: '1',
-          // androidPackageName: 'com.example.aquarium_bleu',
-          // iOSBundleId: 'io.flutter.plugins.fireabaseUiExample',
-        ),
+        headerBuilder: headerIcon(Icons.verified),
+        sideBuilder: sideIcon(Icons.verified),
+        actionCodeSettings: actionCodeSettings,
         actions: [
           EmailVerifiedAction(() {
-            // Navigator.pushReplacementNamed(context, '/all-pages');
+            Navigator.pop(context);
           }),
           AuthCancelledAction((context) {
-            Navigator.pop(context);
-            // FirebaseUIAuth.signOut(context: context);
-            // Navigator.pushReplacementNamed(context, '/sign-in');
+            FirebaseUIAuth.signOut(context: context).then((value) {
+              FirebaseAuth.instance
+                  .signInAnonymously()
+                  .then((value) => Navigator.pushNamed(context, '/all-pages'));
+            });
           }),
         ],
       ),
     ),
   );
 }
+
+// TODO fix: when first creating an account, it will show the mesg acc doesnt exist.

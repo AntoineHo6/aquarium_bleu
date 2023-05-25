@@ -2,8 +2,6 @@ import 'package:aquarium_bleu/pages/settings/sign_in_page.dart';
 import 'package:aquarium_bleu/pages/settings/theme_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -29,13 +27,18 @@ class _SettingsPageState extends State<SettingsPage> {
                 MaterialPageRoute(
                   builder: (context) => const SignInPage(),
                 ),
-              );
+              ).then((value) {
+                setState(() {});
+              });
             },
           )
         : ElevatedButton(
             child: Text(AppLocalizations.of(context).signOut),
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              await FirebaseAuth.instance.signInAnonymously();
+
+              setState(() {});
             },
           );
 
@@ -45,6 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: Column(
         children: [
+          Text(FirebaseAuth.instance.currentUser!.email ?? 'Anonymous'),
           ListTile(
             title: Text(AppLocalizations.of(context).theme),
             subtitle: settingsProvider.themeMode == ThemeMode.dark
