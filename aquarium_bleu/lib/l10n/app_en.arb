@@ -38,7 +38,7 @@
     "addParameterValue": "Add parameter value",
     "selectParameter": "Select parameter",
     "visibleParameters": "Visible parameters",
-    
+
     "waterChangesAndParameters": "Water changes & parameters",
     "waterChanges": "Water changes",
     "addWaterChange": "Add water change",
@@ -46,6 +46,8 @@
     "animals": "Animals",
     "plants": "Plants",
     "equipment": "Equipment",
+
+    "lastNitrateLevel": "Last nitrate level",
 
     "ammonia": "Ammonia",
     "nitrite": "Nitrite",

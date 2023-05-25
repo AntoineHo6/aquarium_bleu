@@ -54,6 +54,8 @@
     "animals": "Animaux",
     "plants": "Plantes",
     "equipment": "Équipements",
+
+    "lastNitrateLevel": "Dernière mesure de nitrate",
     
     "ammonia": "Ammoniaque",
     "nitrite": "Nitrite",

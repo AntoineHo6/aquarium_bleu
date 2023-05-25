@@ -41,26 +41,27 @@ class FirestoreStuff {
         .map((event) => event.docs.map((doc) => Tank.fromJson(doc.id, doc.data())).toList());
   }
 
-  // static Stream<List<Parameter>> readParameters(String tankId, WaterParamType param) {
-  //   return FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(uid)
-  //       .collection('tanks')
-  //       .doc(tankId)
-  //       .collection(param.getStr)
-  //       .orderBy("date")
-  //       .snapshots()
-  //       .map((event) => event.docs.map((doc) => Parameter.fromJson(doc.data())).toList());
-  // }
-
-  static Stream<List<Parameter>> readParamWithRange(
-      String tankId, WaterParamType parameter, DateTime start, DateTime end) {
+  static Stream<Parameter> readLatestParameter(String tankId, WaterParamType param) {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tankId)
-        .collection(parameter.getStr)
+        .collection(param.getStr)
+        .orderBy("date", descending: true)
+        .limit(1)
+        .snapshots()
+        .map((event) => Parameter.fromJson(event.docs.first.id, event.docs.first.data()));
+  }
+
+  static Stream<List<Parameter>> readParamWithRange(
+      String tankId, WaterParamType param, DateTime start, DateTime end) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection(param.getStr)
         .where('date', isGreaterThanOrEqualTo: start)
         .where('date', isLessThanOrEqualTo: end)
         .orderBy("date")

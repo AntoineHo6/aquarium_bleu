@@ -56,12 +56,12 @@ class _TanksPageState extends State<TanksPage> {
                           horizontal: Spacing.screenEdgePadding,
                         ),
                         child: TankCard(
-                          name: tank.name,
+                          tank: tank,
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => TankPage(snapshot.data!.elementAt(index)),
+                                builder: (context) => TankPage(tank),
                               ),
                             );
                           },
