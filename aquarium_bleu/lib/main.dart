@@ -34,7 +34,9 @@ Future main() async {
         clientId: '36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com'),
   ]);
 
-  await FirebaseAuth.instance.signInAnonymously();
+  if (FirebaseAuth.instance.currentUser == null) {
+    await FirebaseAuth.instance.signInAnonymously();
+  }
 
   SharedPreferences.getInstance().then((myPrefs) {
     String themeStr = myPrefs.getString(Strings.theme) ?? Strings.system;
