@@ -1,7 +1,10 @@
+import 'package:aquarium_bleu/my_cache_manager.dart';
 import 'package:aquarium_bleu/pages/edit_tank_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -25,11 +28,31 @@ class _TankPageState extends State<TankPage> {
             pinned: false,
             expandedHeight: MediaQuery.of(context).size.height * 0.2,
             flexibleSpace: FlexibleSpaceBar(
-              background: Image.asset(
-                "assets/images/koi_pixel.png",
-                fit: BoxFit.cover,
-                opacity: const AlwaysStoppedAnimation(0.15),
-              ),
+              background: tankProvider.tank.imgName != null
+                  ? FutureBuilder(
+                      future: MyCacheManager().getCacheImage(
+                          '${FirebaseAuth.instance.currentUser!.uid}/${tankProvider.tank.imgName}'),
+                      builder: ((context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Opacity(
+                            opacity: 0.3,
+                            child: CachedNetworkImage(
+                              imageUrl: snapshot.data!,
+                              placeholder: (context, url) => const CircularProgressIndicator(),
+                              errorWidget: (context, url, error) => const Icon(Icons.error),
+                              fit: BoxFit.cover,
+                            ),
+                          );
+                        } else {
+                          return const Center(child: CircularProgressIndicator.adaptive());
+                        }
+                      }),
+                    )
+                  : Image.asset(
+                      "assets/images/koi_pixel.png",
+                      fit: BoxFit.cover,
+                      opacity: const AlwaysStoppedAnimation(0.3),
+                    ),
               centerTitle: true,
               title: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),

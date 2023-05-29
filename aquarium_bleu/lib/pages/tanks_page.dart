@@ -1,11 +1,13 @@
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/tank.dart';
+import 'package:aquarium_bleu/my_cache_manager.dart';
 import 'package:aquarium_bleu/pages/tank_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/add_tank_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/tank_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -49,26 +51,56 @@ class _TanksPageState extends State<TanksPage> {
                     childCount: snapshot.data?.length,
                     (BuildContext context, int index) {
                       Tank tank = snapshot.data!.elementAt(index);
-                      // add tank's name to tankNames list.
-                      // Lowercase it for ez comparison
                       tankProvider.tankNames.add(tank.name.toLowerCase());
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.screenEdgePadding,
-                        ),
-                        child: TankCard(
-                          tank: tank,
-                          onPressed: () {
-                            tankProvider.tank = tank;
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const TankPage(),
-                              ),
-                            );
-                          },
-                        ),
-                      );
+
+                      if (tank.imgName != null) {
+                        return FutureBuilder(
+                          future: MyCacheManager().getCacheImage(
+                              '${FirebaseAuth.instance.currentUser!.uid}/${tank.imgName}'),
+                          builder: ((context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: Spacing.screenEdgePadding,
+                                ),
+                                child: TankCard(
+                                  tank: tank,
+                                  imgUrl: snapshot.data!,
+                                  onPressed: () {
+                                    tankProvider.tank = tank;
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const TankPage(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            } else {
+                              return const CircularProgressIndicator.adaptive();
+                            }
+                          }),
+                        );
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Spacing.screenEdgePadding,
+                          ),
+                          child: TankCard(
+                            tank: tank,
+                            onPressed: () {
+                              tankProvider.tank = tank;
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const TankPage(),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }
                     },
                   ),
                 ),

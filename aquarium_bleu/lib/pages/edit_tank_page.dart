@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:aquarium_bleu/firebase_storage_stuff.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/my_cache_manager.dart';
@@ -23,10 +22,9 @@ class _EditTankPageState extends State<EditTankPage> {
   late TextEditingController _nameFieldController;
   bool _isNameValid = true;
   String? _errorText;
-
-  String? _imgUrl;
   Image? myImage;
   XFile? image;
+  Widget newPicBtnChild = const Icon(Icons.camera);
 
   @override
   void initState() {
@@ -37,11 +35,17 @@ class _EditTankPageState extends State<EditTankPage> {
 
     if (tankProvider.tank.imgName != null) {
       final MyCacheManager myCacheManager = MyCacheManager();
+
       myCacheManager
           .getCacheImage('${FirebaseAuth.instance.currentUser!.uid}/${tankProvider.tank.imgName}')
           .then((String imgUrl) {
         setState(() {
-          _imgUrl = imgUrl;
+          // _imgUrl = imgUrl;
+          newPicBtnChild = CachedNetworkImage(
+            imageUrl: imgUrl,
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          );
         });
       });
     }
@@ -78,30 +82,12 @@ class _EditTankPageState extends State<EditTankPage> {
         tankProvider.tank.imgName = image!.name;
         await FirebaseStorageStuff().uploadImg(image!.name, image!.path);
       }
-      // Navigator.pop(context);
-
-      await FirestoreStuff.updateTank(tankProvider.tank);
+      await FirestoreStuff.updateTank(tankProvider.tank).then((value) => Navigator.pop(context));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // final TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
-
-    Widget picBtnChild;
-
-    if (_imgUrl != null) {
-      picBtnChild = CachedNetworkImage(
-        imageUrl: _imgUrl!,
-        placeholder: (context, url) => const CircularProgressIndicator(),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
-      );
-    } else if (myImage != null) {
-      picBtnChild = myImage!;
-    } else {
-      picBtnChild = const Icon(Icons.camera);
-    }
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -127,21 +113,31 @@ class _EditTankPageState extends State<EditTankPage> {
               onPressed: () async {
                 final ImagePicker picker = ImagePicker();
                 // Pick an image.
-                image = await picker.pickImage(
-                  source: ImageSource.gallery,
-                  imageQuality: 50,
-                );
+                await picker
+                    .pickImage(source: ImageSource.gallery, imageQuality: 50)
+                    .then((pickedImage) {
+                  image = pickedImage;
 
-                if (image == null) {
-                  print("no image selected");
-                } else {
-                  // show image
-                  setState(() {
-                    myImage = Image.file(File(image!.path));
-                  });
-                }
+                  if (image == null) {
+                    const SnackBar snackBar = SnackBar(
+                      content: Text('no image selected'),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  } else {
+                    setState(() {
+                      newPicBtnChild = Image.file(File(image!.path));
+                    });
+                  }
+                });
               },
-              child: picBtnChild,
+              child: Container(
+                constraints: BoxConstraints(
+                  minWidth: MediaQuery.of(context).size.width * 0.3,
+                  maxWidth: MediaQuery.of(context).size.width * 0.4,
+                  minHeight: MediaQuery.of(context).size.width * 0.3,
+                ),
+                child: newPicBtnChild,
+              ),
             ),
             Row(
               children: [

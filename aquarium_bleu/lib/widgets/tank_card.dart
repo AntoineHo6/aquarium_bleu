@@ -2,14 +2,16 @@ import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TankCard extends StatefulWidget {
   final Tank tank;
   final Function onPressed;
+  final String? imgUrl;
 
-  const TankCard({required this.tank, required this.onPressed, super.key});
+  const TankCard({required this.tank, required this.onPressed, this.imgUrl, super.key});
 
   @override
   State<TankCard> createState() => _TankCardState();
@@ -27,11 +29,14 @@ class _TankCardState extends State<TankCard> {
             SizedBox(
               width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.25,
-              child: Image.asset(
-                "assets/images/koi_pixel.png",
-                fit: BoxFit.cover,
-                opacity: const AlwaysStoppedAnimation(0.8),
-              ),
+              child: widget.imgUrl != null
+                  ? CachedNetworkImage(
+                      imageUrl: widget.imgUrl!,
+                      placeholder: (context, url) => const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) => const Icon(Icons.error),
+                      fit: BoxFit.cover,
+                    )
+                  : const Text("no image"),
             ),
             Padding(
               padding: const EdgeInsets.all(10.0),

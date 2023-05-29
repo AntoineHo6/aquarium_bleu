@@ -7,7 +7,6 @@ import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:uuid/uuid.dart';
 
 class FirestoreStuff {
   static writeNewUser(String? uid, String? email) async {
