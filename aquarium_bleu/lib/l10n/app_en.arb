@@ -17,6 +17,7 @@
     
     "add": "Add",
     "cancel": "Cancel",
+    "update": "Update",
     "required": "Required",
     "optional": "Optional",
     "select": "Select",

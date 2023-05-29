@@ -147,23 +147,27 @@ class FirestoreStuff {
     await intervalTask.update(updatedTask.toJson());
   }
 
-  static Future<String> addTank(String name, bool isFreshWater) async {
-    final String docId = const Uuid().v4();
+  // remake
+  static Future<String> addTank(Tank tank) async {
     final docTank = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
-        .doc(docId);
+        .doc(tank.docId);
 
-    // TODO: redo
-    final json = {
-      'name': name,
-      'isFreshwater': isFreshWater,
-    };
+    await docTank.set(tank.toJson());
 
-    await docTank.set(json);
+    return tank.docId;
+  }
 
-    return docId;
+  static Future updateTank(Tank tank) async {
+    final visibilityDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tank.docId);
+
+    await visibilityDoc.update(tank.toJson());
   }
 
   static Stream<DocumentSnapshot<Map<String, dynamic>>> readParamVis(String tankId) {

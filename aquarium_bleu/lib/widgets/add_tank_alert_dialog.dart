@@ -1,12 +1,13 @@
 import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/models/tank.dart';
+import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'my_text_field.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class AddTankAlertDialog extends StatefulWidget {
-  final List<String> tankNames;
-
-  const AddTankAlertDialog(this.tankNames, {super.key});
+  const AddTankAlertDialog({super.key});
 
   @override
   State<AddTankAlertDialog> createState() => _AddTankAlertDialogState();
@@ -31,6 +32,7 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
   }
 
   void _handleAdd(BuildContext context) {
+    final tankProvider = Provider.of<TankProvider>(context, listen: false);
     String nameModified = _nameFieldController.text.trim().toLowerCase();
 
     // Determine the right error message to show for the name.
@@ -40,13 +42,18 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
         _isNameValid = false;
         _errorText = AppLocalizations.of(context).emptyName;
       });
-    } else if (widget.tankNames.contains(nameModified)) {
+    } else if (tankProvider.tankNames.contains(nameModified)) {
       setState(() {
         _isNameValid = false;
         _errorText = AppLocalizations.of(context).nameAlreadyExists;
       });
     } else {
-      FirestoreStuff.addTank(_nameFieldController.text, _isFreshwater!).then((docId) {
+      Tank tank = Tank(
+        const Uuid().v4(),
+        name: _nameFieldController.text,
+        isFreshwater: _isFreshwater!,
+      );
+      FirestoreStuff.addTank(tank).then((docId) {
         FirestoreStuff.addDefaultWcnpPrefs(docId);
       });
 
@@ -63,13 +70,13 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
       content: SingleChildScrollView(
         child: ListBody(
           children: [
-            MyTextField(
+            TextField(
               controller: _nameFieldController,
-              isFieldValid: _isNameValid,
-              hintText:
-                  "${AppLocalizations.of(context).name} (${AppLocalizations.of(context).required})",
-              errorText: _errorText,
-              maxLength: 50,
+              decoration: InputDecoration(
+                labelText:
+                    "${AppLocalizations.of(context).name} (${AppLocalizations.of(context).required})",
+                errorText: _isNameValid ? null : _errorText,
+              ),
             ),
             Text("${AppLocalizations.of(context).tankType}:"),
             ListTile(

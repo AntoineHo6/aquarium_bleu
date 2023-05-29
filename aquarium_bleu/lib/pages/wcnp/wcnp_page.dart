@@ -5,6 +5,7 @@ import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_tune_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_chart_page.dart';
+import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
@@ -15,12 +16,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class WcnpPage extends StatefulWidget {
-  final String tankId;
-
-  const WcnpPage(this.tankId, {super.key});
+  const WcnpPage({super.key});
 
   @override
   State<WcnpPage> createState() => _WcnpPageState();
@@ -31,9 +31,10 @@ class _WcnpPageState extends State<WcnpPage> {
   Widget build(BuildContext context) {
     List<Stream<DocumentSnapshot<Map<String, dynamic>>>> prefsStreams = [];
 
-    prefsStreams.add(FirestoreStuff.readParamVis(widget.tankId));
-    prefsStreams.add(FirestoreStuff.readDateRangeWcnpPrefs(widget.tankId));
-    prefsStreams.add(FirestoreStuff.readShowWaterChanges(widget.tankId));
+    String tankId = Provider.of<TankProvider>(context, listen: false).tank.docId;
+    prefsStreams.add(FirestoreStuff.readParamVis(tankId));
+    prefsStreams.add(FirestoreStuff.readDateRangeWcnpPrefs(tankId));
+    prefsStreams.add(FirestoreStuff.readShowWaterChanges(tankId));
 
     return StreamBuilder(
       stream: CombineLatestStream.list(prefsStreams),
@@ -64,7 +65,7 @@ class _WcnpPageState extends State<WcnpPage> {
           for (var type in WaterParamType.values) {
             if (paramVisibility![type.getStr]) {
               dataStreams.add(
-                FirestoreStuff.readParamWithRange(widget.tankId, type, start, end),
+                FirestoreStuff.readParamWithRange(tankId, type, start, end),
               );
             }
           }
@@ -72,7 +73,7 @@ class _WcnpPageState extends State<WcnpPage> {
           bool showWaterChanges = (prefsSnapshots.data![2]['value']);
 
           return StreamBuilder(
-              stream: FirestoreStuff.readWaterChangesWithRange(widget.tankId, start, end),
+              stream: FirestoreStuff.readWaterChangesWithRange(tankId, start, end),
               builder: (context, waterChangeSnapshot) {
                 if (waterChangeSnapshot.hasData) {
                   return StreamBuilder(
@@ -85,6 +86,7 @@ class _WcnpPageState extends State<WcnpPage> {
                           showWaterChanges,
                           start,
                           end,
+                          tankId,
                         );
 
                         List<Widget> wcListTiles = _createWcListTiles(waterChangeSnapshot.data!);
@@ -103,7 +105,6 @@ class _WcnpPageState extends State<WcnpPage> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => WcnpTunePage(
-                                            widget.tankId,
                                             DateRangeType.values
                                                 .byName(prefsSnapshots.data![1][Strings.type]),
                                             customDateStart,
@@ -146,7 +147,6 @@ class _WcnpPageState extends State<WcnpPage> {
                                     onTap: () => showDialog(
                                       context: context,
                                       builder: (BuildContext context) => AddParamValAlertDialog(
-                                        widget.tankId,
                                         paramVisibility,
                                       ),
                                     ),
@@ -158,7 +158,7 @@ class _WcnpPageState extends State<WcnpPage> {
                                     onTap: () => showDialog(
                                       context: context,
                                       builder: (BuildContext context) =>
-                                          AddWaterChangeAlertDialog(widget.tankId),
+                                          AddWaterChangeAlertDialog(tankId),
                                     ),
                                   ),
                                 ],
@@ -218,8 +218,13 @@ class _WcnpPageState extends State<WcnpPage> {
     }
   }
 
-  List<Widget> _createWaterParamCharts(List<List<Parameter>> allParamData,
-      List<WaterChange> waterChanges, bool showWaterChanges, DateTime start, DateTime end) {
+  List<Widget> _createWaterParamCharts(
+      List<List<Parameter>> allParamData,
+      List<WaterChange> waterChanges,
+      bool showWaterChanges,
+      DateTime start,
+      DateTime end,
+      String tankId) {
     List<Widget> charts = [];
     for (var i = 0; i < allParamData.length; i++) {
       if (allParamData[i].isNotEmpty) {
@@ -236,7 +241,7 @@ class _WcnpPageState extends State<WcnpPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => WcnpChartPage(
-                          widget.tankId,
+                          tankId,
                           allParamData[i][0].type,
                           start,
                           end,

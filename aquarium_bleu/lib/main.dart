@@ -1,5 +1,6 @@
 import 'package:aquarium_bleu/pages/all_pages.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
+import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/sign_in_decorations.dart';
@@ -51,6 +52,9 @@ Future main() async {
               themeStr,
               lastSelectedParam,
             ),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => TankProvider(),
           ),
         ],
         child: const MyApp(),

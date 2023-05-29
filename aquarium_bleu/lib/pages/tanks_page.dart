@@ -1,11 +1,13 @@
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/pages/tank_page.dart';
+import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/add_tank_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/tank_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class TanksPage extends StatefulWidget {
   const TanksPage({super.key});
@@ -15,11 +17,10 @@ class TanksPage extends StatefulWidget {
 }
 
 class _TanksPageState extends State<TanksPage> {
-  // used to avoid duplicate tank names when adding tanks
-  final List<String> _tankNames = [];
-
   @override
   Widget build(BuildContext context) {
+    final tankProvider = Provider.of<TankProvider>(context, listen: false);
+
     return Scaffold(
       body: StreamBuilder<List<Tank>>(
         stream: FirestoreStuff.readTanks(),
@@ -50,7 +51,7 @@ class _TanksPageState extends State<TanksPage> {
                       Tank tank = snapshot.data!.elementAt(index);
                       // add tank's name to tankNames list.
                       // Lowercase it for ez comparison
-                      _tankNames.add(tank.name.toLowerCase());
+                      tankProvider.tankNames.add(tank.name.toLowerCase());
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: Spacing.screenEdgePadding,
@@ -58,10 +59,11 @@ class _TanksPageState extends State<TanksPage> {
                         child: TankCard(
                           tank: tank,
                           onPressed: () {
+                            tankProvider.tank = tank;
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => TankPage(tank),
+                                builder: (context) => const TankPage(),
                               ),
                             );
                           },
@@ -82,7 +84,7 @@ class _TanksPageState extends State<TanksPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => showDialog(
           context: context,
-          builder: (BuildContext context) => AddTankAlertDialog(_tankNames),
+          builder: (BuildContext context) => const AddTankAlertDialog(),
         ),
         child: const Icon(Icons.add),
       ),

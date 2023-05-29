@@ -17,8 +17,8 @@
 
     "add": "Ajouter",
     "cancel": "Annuler",
+    "update": "Mettre à jour",
     "required": "Obligatoire",
-
     "optional": "{gender, select, male{optionnel} female{optionnelle} other{}}",
     "@pronoun": {
         "placeholders": {

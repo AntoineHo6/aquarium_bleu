@@ -3,21 +3,20 @@ import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/pages/wcnp/param_picker_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
+import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/num_util.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
-import 'package:aquarium_bleu/widgets/my_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class AddParamValAlertDialog extends StatefulWidget {
-  final String tankId;
   final Map<String, dynamic>? paramVisibility;
 
-  const AddParamValAlertDialog(this.tankId, this.paramVisibility, {super.key});
+  const AddParamValAlertDialog(this.paramVisibility, {super.key});
 
   @override
   State<AddParamValAlertDialog> createState() => _AddParamValAlertDialogState();
@@ -61,13 +60,14 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
       content: SingleChildScrollView(
         child: ListBody(
           children: [
-            MyTextField(
+            TextField(
               controller: _valueFieldController,
-              isFieldValid: _isValueValid,
-              hintText:
-                  "${AppLocalizations.of(context).value} (${AppLocalizations.of(context).required})",
+              decoration: InputDecoration(
+                hintText:
+                    "${AppLocalizations.of(context).value} (${AppLocalizations.of(context).required})",
+                errorText: _isValueValid ? null : _errorText,
+              ),
               maxLength: 10,
-              errorText: _errorText,
             ),
             const SizedBox(
               height: Spacing.betweenSections,
@@ -142,6 +142,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
 
   void _handleAdd(BuildContext context) {
     String value = _valueFieldController.text.trim();
+    final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
     if (NumUtil.isNumeric(value) && _param != null) {
       // 1. Combine _date and _time in a DateTime for Parameter object
@@ -163,7 +164,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
 
       // 3. Add parameter to db
       FirestoreStuff.addParameter(
-        widget.tankId,
+        tankProvider.tank.docId,
         addMe,
       );
 

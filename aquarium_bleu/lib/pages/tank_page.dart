@@ -1,12 +1,13 @@
-import 'package:aquarium_bleu/models/tank.dart';
+import 'package:aquarium_bleu/pages/edit_tank_page.dart';
+import 'package:aquarium_bleu/pages/wcnp/wcnp_page.dart';
+import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
-import 'package:aquarium_bleu/widgets/tank_page/big_buttons_section.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TankPage extends StatefulWidget {
-  final Tank tank;
-
-  const TankPage(this.tank, {super.key});
+  const TankPage({super.key});
 
   @override
   State<TankPage> createState() => _TankPageState();
@@ -15,6 +16,8 @@ class TankPage extends StatefulWidget {
 class _TankPageState extends State<TankPage> {
   @override
   Widget build(BuildContext context) {
+    final tankProvider = Provider.of<TankProvider>(context, listen: false);
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -32,7 +35,7 @@ class _TankPageState extends State<TankPage> {
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
                 child: FittedBox(
                   child: Text(
-                    widget.tank.name,
+                    tankProvider.tank.name,
                     style: Theme.of(context).textTheme.displayLarge,
                   ),
                 ),
@@ -40,7 +43,14 @@ class _TankPageState extends State<TankPage> {
             ),
             actions: [
               IconButton(
-                onPressed: () => {},
+                onPressed: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditTankPage(),
+                    ),
+                  )
+                },
                 icon: const Icon(Icons.edit),
               )
             ],
@@ -54,7 +64,71 @@ class _TankPageState extends State<TankPage> {
                     horizontal: Spacing.screenEdgePadding,
                     vertical: Spacing.betweenSections,
                   ),
-                  child: BigButtonsSection(widget.tank),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          flex: 50,
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                right: _marginBetweenBigButtons,
+                                bottom: _marginBetweenBigButtons,
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const WcnpPage(),
+                                    ),
+                                  );
+                                },
+                                child: Card(
+                                  elevation: 3,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(_cardPadding),
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        AppLocalizations.of(context).waterChangesAndParameters,
+                                        style: Theme.of(context).textTheme.headlineSmall,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 50,
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                left: _marginBetweenBigButtons,
+                                bottom: _marginBetweenBigButtons,
+                              ),
+                              child: Card(
+                                elevation: 3,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(_cardPadding),
+                                  child: Text(
+                                    AppLocalizations.of(context).tasks,
+                                    style: Theme.of(context).textTheme.headlineSmall,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
@@ -64,3 +138,6 @@ class _TankPageState extends State<TankPage> {
     );
   }
 }
+
+const double _marginBetweenBigButtons = 2.5;
+const double _cardPadding = 10;
