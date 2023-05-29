@@ -7,6 +7,7 @@ import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/add_tank_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/tank_card.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -59,15 +60,22 @@ class _TanksPageState extends State<TanksPage> {
                               '${FirebaseAuth.instance.currentUser!.uid}/${tank.imgName}'),
                           builder: ((context, snapshot) {
                             if (snapshot.hasData) {
+                              Widget image = CachedNetworkImage(
+                                imageUrl: snapshot.data!,
+                                placeholder: (context, url) => const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) => const Icon(Icons.error),
+                                fit: BoxFit.cover,
+                              );
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: Spacing.screenEdgePadding,
                                 ),
                                 child: TankCard(
                                   tank: tank,
-                                  imgUrl: snapshot.data!,
+                                  image: image,
                                   onPressed: () {
                                     tankProvider.tank = tank;
+                                    tankProvider.image = image;
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -78,19 +86,25 @@ class _TanksPageState extends State<TanksPage> {
                                 ),
                               );
                             } else {
-                              return const CircularProgressIndicator.adaptive();
+                              return const Center(child: CircularProgressIndicator.adaptive());
                             }
                           }),
                         );
                       } else {
+                        Widget image = Image.asset(
+                          "assets/images/koi_pixel.png",
+                          fit: BoxFit.cover,
+                        );
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: Spacing.screenEdgePadding,
                           ),
                           child: TankCard(
                             tank: tank,
+                            image: image,
                             onPressed: () {
                               tankProvider.tank = tank;
+                              tankProvider.image = image;
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
