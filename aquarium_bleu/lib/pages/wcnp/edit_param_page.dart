@@ -22,12 +22,16 @@ class _EditParamPageState extends State<EditParamPage> {
   late TextEditingController _valueFieldController;
   bool _isValueValid = true;
   String? _errorText;
+  late DateTime _date;
+  late TimeOfDay _time;
 
   @override
   void initState() {
     super.initState();
     _valueFieldController = TextEditingController();
     _valueFieldController.value = TextEditingValue(text: widget.dataPoint.value.toString());
+    _date = widget.dataPoint.date;
+    _time = TimeOfDay.fromDateTime(widget.dataPoint.date);
   }
 
   @override
@@ -78,9 +82,18 @@ class _EditParamPageState extends State<EditParamPage> {
               height: 10,
             ),
             IconTextBtn(
-                iconData: Icons.edit_calendar,
-                text: StringUtil.formattedDate(context, widget.dataPoint.date),
-                onPressed: _handleDatePicker),
+              iconData: Icons.edit_calendar,
+              text: StringUtil.formattedDate(context, _date),
+              onPressed: _handleDatePicker,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            IconTextBtn(
+              iconData: Icons.schedule,
+              text: StringUtil.formattedTime(context, _time),
+              onPressed: () => _handleTimeBtn(),
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -124,6 +137,15 @@ class _EditParamPageState extends State<EditParamPage> {
         _errorText = AppLocalizations.of(context).theValueIsNotAValidNumber;
       });
     } else {
+      DateTime paramDate = DateTime(
+        _date.year,
+        _date.month,
+        _date.day,
+        _time.hour,
+        _time.minute,
+      );
+
+      widget.dataPoint.date = paramDate;
       widget.dataPoint.value = double.parse(value);
       FirestoreStuff.updateParam(tankId, widget.dataPoint).then((value) => Navigator.pop(context));
     }
@@ -132,15 +154,23 @@ class _EditParamPageState extends State<EditParamPage> {
   void _handleDatePicker() {
     showDatePicker(
       context: context,
-      initialDate: widget.dataPoint.date,
+      initialDate: _date,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     ).then((newDate) async {
       if (newDate != null) {
         setState(() {
-          widget.dataPoint.date = newDate;
+          _date = newDate;
         });
       }
     });
+  }
+
+  _handleTimeBtn() {
+    showTimePicker(context: context, initialTime: _time).then((value) => {
+          setState(() {
+            value != null ? _time = value : null;
+          })
+        });
   }
 }
