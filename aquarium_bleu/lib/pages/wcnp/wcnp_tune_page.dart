@@ -116,15 +116,12 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                 ),
                 GridView.count(
                   physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(0),
                   shrinkWrap: true,
                   childAspectRatio: 4,
                   crossAxisCount: 2,
                   children: dateRangeRadioBtns,
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                _sectionSeparator,
                 Row(
                   children: [
                     IconTextBtn(
@@ -134,16 +131,12 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                           ? () => _handleCustomDateStartBtn(context)
                           : null,
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    _sectionSeparator,
                     Text(
                       '-',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    _sectionSeparator,
                     IconTextBtn(
                       iconData: Icons.date_range,
                       text: StringUtil.formattedDate(context, customDateEnd),
@@ -160,9 +153,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                   AppLocalizations.of(context).visibleParameters,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                _sectionSeparator,
                 Wrap(
                   spacing: 10,
                   children: choiceChips,
@@ -174,9 +165,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                   AppLocalizations.of(context).showWaterChangeLines,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
+                _sectionSeparator,
                 Switch.adaptive(
                   value: showWaterChanges,
                   onChanged: (newValue) => setState(() {
@@ -220,4 +209,9 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
       }
     });
   }
+
+  final _sectionSeparator = const SizedBox(
+    height: 10,
+    width: 10,
+  );
 }

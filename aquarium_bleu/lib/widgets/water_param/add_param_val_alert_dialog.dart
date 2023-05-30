@@ -108,7 +108,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => WaterParamPickerPage(_param, widget.paramVisibility),
+        builder: (context) => ParamPickerPage(_param, widget.paramVisibility),
       ),
     ).then((value) => setState(() {
           if (value != null) {

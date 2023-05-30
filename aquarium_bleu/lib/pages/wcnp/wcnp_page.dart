@@ -11,7 +11,7 @@ import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_water_change_alert_dialog.dart';
-import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
+import 'package:aquarium_bleu/widgets/water_param/param_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -53,11 +53,11 @@ class _WcnpPageState extends State<WcnpPage> {
 
           List<Stream<List<Parameter>>> dataStreams = [];
 
-          DateTime start = _calculateDateStart(
+          DateTime dateStart = _calculateDateStart(
             dateRangeType,
             customDateStart,
           );
-          DateTime end = _calculateDateEnd(
+          DateTime dateEnd = _calculateDateEnd(
             dateRangeType,
             customDateEnd,
           );
@@ -65,7 +65,7 @@ class _WcnpPageState extends State<WcnpPage> {
           for (var type in WaterParamType.values) {
             if (paramVisibility![type.getStr]) {
               dataStreams.add(
-                FirestoreStuff.readParamWithRange(tankId, type, start, end),
+                FirestoreStuff.readParamWithRange(tankId, type, dateStart, dateEnd),
               );
             }
           }
@@ -73,31 +73,31 @@ class _WcnpPageState extends State<WcnpPage> {
           bool showWaterChanges = (prefsSnapshots.data![2]['value']);
 
           return StreamBuilder(
-              stream: FirestoreStuff.readWaterChangesWithRange(tankId, start, end),
+              stream: FirestoreStuff.readWaterChangesWithRange(tankId, dateStart, dateEnd),
               builder: (context, waterChangeSnapshot) {
                 if (waterChangeSnapshot.hasData) {
                   return StreamBuilder(
                     stream: CombineLatestStream.list(dataStreams),
                     builder: (context, paramSnapshot) {
                       if (paramSnapshot.hasData) {
-                        List<Widget> charts = _createWaterParamCharts(
+                        String dateRange =
+                            '${StringUtil.formattedDate(context, dateStart)} - ${StringUtil.formattedDate(context, dateEnd)}';
+
+                        List<Widget> charts = _createParamCharts(
                           paramSnapshot.data!,
                           waterChangeSnapshot.data!,
                           showWaterChanges,
-                          start,
-                          end,
+                          dateStart,
+                          dateEnd,
                           tankId,
                         );
 
                         List<Widget> wcListTiles = _createWcListTiles(waterChangeSnapshot.data!);
 
-                        if (charts.isEmpty && waterChangeSnapshot.data!.isNotEmpty) {}
-
                         return DefaultTabController(
                           length: 2,
                           child: Scaffold(
                               appBar: AppBar(
-                                // title: Text(AppLocalizations.of(context).waterChangesAndParameters),
                                 actions: [
                                   IconButton(
                                     onPressed: () {
@@ -132,8 +132,23 @@ class _WcnpPageState extends State<WcnpPage> {
                                 ),
                               ),
                               body: TabBarView(
+                                physics: const NeverScrollableScrollPhysics(),
                                 children: [
-                                  ListView(children: charts),
+                                  ListView(children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(top: Spacing.screenEdgePadding),
+                                      child: Center(
+                                        child: Text(
+                                          dateRange,
+                                          style: Theme.of(context).textTheme.bodySmall,
+                                        ),
+                                      ),
+                                    ),
+                                    Column(
+                                      children: charts,
+                                    ),
+                                  ]),
                                   ListView(children: wcListTiles),
                                 ],
                               ),
@@ -218,12 +233,12 @@ class _WcnpPageState extends State<WcnpPage> {
     }
   }
 
-  List<Widget> _createWaterParamCharts(
+  List<Widget> _createParamCharts(
       List<List<Parameter>> allParamData,
       List<WaterChange> waterChanges,
       bool showWaterChanges,
-      DateTime start,
-      DateTime end,
+      DateTime dateStart,
+      DateTime dateEnd,
       String tankId) {
     List<Widget> charts = [];
     for (var i = 0; i < allParamData.length; i++) {
@@ -231,7 +246,7 @@ class _WcnpPageState extends State<WcnpPage> {
         charts.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
-            child: WaterParamChart(
+            child: ParamChart(
               paramType: allParamData[i][0].type,
               dataSource: allParamData[i],
               actions: [
@@ -243,8 +258,8 @@ class _WcnpPageState extends State<WcnpPage> {
                         builder: (context) => WcnpChartPage(
                           tankId,
                           allParamData[i][0].type,
-                          start,
-                          end,
+                          dateStart,
+                          dateEnd,
                           showWaterChanges ? waterChanges : [],
                         ),
                       ),

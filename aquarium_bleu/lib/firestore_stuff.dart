@@ -63,7 +63,7 @@ class FirestoreStuff {
         .collection(param.getStr)
         .where('date', isGreaterThanOrEqualTo: start)
         .where('date', isLessThanOrEqualTo: end)
-        .orderBy("date")
+        .orderBy("date", descending: true)
         .snapshots()
         .map((event) => event.docs.map((doc) => Parameter.fromJson(doc.id, doc.data())).toList());
   }

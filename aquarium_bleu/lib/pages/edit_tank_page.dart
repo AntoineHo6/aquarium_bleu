@@ -20,7 +20,7 @@ class _EditTankPageState extends State<EditTankPage> {
   bool _isNameValid = true;
   String? _errorText;
   XFile? image;
-  late Widget picBtnChild;
+  late Widget picture;
 
   @override
   void initState() {
@@ -28,7 +28,7 @@ class _EditTankPageState extends State<EditTankPage> {
     _nameFieldController = TextEditingController();
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
     _nameFieldController.value = TextEditingValue(text: tankProvider.tank.name);
-    picBtnChild = tankProvider.image;
+    picture = tankProvider.image;
   }
 
   @override
@@ -60,7 +60,7 @@ class _EditTankPageState extends State<EditTankPage> {
 
       if (image != null) {
         tankProvider.tank.imgName = image!.name;
-        tankProvider.image = picBtnChild;
+        tankProvider.image = picture;
         await FirebaseStorageStuff().uploadImg(image!.name, image!.path);
       }
       await FirestoreStuff.updateTank(tankProvider.tank).then((value) => Navigator.pop(context));
@@ -77,6 +77,7 @@ class _EditTankPageState extends State<EditTankPage> {
       body: Padding(
         padding: const EdgeInsets.all(Spacing.screenEdgePadding),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
               controller: _nameFieldController,
@@ -90,8 +91,12 @@ class _EditTankPageState extends State<EditTankPage> {
             const SizedBox(
               height: Spacing.betweenSections,
             ),
-            ElevatedButton(
-              onPressed: () async {
+            Text(
+              '${AppLocalizations.of(context).tankPicture}:',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            GestureDetector(
+              onTap: () async {
                 final ImagePicker picker = ImagePicker();
                 // Pick an image.
                 await picker
@@ -106,7 +111,7 @@ class _EditTankPageState extends State<EditTankPage> {
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   } else {
                     setState(() {
-                      picBtnChild = Image.file(
+                      picture = Image.file(
                         File(image!.path),
                         fit: BoxFit.cover,
                       );
@@ -114,14 +119,28 @@ class _EditTankPageState extends State<EditTankPage> {
                   }
                 });
               },
-              child: Container(
-                constraints: BoxConstraints(
-                  minWidth: MediaQuery.of(context).size.width * 0.3,
-                  maxWidth: MediaQuery.of(context).size.width * 0.4,
-                  minHeight: MediaQuery.of(context).size.width * 0.3,
+              child: Card(
+                elevation: 5,
+                child: Container(
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width * 0.3,
+                    maxWidth: MediaQuery.of(context).size.width * 0.4,
+                  ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: picture,
+                      ),
+                      const Icon(Icons.edit),
+                    ],
+                  ),
                 ),
-                child: picBtnChild,
               ),
+            ),
+            const SizedBox(
+              height: Spacing.betweenSections,
             ),
             Row(
               children: [

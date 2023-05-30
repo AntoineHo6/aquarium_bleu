@@ -3,8 +3,9 @@ import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/pages/wcnp/edit_param_page.dart';
+import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
-import 'package:aquarium_bleu/widgets/water_param/water_param_chart.dart';
+import 'package:aquarium_bleu/widgets/water_param/param_chart.dart';
 import 'package:flutter/material.dart';
 
 class WcnpChartPage extends StatefulWidget {
@@ -32,20 +33,20 @@ class _WcnpChartPageState extends State<WcnpChartPage> {
             return Scaffold(
               appBar: AppBar(),
               body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    WaterParamChart(
-                      paramType: widget.paramType,
-                      dataSource: snapshot.data!,
-                      waterChanges: widget.waterChanges,
-                    ),
-                    Column(
-                      children: _dataPointsTiles(snapshot.data!),
-                    ),
-                    // Column(
-                    //   children: _waterChangeTiles(),
-                    // ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.all(Spacing.screenEdgePadding),
+                  child: Column(
+                    children: [
+                      ParamChart(
+                        paramType: widget.paramType,
+                        dataSource: snapshot.data!,
+                        waterChanges: widget.waterChanges,
+                      ),
+                      Column(
+                        children: _dataPointsTiles(snapshot.data!),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -61,32 +62,41 @@ class _WcnpChartPageState extends State<WcnpChartPage> {
     List<Widget> dataPointsTiles = [];
 
     for (Parameter dataPoint in data) {
-      dataPointsTiles.add(ListTile(
-        title: Text(
-          StringUtil.formattedDate(context, dataPoint.date),
-        ),
-        subtitle: Text(
-          StringUtil.formattedTime(
-            context,
-            TimeOfDay.fromDateTime(dataPoint.date),
-          ),
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(dataPoint.value.toString()),
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditParamPage(widget.tankId, dataPoint),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.edit),
+      dataPointsTiles.add(Padding(
+        padding: const EdgeInsets.only(bottom: 10),
+        child: ElevatedButton(
+          style: ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ))),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditParamPage(widget.tankId, dataPoint),
+              ),
+            );
+          },
+          child: ListTile(
+            title: Text(
+              StringUtil.formattedDate(context, dataPoint.date),
             ),
-          ],
+            subtitle: Text(
+              StringUtil.formattedTime(
+                context,
+                TimeOfDay.fromDateTime(dataPoint.date),
+              ),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  dataPoint.value.toString(),
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+              ],
+            ),
+          ),
         ),
       ));
     }

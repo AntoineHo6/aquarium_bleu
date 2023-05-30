@@ -36,6 +36,7 @@
     "tanks": "Aquariums",
     "editTank": "Modifier l'aquarium",
     "deleteTank": "Supprimer l'aquarium",
+    "tankPicture": "Image de l'aquarium",
     
     "value": "Valeur",
     "theValueIsEmpty": "La valeur est vide",
@@ -82,6 +83,7 @@
     "boron": "Bore",
     "iodine": "Iode",
 
+    "date": "Date",
     "dateRange": "Période",
     "months1": "1 mois",
     "months2": "2 mois",

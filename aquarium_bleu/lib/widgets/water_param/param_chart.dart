@@ -3,14 +3,15 @@ import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class WaterParamChart extends StatefulWidget {
+class ParamChart extends StatefulWidget {
   final WaterParamType paramType;
   final List<dynamic> dataSource;
   final List<Widget> actions;
   final List<WaterChange> waterChanges;
 
-  const WaterParamChart({
+  const ParamChart({
     required this.paramType,
     this.dataSource = const [],
     this.actions = const [],
@@ -19,10 +20,10 @@ class WaterParamChart extends StatefulWidget {
   });
 
   @override
-  State<WaterParamChart> createState() => _WaterParamChartState();
+  State<ParamChart> createState() => _ParamChartState();
 }
 
-class _WaterParamChartState extends State<WaterParamChart> {
+class _ParamChartState extends State<ParamChart> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -49,6 +50,8 @@ class _WaterParamChartState extends State<WaterParamChart> {
           ),
         ),
         SfCartesianChart(
+          tooltipBehavior: TooltipBehavior(
+              enable: true, header: AppLocalizations.of(context).date, format: 'point.x'),
           primaryXAxis: DateTimeAxis(
             plotBands: widget.waterChanges
                 .map(

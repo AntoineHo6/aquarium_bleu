@@ -29,6 +29,7 @@
     "tanks": "Tanks",
     "editTank": "Edit tank",
     "deleteTank": "Delete tank",
+    "tankPicture": "Tank picture",
 
     "value": "Value",
     "theValueIsEmpty": "The value is empty",
@@ -75,6 +76,7 @@
     "boron": "Boron",
     "iodine": "Iodine",
 
+    "date": "Date",
     "dateRange": "Date range",
     "months1": "1 month",
     "months2": "2 months",

@@ -4,17 +4,17 @@ import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class WaterParamPickerPage extends StatefulWidget {
+class ParamPickerPage extends StatefulWidget {
   final WaterParamType? currentParam;
-  final Map<String, dynamic>? paramVisibility;
+  final Map<String, dynamic>? paramVis;
 
-  const WaterParamPickerPage(this.currentParam, this.paramVisibility, {super.key});
+  const ParamPickerPage(this.currentParam, this.paramVis, {super.key});
 
   @override
-  State<WaterParamPickerPage> createState() => _WaterParamPickerPageState();
+  State<ParamPickerPage> createState() => _ParamPickerPageState();
 }
 
-class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
+class _ParamPickerPageState extends State<ParamPickerPage> {
   late WaterParamType? currentParam;
   late List<WaterParamType> visibleParamTypes = [];
 
@@ -24,7 +24,7 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
     currentParam = widget.currentParam;
 
     for (var paramType in WaterParamType.values) {
-      if (widget.paramVisibility![paramType.getStr]) {
+      if (widget.paramVis![paramType.getStr]) {
         visibleParamTypes.add(paramType);
       }
     }
@@ -59,9 +59,8 @@ class _WaterParamPickerPageState extends State<WaterParamPickerPage> {
                     ))
                 .toList(),
           ),
-          Container(
-            // tODO: use padding
-            margin: const EdgeInsets.only(
+          Padding(
+            padding: const EdgeInsets.only(
               left: Spacing.screenEdgePadding,
               right: Spacing.screenEdgePadding,
               top: Spacing.betweenSections,
