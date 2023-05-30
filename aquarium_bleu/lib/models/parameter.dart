@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Parameter {
   final String docId;
   final WaterParamType type;
-  final double value;
-  final DateTime date;
+  double value;
+  DateTime date;
 
   Parameter({
     required this.docId,

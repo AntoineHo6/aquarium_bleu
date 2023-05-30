@@ -75,18 +75,18 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
             IconTextBtn(
               iconData: Icons.science_outlined,
               text: _paramBtnText,
-              onPressed: () => _handleParamPickerBtn(context),
+              onPressed: () => _handleParamPickerBtn(),
               isError: isParamBtnInError,
             ),
             IconTextBtn(
               iconData: Icons.calendar_today,
               text: StringUtil.formattedDate(context, _date),
-              onPressed: () => _handleDateBtn(context),
+              onPressed: () => _handleDateBtn(),
             ),
             IconTextBtn(
               iconData: Icons.schedule,
               text: StringUtil.formattedTime(context, _time),
-              onPressed: () => _handleTimeBtn(context),
+              onPressed: () => _handleTimeBtn(),
             ),
           ],
         ),
@@ -98,13 +98,13 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
         ),
         TextButton(
           child: Text(AppLocalizations.of(context).add),
-          onPressed: () => _handleAdd(context),
+          onPressed: () => _handleAdd(),
         ),
       ],
     );
   }
 
-  _handleParamPickerBtn(BuildContext context) {
+  _handleParamPickerBtn() {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -119,7 +119,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
         }));
   }
 
-  _handleDateBtn(BuildContext context) {
+  _handleDateBtn() {
     showDatePicker(
       context: context,
       initialDate: _date,
@@ -132,7 +132,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
         });
   }
 
-  _handleTimeBtn(BuildContext context) {
+  _handleTimeBtn() {
     showTimePicker(context: context, initialTime: _time).then((value) => {
           setState(() {
             value != null ? _time = value : null;
@@ -140,7 +140,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
         });
   }
 
-  void _handleAdd(BuildContext context) {
+  void _handleAdd() {
     String value = _valueFieldController.text.trim();
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 

@@ -128,7 +128,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                       iconData: Icons.date_range,
                       text: StringUtil.formattedDate(context, customDateStart),
                       onPressed: currentDateRangeType == DateRangeType.custom
-                          ? () => _handleCustomDateStartBtn(context)
+                          ? () => _handleDatePicker(customDateStart)
                           : null,
                     ),
                     _sectionSeparator,
@@ -141,7 +141,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                       iconData: Icons.date_range,
                       text: StringUtil.formattedDate(context, customDateEnd),
                       onPressed: currentDateRangeType == DateRangeType.custom
-                          ? () => _handleCustomDateEndBtn(context)
+                          ? () => _handleDatePicker(customDateEnd)
                           : null,
                     )
                   ],
@@ -180,31 +180,16 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
     );
   }
 
-  _handleCustomDateStartBtn(BuildContext context) {
+  _handleDatePicker(DateTime date) {
     showDatePicker(
       context: context,
-      initialDate: customDateStart,
+      initialDate: date,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     ).then((newDate) async {
       if (newDate != null) {
         setState(() {
           customDateStart = newDate;
-        });
-      }
-    });
-  }
-
-  _handleCustomDateEndBtn(BuildContext context) {
-    showDatePicker(
-      context: context,
-      initialDate: customDateEnd,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    ).then((newDate) async {
-      if (newDate != null) {
-        setState(() {
-          customDateEnd = newDate;
         });
       }
     });

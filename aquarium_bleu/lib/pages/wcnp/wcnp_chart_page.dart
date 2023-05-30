@@ -73,7 +73,7 @@ class _WcnpChartPageState extends State<WcnpChartPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => EditParamPage(widget.tankId, dataPoint),
+                builder: (context) => EditParamPage(dataPoint),
               ),
             );
           },

@@ -69,7 +69,7 @@ class FirestoreStuff {
   }
 
   static Future addParameter(String tankId, Parameter param) async {
-    final docParam = FirebaseFirestore.instance
+    final paramDoc = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
@@ -77,9 +77,19 @@ class FirestoreStuff {
         .collection(param.type.getStr)
         .doc(param.docId);
 
-    final json = param.toJson();
+    await paramDoc.set(param.toJson());
+  }
 
-    await docParam.set(json);
+  static Future updateParam(String tankId, Parameter param) async {
+    final paramDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection(param.type.getStr)
+        .doc(param.docId);
+
+    await paramDoc.update(param.toJson());
   }
 
   static Future deleteParam(String tankId, Parameter param) async {

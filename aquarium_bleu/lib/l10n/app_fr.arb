@@ -17,6 +17,7 @@
 
     "add": "Ajouter",
     "cancel": "Annuler",
+    "confirm": "Confirmer",
     "update": "Mettre à jour",
     "required": "Obligatoire",
     "optional": "{gender, select, male{optionnel} female{optionnelle} other{}}",
@@ -29,6 +30,7 @@
     },
     "select": "Sélectionner",
     "error": "Erreur",
+    "areUSureDelete": "Est-vous sûr de vouloir supprimer?",
 
     "addANewTank": "Ajouter un nouvel aquarium",
     "tankName": "Nom de l'aquarium",

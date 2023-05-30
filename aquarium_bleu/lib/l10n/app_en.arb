@@ -17,11 +17,13 @@
     
     "add": "Add",
     "cancel": "Cancel",
+    "confirm": "Confirm",
     "update": "Update",
     "required": "Required",
     "optional": "Optional",
     "select": "Select",
     "error": "Error",
+    "areUSureDelete": "Are you sure you want to delete?",
 
     "addANewTank": "Add a new tank",
     "tankName": "Tank name",
