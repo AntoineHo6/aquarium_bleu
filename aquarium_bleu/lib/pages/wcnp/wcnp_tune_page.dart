@@ -117,33 +117,42 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                 GridView.count(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  childAspectRatio: 4,
-                  crossAxisCount: 2,
+                  childAspectRatio: 7,
+                  crossAxisCount: 1,
                   children: dateRangeRadioBtns,
                 ),
                 _sectionSeparator,
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    IconTextBtn(
-                      iconData: Icons.date_range,
-                      text: StringUtil.formattedDate(context, customDateStart),
+                    FilledButton.tonal(
                       onPressed: currentDateRangeType == DateRangeType.custom
                           ? () => _handleDatePicker(customDateStart)
                           : null,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.date_range),
+                          _sectionSeparator,
+                          Text(
+                              '${AppLocalizations.of(context).customDateStart}: ${StringUtil.formattedDate(context, customDateStart)}'),
+                        ],
+                      ),
                     ),
-                    _sectionSeparator,
-                    Text(
-                      '-',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    _sectionSeparator,
-                    IconTextBtn(
-                      iconData: Icons.date_range,
-                      text: StringUtil.formattedDate(context, customDateEnd),
+                    FilledButton.tonal(
                       onPressed: currentDateRangeType == DateRangeType.custom
                           ? () => _handleDatePicker(customDateEnd)
                           : null,
-                    )
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.date_range),
+                          _sectionSeparator,
+                          Text(
+                              '${AppLocalizations.of(context).customDateEnd}: ${StringUtil.formattedDate(context, customDateEnd)}'),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(

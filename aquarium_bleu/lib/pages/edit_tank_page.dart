@@ -37,7 +37,7 @@ class _EditTankPageState extends State<EditTankPage> {
     super.dispose();
   }
 
-  void _handleUpdate(BuildContext context) async {
+  Future _handleUpdate(BuildContext context) async {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
     String name = _nameFieldController.text.trim().toLowerCase();
@@ -63,7 +63,7 @@ class _EditTankPageState extends State<EditTankPage> {
         tankProvider.image = picture;
         await FirebaseStorageStuff().uploadImg(image!.name, image!.path);
       }
-      await FirestoreStuff.updateTank(tankProvider.tank).then((value) => Navigator.pop(context));
+      await FirestoreStuff.updateTank(tankProvider.tank);
     }
   }
 
@@ -156,7 +156,10 @@ class _EditTankPageState extends State<EditTankPage> {
                 Expanded(
                   flex: 70,
                   child: ElevatedButton(
-                    onPressed: () => _handleUpdate(context),
+                    onPressed: () {
+                      _handleUpdate(context);
+                      Navigator.pop(context);
+                    },
                     child: Text(AppLocalizations.of(context).update),
                   ),
                 ),

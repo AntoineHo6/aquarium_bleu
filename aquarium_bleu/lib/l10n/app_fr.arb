@@ -94,6 +94,8 @@
     "months9": "9 mois",
     "all": "Tout",
     "custom": "Personnalisé",
+    "customDateStart": "Custom date start",
+    "customDateEnd": "Custom date end",
 
     "janAbbr": "Janv.",
     "febAbbr": "Févr.",
