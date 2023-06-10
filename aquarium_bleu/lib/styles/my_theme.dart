@@ -12,6 +12,4 @@ class MyTheme {
     brightness: Brightness.light,
     colorSchemeSeed: const Color(0xFF8AAAE5),
   );
-
-  static const paramColor = Colors.orangeAccent;
 }

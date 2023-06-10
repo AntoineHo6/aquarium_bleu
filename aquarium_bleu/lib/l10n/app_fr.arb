@@ -30,7 +30,8 @@
     },
     "select": "Sélectionner",
     "error": "Erreur",
-    "areUSureDelete": "Est-vous sûr de vouloir supprimer?",
+    "delete": "Supprimer",
+    "viewAll": "Voir tout",
 
     "addANewTank": "Ajouter un nouvel aquarium",
     "tankName": "Nom de l'aquarium",
@@ -38,7 +39,8 @@
     "tanks": "Aquariums",
     "editTank": "Modifier l'aquarium",
     "deleteTank": "Supprimer l'aquarium",
-    "tankPicture": "Image de l'aquarium",
+    "confirmDeleteX": "Êtes-vous sûr de vouloir supprimer  {x}?",
+    "displayPicture": "Image d'affichage",
     
     "value": "Valeur",
     "theValueIsEmpty": "La valeur est vide",
@@ -59,6 +61,8 @@
     "equipment": "Équipements",
 
     "lastNitrateLevel": "Dernière mesure de nitrate",
+    "lastWaterChange": "Dernier changement d'eau",
+    "xDaysAgo": "Il y a {x} jours",
     
     "ammonia": "Ammoniaque",
     "nitrite": "Nitrite",

@@ -119,6 +119,19 @@ class FirestoreStuff {
         .map((event) => event.docs.map((doc) => WaterChange.fromJson(doc.id, doc.data())).toList());
   }
 
+  static Stream<WaterChange> readLatestWC(String tankId) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('waterChanges')
+        .orderBy("date", descending: true)
+        .limit(1)
+        .snapshots()
+        .map((event) => WaterChange.fromJson(event.docs.first.id, event.docs.first.data()));
+  }
+
   static Future addWaterChange(String tankId, WaterChange waterChange) async {
     final docWaterChange = FirebaseFirestore.instance
         .collection('users')
@@ -170,13 +183,23 @@ class FirestoreStuff {
   }
 
   static Future updateTank(Tank tank) async {
-    final visibilityDoc = FirebaseFirestore.instance
+    final tankDoc = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
         .doc(tank.docId);
 
-    await visibilityDoc.update(tank.toJson());
+    await tankDoc.update(tank.toJson());
+  }
+
+  static Future deleteTank(Tank tank) async {
+    final tankDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tank.docId);
+
+    await tankDoc.delete();
   }
 
   static Stream<DocumentSnapshot<Map<String, dynamic>>> readParamVis(String tankId) {

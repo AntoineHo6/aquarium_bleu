@@ -3,6 +3,7 @@ import 'package:aquarium_bleu/firebase_storage_stuff.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
+import 'package:aquarium_bleu/widgets/confirm_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
@@ -37,7 +38,7 @@ class _EditTankPageState extends State<EditTankPage> {
     super.dispose();
   }
 
-  Future _handleUpdate(BuildContext context) async {
+  Future _handleUpdate() async {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
     String name = _nameFieldController.text.trim().toLowerCase();
@@ -56,6 +57,8 @@ class _EditTankPageState extends State<EditTankPage> {
       setState(() {
         _isNameValid = true;
       });
+
+      tankProvider.tankNames.remove(tankProvider.tank.name);
       tankProvider.tank.name = name;
 
       if (image != null) {
@@ -63,16 +66,38 @@ class _EditTankPageState extends State<EditTankPage> {
         tankProvider.image = picture;
         await FirebaseStorageStuff().uploadImg(image!.name, image!.path);
       }
-      await FirestoreStuff.updateTank(tankProvider.tank);
+      await FirestoreStuff.updateTank(tankProvider.tank).then((value) => Navigator.pop(context));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final tankProvider = Provider.of<TankProvider>(context, listen: false);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).editTank),
+        actions: [
+          IconButton(
+            onPressed: () => showDialog(
+              context: context,
+              builder: (BuildContext context) => ConfirmAlertDialog(
+                title: Text('${AppLocalizations.of(context).delete} ${tankProvider.tank.name}'),
+                content: Text(AppLocalizations.of(context).confirmDeleteX(tankProvider.tank.name)),
+                onConfirm: () async {
+                  tankProvider.tankNames.remove(tankProvider.tank.name);
+                  await FirestoreStuff.deleteTank(tankProvider.tank).then((value) {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+            ),
+            icon: const Icon(Icons.delete),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(Spacing.screenEdgePadding),
@@ -92,7 +117,7 @@ class _EditTankPageState extends State<EditTankPage> {
               height: Spacing.betweenSections,
             ),
             Text(
-              '${AppLocalizations.of(context).tankPicture}:',
+              '${AppLocalizations.of(context).displayPicture}:',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             GestureDetector(
@@ -157,8 +182,7 @@ class _EditTankPageState extends State<EditTankPage> {
                   flex: 70,
                   child: ElevatedButton(
                     onPressed: () {
-                      _handleUpdate(context);
-                      Navigator.pop(context);
+                      _handleUpdate();
                     },
                     child: Text(AppLocalizations.of(context).update),
                   ),

@@ -80,8 +80,8 @@ class _WcnpPageState extends State<WcnpPage> {
                     stream: CombineLatestStream.list(dataStreams),
                     builder: (context, paramSnapshot) {
                       if (paramSnapshot.hasData) {
-                        String dateRange =
-                            '${StringUtil.formattedDate(context, dateStart)} - ${StringUtil.formattedDate(context, dateEnd)}';
+                        String dateRangeTypeStr =
+                            StringUtil.dateRangeTypeToString(context, dateRangeType);
 
                         List<Widget> charts = _createParamCharts(
                           paramSnapshot.data!,
@@ -98,6 +98,8 @@ class _WcnpPageState extends State<WcnpPage> {
                           length: 2,
                           child: Scaffold(
                               appBar: AppBar(
+                                title: Text(
+                                    '${AppLocalizations.of(context).dateRange}: ${dateRangeTypeStr}'),
                                 actions: [
                                   IconButton(
                                     onPressed: () {
@@ -135,21 +137,14 @@ class _WcnpPageState extends State<WcnpPage> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 children: [
                                   ListView(children: [
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.only(top: Spacing.screenEdgePadding),
-                                      child: Center(
-                                        child: Text(
-                                          dateRange,
-                                          style: Theme.of(context).textTheme.bodySmall,
-                                        ),
-                                      ),
-                                    ),
                                     Column(
                                       children: charts,
                                     ),
                                   ]),
-                                  ListView(children: wcListTiles),
+                                  Padding(
+                                    padding: const EdgeInsets.all(Spacing.screenEdgePadding),
+                                    child: ListView(children: wcListTiles),
+                                  ),
                                 ],
                               ),
                               floatingActionButton: SpeedDial(
@@ -280,14 +275,25 @@ class _WcnpPageState extends State<WcnpPage> {
 
   List<Widget> _createWcListTiles(List<WaterChange> waterChanges) {
     return waterChanges
-        .map((wc) => ListTile(
-              title: Text(
-                StringUtil.formattedDate(context, wc.date),
-              ),
-              subtitle: Text(
-                StringUtil.formattedTime(
-                  context,
-                  TimeOfDay.fromDateTime(wc.date),
+        .map((wc) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  )),
+                ),
+                onPressed: () => {},
+                child: ListTile(
+                  title: Text(
+                    StringUtil.formattedDate(context, wc.date),
+                  ),
+                  subtitle: Text(
+                    StringUtil.formattedTime(
+                      context,
+                      TimeOfDay.fromDateTime(wc.date),
+                    ),
+                  ),
                 ),
               ),
             ))

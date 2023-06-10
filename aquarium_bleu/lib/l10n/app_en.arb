@@ -23,7 +23,8 @@
     "optional": "Optional",
     "select": "Select",
     "error": "Error",
-    "areUSureDelete": "Are you sure you want to delete?",
+    "delete": "Delete",
+    "viewAll": "View all",
 
     "addANewTank": "Add a new tank",
     "tankName": "Tank name",
@@ -31,7 +32,8 @@
     "tanks": "Tanks",
     "editTank": "Edit tank",
     "deleteTank": "Delete tank",
-    "tankPicture": "Tank picture",
+    "confirmDeleteX": "Are you sure you want to delete {x}?",
+    "displayPicture": "Display picture",
 
     "value": "Value",
     "theValueIsEmpty": "The value is empty",
@@ -52,6 +54,8 @@
     "equipment": "Equipment",
 
     "lastNitrateLevel": "Last nitrate level",
+    "lastWaterChange": "Last water change",
+    "xDaysAgo": "{x} days ago",
 
     "ammonia": "Ammonia",
     "nitrite": "Nitrite",

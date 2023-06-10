@@ -62,7 +62,8 @@ class _TanksPageState extends State<TanksPage> {
                             if (snapshot.hasData) {
                               Widget image = CachedNetworkImage(
                                 imageUrl: snapshot.data!,
-                                placeholder: (context, url) => const CircularProgressIndicator(),
+                                placeholder: (context, url) =>
+                                    const Center(child: CircularProgressIndicator()),
                                 errorWidget: (context, url, error) => const Icon(Icons.error),
                                 fit: BoxFit.cover,
                               );

@@ -5,7 +5,7 @@ import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/num_util.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
-import 'package:aquarium_bleu/widgets/water_param/confirm_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/confirm_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +52,7 @@ class _EditParamPageState extends State<EditParamPage> {
               context: context,
               builder: (BuildContext context) => ConfirmAlertDialog(
                 title: Text(AppLocalizations.of(context).confirm),
-                content: Text(AppLocalizations.of(context).areUSureDelete),
+                content: Text(AppLocalizations.of(context).confirmDeleteX('')),
                 onConfirm: () async {
                   await FirestoreStuff.deleteParam(tankId, widget.dataPoint).then((value) {
                     Navigator.pop(context);

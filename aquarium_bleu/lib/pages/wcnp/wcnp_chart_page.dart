@@ -62,43 +62,46 @@ class _WcnpChartPageState extends State<WcnpChartPage> {
     List<Widget> dataPointsTiles = [];
 
     for (Parameter dataPoint in data) {
-      dataPointsTiles.add(Padding(
-        padding: const EdgeInsets.only(bottom: 10),
-        child: ElevatedButton(
-          style: ButtonStyle(
+      dataPointsTiles.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: ElevatedButton(
+            style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ))),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EditParamPage(dataPoint),
-              ),
-            );
-          },
-          child: ListTile(
-            title: Text(
-              StringUtil.formattedDate(context, dataPoint.date),
+                borderRadius: BorderRadius.circular(20),
+              )),
             ),
-            subtitle: Text(
-              StringUtil.formattedTime(
+            onPressed: () {
+              Navigator.push(
                 context,
-                TimeOfDay.fromDateTime(dataPoint.date),
-              ),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  dataPoint.value.toString(),
-                  style: Theme.of(context).textTheme.labelLarge,
+                MaterialPageRoute(
+                  builder: (context) => EditParamPage(dataPoint),
                 ),
-              ],
+              );
+            },
+            child: ListTile(
+              title: Text(
+                StringUtil.formattedDate(context, dataPoint.date),
+              ),
+              subtitle: Text(
+                StringUtil.formattedTime(
+                  context,
+                  TimeOfDay.fromDateTime(dataPoint.date),
+                ),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    dataPoint.value.toString(),
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ));
+      );
     }
 
     return dataPointsTiles;

@@ -36,6 +36,16 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           );
 
+    String themeStr;
+
+    if (settingsProvider.themeMode == ThemeMode.dark) {
+      themeStr = AppLocalizations.of(context).dark;
+    } else if (settingsProvider.themeMode == ThemeMode.light) {
+      themeStr = AppLocalizations.of(context).light;
+    } else {
+      themeStr = AppLocalizations.of(context).system;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).settings),
@@ -56,9 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             ListTile(
               title: Text(AppLocalizations.of(context).theme),
-              subtitle: settingsProvider.themeMode == ThemeMode.dark
-                  ? Text(AppLocalizations.of(context).dark)
-                  : Text(AppLocalizations.of(context).light),
+              subtitle: Text(themeStr),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.push(
