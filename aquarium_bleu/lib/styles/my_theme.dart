@@ -12,4 +12,7 @@ class MyTheme {
     brightness: Brightness.light,
     colorSchemeSeed: const Color(0xFF8AAAE5),
   );
+
+  static const wcColor = Colors.lightBlue;
+  static const paramColor = Colors.orange;
 }

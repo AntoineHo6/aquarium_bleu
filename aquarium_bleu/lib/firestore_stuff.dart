@@ -104,8 +104,7 @@ class FirestoreStuff {
     await paramDoc.delete();
   }
 
-  static Stream<List<WaterChange>> readWaterChangesWithRange(
-      String tankId, DateTime start, DateTime end) {
+  static Stream<List<WaterChange>> readWcWithRange(String tankId, DateTime start, DateTime end) {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -119,7 +118,31 @@ class FirestoreStuff {
         .map((event) => event.docs.map((doc) => WaterChange.fromJson(doc.id, doc.data())).toList());
   }
 
-  static Stream<WaterChange> readLatestWC(String tankId) {
+  static Future deleteWc(String tankId, String wcId) async {
+    final wcDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('waterChanges')
+        .doc(wcId);
+
+    await wcDoc.delete();
+  }
+
+  static Future updateWc(String tankId, WaterChange wc) async {
+    final wcDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('waterChanges')
+        .doc(wc.docId);
+
+    await wcDoc.update(wc.toJson());
+  }
+
+  static Stream<WaterChange> readLatestWc(String tankId) {
     return FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)

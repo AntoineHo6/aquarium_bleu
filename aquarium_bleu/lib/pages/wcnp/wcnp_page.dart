@@ -3,10 +3,12 @@ import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
+import 'package:aquarium_bleu/pages/wcnp/edit_wc_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_tune_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_chart_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
+import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
@@ -73,9 +75,9 @@ class _WcnpPageState extends State<WcnpPage> {
           bool showWaterChanges = (prefsSnapshots.data![2]['value']);
 
           return StreamBuilder(
-              stream: FirestoreStuff.readWaterChangesWithRange(tankId, dateStart, dateEnd),
-              builder: (context, waterChangeSnapshot) {
-                if (waterChangeSnapshot.hasData) {
+              stream: FirestoreStuff.readWcWithRange(tankId, dateStart, dateEnd),
+              builder: (context, wcSnapshot) {
+                if (wcSnapshot.hasData) {
                   return StreamBuilder(
                     stream: CombineLatestStream.list(dataStreams),
                     builder: (context, paramSnapshot) {
@@ -85,21 +87,21 @@ class _WcnpPageState extends State<WcnpPage> {
 
                         List<Widget> charts = _createParamCharts(
                           paramSnapshot.data!,
-                          waterChangeSnapshot.data!,
+                          wcSnapshot.data!,
                           showWaterChanges,
                           dateStart,
                           dateEnd,
                           tankId,
                         );
 
-                        List<Widget> wcListTiles = _createWcListTiles(waterChangeSnapshot.data!);
+                        List<Widget> wcListTiles = _createWcListTiles(wcSnapshot.data!);
 
                         return DefaultTabController(
                           length: 2,
                           child: Scaffold(
                               appBar: AppBar(
                                 title: Text(
-                                    '${AppLocalizations.of(context).dateRange}: ${dateRangeTypeStr}'),
+                                    '${AppLocalizations.of(context).dateRange}: $dateRangeTypeStr'),
                                 actions: [
                                   IconButton(
                                     onPressed: () {
@@ -153,7 +155,7 @@ class _WcnpPageState extends State<WcnpPage> {
                                   SpeedDialChild(
                                     child: const Icon(Icons.show_chart_outlined),
                                     label: AppLocalizations.of(context).addParameterValue,
-                                    backgroundColor: Colors.orange,
+                                    backgroundColor: MyTheme.paramColor,
                                     onTap: () => showDialog(
                                       context: context,
                                       builder: (BuildContext context) => AddParamValAlertDialog(
@@ -164,7 +166,7 @@ class _WcnpPageState extends State<WcnpPage> {
                                   SpeedDialChild(
                                     child: const Icon(Icons.water_drop),
                                     label: AppLocalizations.of(context).addWaterChange,
-                                    backgroundColor: Colors.lightBlue,
+                                    backgroundColor: MyTheme.wcColor,
                                     onTap: () => showDialog(
                                       context: context,
                                       builder: (BuildContext context) =>
@@ -283,11 +285,30 @@ class _WcnpPageState extends State<WcnpPage> {
                     borderRadius: BorderRadius.circular(20),
                   )),
                 ),
-                onPressed: () => {},
-                child: ListTile(
-                  title: Text(
-                    StringUtil.formattedDate(context, wc.date),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditWcPage(wc),
                   ),
+                ),
+                child: ListTile(
+                  title: RichText(
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.titleMedium,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: StringUtil.formattedDate(context, wc.date),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: MyTheme.wcColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // title: Text(
+                  //   StringUtil.formattedDate(context, wc.date),
+                  // ),
                   subtitle: Text(
                     StringUtil.formattedTime(
                       context,

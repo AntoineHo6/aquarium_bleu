@@ -43,7 +43,7 @@ class _TankCardState extends State<TankCard> {
                     style: Theme.of(context).textTheme.headlineLarge,
                   ),
                   StreamBuilder<WaterChange>(
-                    stream: FirestoreStuff.readLatestWC(widget.tank.docId),
+                    stream: FirestoreStuff.readLatestWc(widget.tank.docId),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         final difference = DateTime.now().difference(snapshot.data!.date).inDays;

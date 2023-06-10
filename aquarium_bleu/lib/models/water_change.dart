@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class WaterChange {
   final String docId;
-  final DateTime date;
+  DateTime date;
 
   WaterChange({
     required this.docId,

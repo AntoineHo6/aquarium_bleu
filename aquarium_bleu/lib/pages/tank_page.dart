@@ -1,6 +1,7 @@
 import 'package:aquarium_bleu/pages/edit_tank_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
+import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/horizontal_list_card.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class _TankPageState extends State<TankPage> {
                                               alignment: Alignment.centerLeft,
                                               child: Icon(
                                                 Icons.water_drop,
-                                                color: Colors.lightBlue[700],
+                                                color: MyTheme.wcColor,
                                                 size: MediaQuery.of(context).size.width * 0.55,
                                               ),
                                             ),

@@ -1,5 +1,6 @@
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
+import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -60,14 +61,14 @@ class _ParamChartState extends State<ParamChart> {
                     end: wc.date,
                     shouldRenderAboveSeries: true,
                     borderWidth: 1.5,
-                    borderColor: Colors.red,
+                    borderColor: MyTheme.wcColor,
                   ),
                 )
                 .toList(),
           ),
           series: <ChartSeries>[
             LineSeries(
-              color: ColorScheme.fromSwatch().primary,
+              color: MyTheme.paramColor,
               animationDuration: 800,
               dataSource: widget.dataSource,
               xValueMapper: (dataPoint, _) => dataPoint.date,
