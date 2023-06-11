@@ -61,6 +61,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
         child: ListBody(
           children: [
             TextField(
+              keyboardType: TextInputType.number,
               controller: _valueFieldController,
               decoration: InputDecoration(
                 hintText:

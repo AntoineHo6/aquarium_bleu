@@ -5,7 +5,7 @@ import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/pages/wcnp/edit_param_page.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
-import 'package:aquarium_bleu/widgets/water_param/param_chart.dart';
+import 'package:aquarium_bleu/widgets/wcnp_page/param_chart.dart';
 import 'package:flutter/material.dart';
 
 class WcnpChartPage extends StatefulWidget {

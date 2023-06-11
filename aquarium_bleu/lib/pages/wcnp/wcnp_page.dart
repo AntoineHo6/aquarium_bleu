@@ -11,9 +11,9 @@ import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
-import 'package:aquarium_bleu/widgets/water_param/add_param_val_alert_dialog.dart';
-import 'package:aquarium_bleu/widgets/water_param/add_water_change_alert_dialog.dart';
-import 'package:aquarium_bleu/widgets/water_param/param_chart.dart';
+import 'package:aquarium_bleu/widgets/wcnp_page/add_param_val_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/wcnp_page/add_water_change_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/wcnp_page/param_chart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -136,7 +136,6 @@ class _WcnpPageState extends State<WcnpPage> {
                                 ),
                               ),
                               body: TabBarView(
-                                physics: const NeverScrollableScrollPhysics(),
                                 children: [
                                   ListView(children: [
                                     Column(

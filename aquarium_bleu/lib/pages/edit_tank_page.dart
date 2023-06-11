@@ -4,6 +4,7 @@ import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/confirm_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/loading_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
@@ -41,14 +42,16 @@ class _EditTankPageState extends State<EditTankPage> {
   Future _handleUpdate() async {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
-    String name = _nameFieldController.text.trim().toLowerCase();
+    String name = _nameFieldController.text.trim();
+    String nameLowerCase = name.toLowerCase();
     // Determine the right error message to show for the name.
-    if (name.isEmpty) {
+    if (nameLowerCase.isEmpty) {
       setState(() {
         _isNameValid = false;
         _errorText = AppLocalizations.of(context).emptyName;
       });
-    } else if (name != tankProvider.tank.name && tankProvider.tankNames.contains(name)) {
+    } else if (nameLowerCase != tankProvider.tank.name.toLowerCase() &&
+        tankProvider.tankNames.contains(nameLowerCase)) {
       setState(() {
         _isNameValid = false;
         _errorText = AppLocalizations.of(context).nameAlreadyExists;
@@ -61,12 +64,18 @@ class _EditTankPageState extends State<EditTankPage> {
       tankProvider.tankNames.remove(tankProvider.tank.name);
       tankProvider.tank.name = name;
 
+      showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
+
       if (image != null) {
         tankProvider.tank.imgName = image!.name;
         tankProvider.image = picture;
         await FirebaseStorageStuff().uploadImg(image!.name, image!.path);
       }
-      await FirestoreStuff.updateTank(tankProvider.tank).then((value) => Navigator.pop(context));
+
+      await FirestoreStuff.updateTank(tankProvider.tank).then((value) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      });
     }
   }
 

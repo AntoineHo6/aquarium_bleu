@@ -11,6 +11,10 @@
     "freshwater": "Freshwater",
     "saltwater": "Saltwater",
 
+    "width": "Width",
+    "length": "Length",
+    "height": "Height",
+
     "name": "Name",
     "emptyName": "Empty name",
     "nameAlreadyExists": "Name already exists",
@@ -25,6 +29,7 @@
     "error": "Error",
     "delete": "Delete",
     "viewAll": "View all",
+    "loading": "Loading",
 
     "addANewTank": "Add a new tank",
     "tankName": "Tank name",

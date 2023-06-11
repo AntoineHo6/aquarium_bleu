@@ -42,7 +42,7 @@ class _ParamPickerPageState extends State<ParamPickerPage> {
             physics: const NeverScrollableScrollPhysics(),
             primary: false,
             shrinkWrap: true,
-            childAspectRatio: 5,
+            childAspectRatio: 4,
             crossAxisCount: 2,
             children: visibleParamTypes
                 .map((paramType) => ListTile(

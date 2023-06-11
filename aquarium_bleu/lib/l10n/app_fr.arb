@@ -10,6 +10,10 @@
     
     "freshwater": "Eau douce",
     "saltwater": "Eau salée",
+
+    "width": "Largeur",
+    "length": "Longueur",
+    "height": "Hauteur",
     
     "name": "Nom",
     "emptyName": "Nom vide",
@@ -32,6 +36,7 @@
     "error": "Erreur",
     "delete": "Supprimer",
     "viewAll": "Voir tout",
+    "loading": "Chargement",
 
     "addANewTank": "Ajouter un nouvel aquarium",
     "tankName": "Nom de l'aquarium",

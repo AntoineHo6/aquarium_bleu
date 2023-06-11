@@ -4,13 +4,13 @@ import 'package:aquarium_bleu/my_cache_manager.dart';
 import 'package:aquarium_bleu/pages/tank_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
-import 'package:aquarium_bleu/utils/string_util.dart';
-import 'package:aquarium_bleu/widgets/add_tank_alert_dialog.dart';
-import 'package:aquarium_bleu/widgets/tank_card.dart';
+import 'package:aquarium_bleu/widgets/tanks_page/add_tank_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/tanks_page/tank_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TanksPage extends StatefulWidget {
   const TanksPage({super.key});
@@ -40,7 +40,7 @@ class _TanksPageState extends State<TanksPage> {
                       padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
                       child: FittedBox(
                         child: Text(
-                          StringUtil.formattedDate(context, DateTime.now()),
+                          AppLocalizations.of(context).tanks,
                           style: Theme.of(context).textTheme.displayLarge,
                         ),
                       ),

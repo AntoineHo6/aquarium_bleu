@@ -25,10 +25,13 @@ class _HorizontalListCardState extends State<HorizontalListCard> {
             children: [
               Align(
                 alignment: Alignment.center,
-                child: Icon(
-                  widget.iconData,
-                  size: MediaQuery.of(context).size.height * 0.15,
-                  color: widget.color,
+                child: Opacity(
+                  opacity: 0.6,
+                  child: Icon(
+                    widget.iconData,
+                    size: MediaQuery.of(context).size.height * 0.15,
+                    color: widget.color,
+                  ),
                 ),
               ),
               Align(
