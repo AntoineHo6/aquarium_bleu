@@ -258,7 +258,7 @@ class _AddTankPageState extends State<AddTankPage> {
                     Expanded(
                       flex: 70,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           _handleAdd();
                         },
                         child: Text(AppLocalizations.of(context).add),
@@ -298,14 +298,17 @@ class _AddTankPageState extends State<AddTankPage> {
     String length = _lengthFieldController.text.trim();
     String height = _heightFieldController.text.trim();
 
-    if (!StringUtil.isNumeric(width)) {
+    if (!StringUtil.isNumeric(width) && width.isNotEmpty) {
       hasError = true;
+      _isWidthValid = false;
     }
-    if (!StringUtil.isNumeric(length)) {
+    if (!StringUtil.isNumeric(length) && length.isNotEmpty) {
       hasError = true;
+      _isLengthValid = false;
     }
-    if (!StringUtil.isNumeric(height)) {
+    if (!StringUtil.isNumeric(height) && height.isNotEmpty) {
       hasError = true;
+      _isHeightValid = false;
     }
 
     if (!hasError) {
