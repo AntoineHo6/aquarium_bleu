@@ -5,21 +5,22 @@ import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
+import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/loading_alert_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:uuid/uuid.dart';
 
-class AddTankAlertDialog extends StatefulWidget {
-  const AddTankAlertDialog({super.key});
+class AddTankPage extends StatefulWidget {
+  const AddTankPage({super.key});
 
   @override
-  State<AddTankAlertDialog> createState() => _AddTankAlertDialogState();
+  State<AddTankPage> createState() => _AddTankPageState();
 }
 
-class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
+class _AddTankPageState extends State<AddTankPage> {
   late TextEditingController _nameFieldController;
   bool? _isFreshwater = true;
   bool _isNameValid = true;
@@ -52,56 +53,19 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
     super.dispose();
   }
 
-  void _handleAdd(BuildContext context) async {
-    final tankProvider = Provider.of<TankProvider>(context, listen: false);
-    String nameModified = _nameFieldController.text.trim().toLowerCase();
-
-    // Determine the right error message to show for the name.
-    // Otherwise, create the tank.
-    if (nameModified.isEmpty) {
-      setState(() {
-        _isNameValid = false;
-        _errorText = AppLocalizations.of(context).emptyName;
-      });
-    } else if (tankProvider.tankNames.contains(nameModified)) {
-      setState(() {
-        _isNameValid = false;
-        _errorText = AppLocalizations.of(context).nameAlreadyExists;
-      });
-    } else {
-      Tank tank = Tank(
-        const Uuid().v4(),
-        name: _nameFieldController.text,
-        isFreshwater: _isFreshwater!,
-      );
-
-      showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
-
-      if (image != null) {
-        tank.imgName = image!.name;
-        await FirebaseStorageStuff().uploadImg(image!.name, image!.path);
-      }
-
-      FirestoreStuff.addTank(tank).then((docId) {
-        FirestoreStuff.addDefaultWcnpPrefs(docId).then((value) {
-          Navigator.pop(context);
-          Navigator.pop(context);
-        });
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        AppLocalizations.of(context).addANewTank,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context).addANewTank),
       ),
-      content: Scrollbar(
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: SingleChildScrollView(
-            child: ListBody(
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.screenEdgePadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 TextField(
                   maxLength: 50,
@@ -109,10 +73,10 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
                   decoration: InputDecoration(
                     label: RichText(
                       text: TextSpan(
-                        style: Theme.of(context).textTheme.labelLarge,
+                        style: Theme.of(context).textTheme.titleMedium,
                         children: <TextSpan>[
                           TextSpan(
-                            text: '${AppLocalizations.of(context).name} ',
+                            text: '${AppLocalizations.of(context).name}: ',
                           ),
                           const TextSpan(
                             text: '*',
@@ -132,8 +96,8 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
                   height: Spacing.betweenSections,
                 ),
                 Text(
-                  AppLocalizations.of(context).displayPicture,
-                  style: Theme.of(context).textTheme.labelLarge,
+                  '${AppLocalizations.of(context).displayPicture}:',
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 GestureDetector(
                   onTap: () async {
@@ -162,6 +126,7 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
                   child: picture == null
                       ? SizedBox(
                           height: MediaQuery.of(context).size.height * 0.15,
+                          width: MediaQuery.of(context).size.width * 0.5,
                           child: Card(
                             child: Icon(
                               Icons.add_circle,
@@ -181,32 +146,36 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
                   height: Spacing.betweenSections,
                 ),
                 Text(
-                  AppLocalizations.of(context).tankType,
-                  style: Theme.of(context).textTheme.labelLarge,
+                  '${AppLocalizations.of(context).tankType}:',
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-                ListTile(
-                  title: Text(AppLocalizations.of(context).freshwater),
-                  leading: Radio<bool>(
-                    value: true,
-                    groupValue: _isFreshwater,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _isFreshwater = value;
-                      });
-                    },
-                  ),
-                ),
-                ListTile(
-                  title: Text(AppLocalizations.of(context).saltwater),
-                  leading: Radio<bool>(
-                    value: false,
-                    groupValue: _isFreshwater,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        _isFreshwater = value;
-                      });
-                    },
-                  ),
+                Wrap(
+                  children: [
+                    ListTile(
+                      title: Text(AppLocalizations.of(context).freshwater),
+                      leading: Radio<bool>(
+                        value: true,
+                        groupValue: _isFreshwater,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _isFreshwater = value;
+                          });
+                        },
+                      ),
+                    ),
+                    ListTile(
+                      title: Text(AppLocalizations.of(context).saltwater),
+                      leading: Radio<bool>(
+                        value: false,
+                        groupValue: _isFreshwater,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _isFreshwater = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: Spacing.betweenSections,
@@ -214,8 +183,8 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
                 Row(
                   children: [
                     Text(
-                      "Tank dimensions",
-                      style: Theme.of(context).textTheme.labelLarge,
+                      "Tank dimensions:",
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                     IconButton(onPressed: () {}, icon: const Icon(Icons.info)),
                   ],
@@ -235,7 +204,7 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
                       ),
                     ),
                     const Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: EdgeInsets.symmetric(horizontal: 15),
                       child: Icon(
                         Icons.close,
                         size: 15,
@@ -253,7 +222,7 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
                       ),
                     ),
                     const Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: EdgeInsets.symmetric(horizontal: 15),
                       child: Icon(
                         Icons.close,
                         size: 15,
@@ -272,21 +241,93 @@ class _AddTankAlertDialogState extends State<AddTankAlertDialog> {
                     ),
                   ],
                 ),
+                const SizedBox(
+                  height: Spacing.betweenSections,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 30,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(AppLocalizations.of(context).cancel),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 70,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _handleAdd();
+                        },
+                        child: Text(AppLocalizations.of(context).add),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
         ),
       ),
-      actions: <Widget>[
-        TextButton(
-          child: Text(AppLocalizations.of(context).cancel),
-          onPressed: () => Navigator.pop(context),
-        ),
-        TextButton(
-          child: Text(AppLocalizations.of(context).add),
-          onPressed: () => _handleAdd(context),
-        ),
-      ],
     );
+  }
+
+  void _handleAdd() async {
+    final tankProvider = Provider.of<TankProvider>(context, listen: false);
+    String nameModified = _nameFieldController.text.trim().toLowerCase();
+    bool hasError = false;
+    // Determine the right error message to show for the name.
+    // Otherwise, create the tank.
+    if (nameModified.isEmpty) {
+      hasError = true;
+      setState(() {
+        _isNameValid = false;
+        _errorText = AppLocalizations.of(context).emptyName;
+      });
+    } else if (tankProvider.tankNames.contains(nameModified)) {
+      hasError = true;
+      setState(() {
+        _isNameValid = false;
+        _errorText = AppLocalizations.of(context).nameAlreadyExists;
+      });
+    }
+
+    String width = _widthFieldController.text.trim();
+    String length = _lengthFieldController.text.trim();
+    String height = _heightFieldController.text.trim();
+
+    if (!StringUtil.isNumeric(width)) {
+      hasError = true;
+    }
+    if (!StringUtil.isNumeric(length)) {
+      hasError = true;
+    }
+    if (!StringUtil.isNumeric(height)) {
+      hasError = true;
+    }
+
+    if (!hasError) {
+      Tank tank = Tank(
+        const Uuid().v4(),
+        name: _nameFieldController.text,
+        isFreshwater: _isFreshwater!,
+      );
+
+      showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
+
+      if (image != null) {
+        tank.imgName = image!.name;
+        await FirebaseStorageStuff().uploadImg(image!.name, image!.path);
+      }
+
+      FirestoreStuff.addTank(tank).then((docId) {
+        FirestoreStuff.addDefaultWcnpPrefs(docId).then((value) {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        });
+      });
+    }
   }
 }

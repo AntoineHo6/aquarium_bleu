@@ -1,6 +1,7 @@
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/my_cache_manager.dart';
+import 'package:aquarium_bleu/pages/add_tank_page.dart';
 import 'package:aquarium_bleu/pages/tank_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
@@ -129,9 +130,11 @@ class _TanksPageState extends State<TanksPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showDialog(
-          context: context,
-          builder: (BuildContext context) => const AddTankAlertDialog(),
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AddTankPage(),
+          ),
         ),
         child: const Icon(Icons.add),
       ),

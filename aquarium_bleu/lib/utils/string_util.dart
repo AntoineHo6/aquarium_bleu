@@ -122,4 +122,8 @@ class StringUtil {
         return AppLocalizations.of(context).custom;
     }
   }
+
+  static bool isNumeric(String s) {
+    return double.tryParse(s) != null;
+  }
 }
