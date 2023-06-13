@@ -70,6 +70,7 @@ class _TanksPageState extends State<TanksPage> {
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: Spacing.screenEdgePadding,
+                                  vertical: Spacing.betweenSections,
                                 ),
                                 child: TankCard(
                                   tank: tank,

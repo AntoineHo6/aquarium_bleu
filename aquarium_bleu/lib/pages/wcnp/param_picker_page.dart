@@ -46,7 +46,10 @@ class _ParamPickerPageState extends State<ParamPickerPage> {
             crossAxisCount: 2,
             children: visibleParamTypes
                 .map((paramType) => ListTile(
-                      title: Text(StringUtil.paramTypeToString(context, paramType)),
+                      title: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(StringUtil.paramTypeToString(context, paramType)),
+                      ),
                       leading: Radio<WaterParamType>(
                         value: paramType,
                         groupValue: currentParam,

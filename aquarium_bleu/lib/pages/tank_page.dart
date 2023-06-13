@@ -92,7 +92,7 @@ class _TankPageState extends State<TankPage> {
                                     child: Card(
                                       surfaceTintColor: MyTheme.wcColor,
                                       clipBehavior: Clip.hardEdge,
-                                      elevation: 3,
+                                      elevation: 10,
                                       child: Padding(
                                         padding: const EdgeInsets.all(Spacing.cardPadding),
                                         child: Stack(
@@ -137,7 +137,7 @@ class _TankPageState extends State<TankPage> {
                                   child: Card(
                                     surfaceTintColor: Colors.yellow,
                                     clipBehavior: Clip.hardEdge,
-                                    elevation: 3,
+                                    elevation: 10,
                                     child: Padding(
                                       padding: const EdgeInsets.all(Spacing.cardPadding),
                                       child: Stack(
@@ -148,7 +148,7 @@ class _TankPageState extends State<TankPage> {
                                             child: Opacity(
                                               opacity: 0.6,
                                               child: Icon(
-                                                Icons.calendar_month,
+                                                Icons.task,
                                                 size: MediaQuery.of(context).size.width * 0.3,
                                                 color: Colors.yellow[700],
                                               ),
