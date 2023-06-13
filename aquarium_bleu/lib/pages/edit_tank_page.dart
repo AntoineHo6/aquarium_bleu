@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:aquarium_bleu/enums/unit_of_length.dart';
 import 'package:aquarium_bleu/firebase_storage_stuff.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
+import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/confirm_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/loading_alert_dialog.dart';
 import 'package:flutter/material.dart';
@@ -20,63 +22,58 @@ class EditTankPage extends StatefulWidget {
 class _EditTankPageState extends State<EditTankPage> {
   late TextEditingController _nameFieldController;
   bool _isNameValid = true;
+  late bool? _isFreshwater;
   String? _errorText;
   XFile? image;
   late Widget picture;
+  late TextEditingController _widthFieldController;
+  late TextEditingController _lengthFieldController;
+  late TextEditingController _heightFieldController;
+  bool _isWidthValid = true;
+  bool _isLengthValid = true;
+  bool _isHeightValid = true;
+  late UnitOfLength dropdownValue;
 
   @override
   void initState() {
     super.initState();
-    _nameFieldController = TextEditingController();
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
+
+    _nameFieldController = TextEditingController();
     _nameFieldController.value = TextEditingValue(text: tankProvider.tank.name);
+
     picture = tankProvider.image;
+
+    _isFreshwater = tankProvider.tank.isFreshwater;
+
+    _widthFieldController = TextEditingController();
+    if (tankProvider.tank.dimensions.width != null) {
+      _widthFieldController.value =
+          TextEditingValue(text: tankProvider.tank.dimensions.width.toString());
+    }
+
+    _lengthFieldController = TextEditingController();
+    if (tankProvider.tank.dimensions.length != null) {
+      _lengthFieldController.value =
+          TextEditingValue(text: tankProvider.tank.dimensions.length.toString());
+    }
+
+    _heightFieldController = TextEditingController();
+    if (tankProvider.tank.dimensions.height != null) {
+      _heightFieldController.value =
+          TextEditingValue(text: tankProvider.tank.dimensions.height.toString());
+    }
+
+    dropdownValue = tankProvider.tank.dimensions.unit;
   }
 
   @override
   void dispose() {
     _nameFieldController.dispose();
+    _widthFieldController.dispose();
+    _lengthFieldController.dispose();
+    _heightFieldController.dispose();
     super.dispose();
-  }
-
-  Future _handleUpdate() async {
-    final tankProvider = Provider.of<TankProvider>(context, listen: false);
-
-    String name = _nameFieldController.text.trim();
-    String nameLowerCase = name.toLowerCase();
-    // Determine the right error message to show for the name.
-    if (nameLowerCase.isEmpty) {
-      setState(() {
-        _isNameValid = false;
-        _errorText = AppLocalizations.of(context).emptyName;
-      });
-    } else if (nameLowerCase != tankProvider.tank.name.toLowerCase() &&
-        tankProvider.tankNames.contains(nameLowerCase)) {
-      setState(() {
-        _isNameValid = false;
-        _errorText = AppLocalizations.of(context).nameAlreadyExists;
-      });
-    } else {
-      setState(() {
-        _isNameValid = true;
-      });
-
-      tankProvider.tankNames.remove(tankProvider.tank.name);
-      tankProvider.tank.name = name;
-
-      showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
-
-      if (image != null) {
-        tankProvider.tank.imgName = image!.name;
-        tankProvider.image = picture;
-        await FirebaseStorageStuff().uploadImg(image!.name, image!.path);
-      }
-
-      await FirestoreStuff.updateTank(tankProvider.tank).then((value) {
-        Navigator.pop(context);
-        Navigator.pop(context);
-      });
-    }
   }
 
   @override
@@ -84,7 +81,6 @@ class _EditTankPageState extends State<EditTankPage> {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).editTank),
         actions: [
@@ -117,20 +113,35 @@ class _EditTankPageState extends State<EditTankPage> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 TextField(
+                  maxLength: 50,
                   controller: _nameFieldController,
                   decoration: InputDecoration(
-                    labelText:
-                        "${AppLocalizations.of(context).name} (${AppLocalizations.of(context).required})",
+                    label: RichText(
+                      text: TextSpan(
+                        style: Theme.of(context).textTheme.titleMedium,
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: '${AppLocalizations.of(context).name}: ',
+                          ),
+                          const TextSpan(
+                            text: '*',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     errorText: _isNameValid ? null : _errorText,
                   ),
-                  maxLength: 50,
                 ),
                 const SizedBox(
                   height: Spacing.betweenSections,
                 ),
                 Text(
                   '${AppLocalizations.of(context).displayPicture}:',
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 GestureDetector(
                   onTap: () async {
@@ -179,6 +190,123 @@ class _EditTankPageState extends State<EditTankPage> {
                 const SizedBox(
                   height: Spacing.betweenSections,
                 ),
+                Text(
+                  '${AppLocalizations.of(context).tankType}:',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Wrap(
+                  children: [
+                    ListTile(
+                      title: Text(AppLocalizations.of(context).freshwater),
+                      leading: Radio<bool>(
+                        value: true,
+                        groupValue: _isFreshwater,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _isFreshwater = value;
+                          });
+                        },
+                      ),
+                    ),
+                    ListTile(
+                      title: Text(AppLocalizations.of(context).saltwater),
+                      leading: Radio<bool>(
+                        value: false,
+                        groupValue: _isFreshwater,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _isFreshwater = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: Spacing.betweenSections,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      '${AppLocalizations.of(context).dimensions}:',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    IconButton(onPressed: () {}, icon: const Icon(Icons.info)),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        controller: _widthFieldController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).width,
+                          errorText: _isWidthValid ? null : '',
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Icon(
+                        Icons.close,
+                        size: 15,
+                      ),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        controller: _lengthFieldController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).length,
+                          errorText: _isLengthValid ? null : '',
+                        ),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Icon(
+                        Icons.close,
+                        size: 15,
+                      ),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        controller: _heightFieldController,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context).height,
+                          errorText: _isHeightValid ? null : '',
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    DropdownButton<UnitOfLength>(
+                      value: dropdownValue,
+                      items: [
+                        DropdownMenuItem(
+                          value: UnitOfLength.cm,
+                          child: Text(AppLocalizations.of(context).cm),
+                        ),
+                        DropdownMenuItem(
+                          value: UnitOfLength.inches,
+                          child: Text(AppLocalizations.of(context).inches),
+                        ),
+                      ],
+                      onChanged: (UnitOfLength? value) {
+                        setState(() {
+                          dropdownValue = value!;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: Spacing.betweenSections,
+                ),
                 Row(
                   children: [
                     Expanded(
@@ -207,5 +335,96 @@ class _EditTankPageState extends State<EditTankPage> {
         ),
       ),
     );
+  }
+
+  Future _handleUpdate() async {
+    final tankProvider = Provider.of<TankProvider>(context, listen: false);
+    bool hasError = false;
+    String name = _nameFieldController.text.trim();
+    String nameLowerCase = name.toLowerCase();
+    // Determine the right error message to show for the name.
+    if (nameLowerCase.isEmpty) {
+      hasError = true;
+      setState(() {
+        _isNameValid = false;
+        _errorText = AppLocalizations.of(context).emptyName;
+      });
+    } else if (nameLowerCase != tankProvider.tank.name.toLowerCase() &&
+        tankProvider.tankNames.contains(nameLowerCase)) {
+      hasError = true;
+      setState(() {
+        _isNameValid = false;
+        _errorText = AppLocalizations.of(context).nameAlreadyExists;
+      });
+    }
+
+    // PROCESS DIMENSIONS
+    String widthStr = _widthFieldController.text.trim();
+    String lengthStr = _lengthFieldController.text.trim();
+    String heightStr = _heightFieldController.text.trim();
+
+    if (!StringUtil.isNumeric(widthStr) && widthStr.isNotEmpty) {
+      hasError = true;
+      setState(() {
+        _isWidthValid = false;
+      });
+    } else {
+      setState(() {
+        _isWidthValid = true;
+      });
+    }
+    if (!StringUtil.isNumeric(lengthStr) && lengthStr.isNotEmpty) {
+      hasError = true;
+      setState(() {
+        _isLengthValid = false;
+      });
+    } else {
+      setState(() {
+        _isLengthValid = true;
+      });
+    }
+    if (!StringUtil.isNumeric(heightStr) && heightStr.isNotEmpty) {
+      hasError = true;
+      setState(() {
+        _isHeightValid = false;
+      });
+    } else {
+      setState(() {
+        _isHeightValid = true;
+      });
+    }
+
+    if (!hasError) {
+      setState(() {
+        _isNameValid = true;
+      });
+
+      // 1. Overwrite name
+      tankProvider.tankNames.remove(tankProvider.tank.name);
+      tankProvider.tank.name = name;
+      // 2. Overwrite tank type
+      tankProvider.tank.isFreshwater = _isFreshwater!;
+      // 3. Overwrite dimensions
+      tankProvider.tank.dimensions.unit = dropdownValue;
+      tankProvider.tank.dimensions.width =
+          widthStr.isEmpty ? null : double.parse(_widthFieldController.text.trim());
+      tankProvider.tank.dimensions.length =
+          lengthStr.isEmpty ? null : double.parse(_lengthFieldController.text.trim());
+      tankProvider.tank.dimensions.height =
+          heightStr.isEmpty ? null : double.parse(_heightFieldController.text.trim());
+      // 4. Overwrite image
+      showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
+
+      if (image != null) {
+        tankProvider.tank.imgName = image!.name;
+        tankProvider.image = picture;
+        await FirebaseStorageStuff().uploadImg(image!.name, image!.path);
+      }
+
+      await FirestoreStuff.updateTank(tankProvider.tank).then((value) {
+        Navigator.pop(context);
+        Navigator.pop(context);
+      });
+    }
   }
 }

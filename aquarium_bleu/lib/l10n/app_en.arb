@@ -11,6 +11,8 @@
     "freshwater": "Freshwater",
     "saltwater": "Saltwater",
 
+    "dimensions": "Dimensions",
+
     "width": "Width",
     "length": "Length",
     "height": "Height",

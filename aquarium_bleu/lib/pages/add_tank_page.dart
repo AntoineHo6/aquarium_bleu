@@ -35,9 +35,6 @@ class _AddTankPageState extends State<AddTankPage> {
   bool _isWidthValid = true;
   bool _isLengthValid = true;
   bool _isHeightValid = true;
-  // String? _widthErrorText;
-  // String? _lengthErrorText;
-  // String? _heightErrorText;
   UnitOfLength dropdownValue = UnitOfLength.cm;
 
   @override
@@ -93,7 +90,6 @@ class _AddTankPageState extends State<AddTankPage> {
                         ],
                       ),
                     ),
-                    // labelText: "${AppLocalizations.of(context).name} *",
                     errorText: _isNameValid ? null : _errorText,
                   ),
                 ),
@@ -188,7 +184,7 @@ class _AddTankPageState extends State<AddTankPage> {
                 Row(
                   children: [
                     Text(
-                      "Tank dimensions:",
+                      '${AppLocalizations.of(context).dimensions}:',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     IconButton(onPressed: () {}, icon: const Icon(Icons.info)),
@@ -199,7 +195,6 @@ class _AddTankPageState extends State<AddTankPage> {
                   children: [
                     Expanded(
                       child: TextField(
-                        maxLength: 3,
                         keyboardType: TextInputType.number,
                         controller: _widthFieldController,
                         decoration: InputDecoration(
@@ -217,7 +212,6 @@ class _AddTankPageState extends State<AddTankPage> {
                     ),
                     Expanded(
                       child: TextField(
-                        maxLength: 3,
                         keyboardType: TextInputType.number,
                         controller: _lengthFieldController,
                         decoration: InputDecoration(
@@ -235,7 +229,6 @@ class _AddTankPageState extends State<AddTankPage> {
                     ),
                     Expanded(
                       child: TextField(
-                        maxLength: 3,
                         keyboardType: TextInputType.number,
                         controller: _heightFieldController,
                         decoration: InputDecoration(
@@ -320,34 +313,42 @@ class _AddTankPageState extends State<AddTankPage> {
       });
     }
 
-    String width = _widthFieldController.text.trim();
-    String length = _lengthFieldController.text.trim();
-    String height = _heightFieldController.text.trim();
+    String widthStr = _widthFieldController.text.trim();
+    String lengthStr = _lengthFieldController.text.trim();
+    String heightStr = _heightFieldController.text.trim();
 
-    if (!StringUtil.isNumeric(width) && width.isNotEmpty) {
+    if (!StringUtil.isNumeric(widthStr) && widthStr.isNotEmpty) {
       hasError = true;
-      _isWidthValid = false;
+      setState(() {
+        _isWidthValid = false;
+      });
     } else {
-      _isWidthValid = true;
+      setState(() {
+        _isWidthValid = true;
+      });
     }
-    if (!StringUtil.isNumeric(length) && length.isNotEmpty) {
+    if (!StringUtil.isNumeric(lengthStr) && lengthStr.isNotEmpty) {
       hasError = true;
-      _isLengthValid = false;
+      setState(() {
+        _isLengthValid = false;
+      });
     } else {
-      _isLengthValid = true;
+      setState(() {
+        _isLengthValid = true;
+      });
     }
-    if (!StringUtil.isNumeric(height) && height.isNotEmpty) {
+    if (!StringUtil.isNumeric(heightStr) && heightStr.isNotEmpty) {
       hasError = true;
-      _isHeightValid = false;
+      setState(() {
+        _isHeightValid = false;
+      });
     } else {
-      _isHeightValid = true;
+      setState(() {
+        _isHeightValid = true;
+      });
     }
 
     if (!hasError) {
-      String widthStr = _widthFieldController.text.trim();
-      String lengthStr = _lengthFieldController.text.trim();
-      String heightStr = _heightFieldController.text.trim();
-
       Tank tank = Tank(
         const Uuid().v4(),
         name: _nameFieldController.text,
