@@ -1,4 +1,0 @@
-enum UnitsOfHardness {
-  ppm,
-  mgL,
-}

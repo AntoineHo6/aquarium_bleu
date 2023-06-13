@@ -68,6 +68,8 @@
     "lastNitrateLevel": "Dernière mesure de nitrate",
     "lastWaterChange": "Dernier changement d'eau",
     "xDaysAgo": "Il y a {x} jours",
+    "cm": "cm",
+    "inches": "pouces",
     
     "ammonia": "Ammoniaque",
     "nitrite": "Nitrite",

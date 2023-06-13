@@ -124,35 +124,48 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FilledButton.tonal(
-                      onPressed: currentDateRangeType == DateRangeType.custom
-                          ? () => _handleDatePicker(customDateStart)
-                          : null,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.date_range),
-                          _sectionSeparator,
-                          Text(
-                              '${AppLocalizations.of(context).customDateStart}: ${StringUtil.formattedDate(context, customDateStart)}'),
-                        ],
-                      ),
-                    ),
-                    FilledButton.tonal(
-                      onPressed: currentDateRangeType == DateRangeType.custom
-                          ? () => _handleDatePicker(customDateEnd)
-                          : null,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.date_range),
-                          _sectionSeparator,
-                          Text(
-                              '${AppLocalizations.of(context).customDateEnd}: ${StringUtil.formattedDate(context, customDateEnd)}'),
-                        ],
-                      ),
-                    ),
+                    currentDateRangeType == DateRangeType.custom
+                        ? FilledButton.tonal(
+                            onPressed: () => _handleDatePicker(customDateStart),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.date_range),
+                                _sectionSeparator,
+                                Text(
+                                    '${AppLocalizations.of(context).customDateStart}: ${StringUtil.formattedDate(context, customDateStart)}'),
+                              ],
+                            ),
+                          )
+                        : const SizedBox(),
+                    currentDateRangeType == DateRangeType.custom
+                        ? FilledButton.tonal(
+                            onPressed: () => _handleDatePicker(customDateEnd),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.date_range),
+                                _sectionSeparator,
+                                Text(
+                                    '${AppLocalizations.of(context).customDateEnd}: ${StringUtil.formattedDate(context, customDateEnd)}'),
+                              ],
+                            ),
+                          )
+                        : const SizedBox(),
                   ],
+                ),
+                const SizedBox(
+                  height: Spacing.betweenSections,
+                ),
+                Text(
+                  AppLocalizations.of(context).showWaterChangeLines,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                Switch.adaptive(
+                  value: showWaterChanges,
+                  onChanged: (newValue) => setState(() {
+                    showWaterChanges = !showWaterChanges;
+                  }),
                 ),
                 const SizedBox(
                   height: Spacing.betweenSections,
@@ -165,20 +178,6 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                 Wrap(
                   spacing: 10,
                   children: choiceChips,
-                ),
-                const SizedBox(
-                  height: Spacing.betweenSections,
-                ),
-                Text(
-                  AppLocalizations.of(context).showWaterChangeLines,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                _sectionSeparator,
-                Switch.adaptive(
-                  value: showWaterChanges,
-                  onChanged: (newValue) => setState(() {
-                    showWaterChanges = !showWaterChanges;
-                  }),
                 ),
               ],
             ),

@@ -108,97 +108,102 @@ class _EditTankPageState extends State<EditTankPage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(Spacing.screenEdgePadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: _nameFieldController,
-              decoration: InputDecoration(
-                labelText:
-                    "${AppLocalizations.of(context).name} (${AppLocalizations.of(context).required})",
-                errorText: _isNameValid ? null : _errorText,
-              ),
-              maxLength: 50,
-            ),
-            const SizedBox(
-              height: Spacing.betweenSections,
-            ),
-            Text(
-              '${AppLocalizations.of(context).displayPicture}:',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            GestureDetector(
-              onTap: () async {
-                final ImagePicker picker = ImagePicker();
-                // Pick an image.
-                await picker
-                    .pickImage(source: ImageSource.gallery, imageQuality: 50)
-                    .then((pickedImage) {
-                  image = pickedImage;
-
-                  if (image == null) {
-                    const SnackBar snackBar = SnackBar(
-                      content: Text('no image selected'),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  } else {
-                    setState(() {
-                      picture = Image.file(
-                        File(image!.path),
-                        fit: BoxFit.cover,
-                      );
-                    });
-                  }
-                });
-              },
-              child: Card(
-                elevation: 5,
-                child: Container(
-                  constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width * 0.3,
-                    maxWidth: MediaQuery.of(context).size.width * 0.4,
-                  ),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: picture,
-                      ),
-                      const Icon(Icons.edit),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: Spacing.betweenSections,
-            ),
-            Row(
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.screenEdgePadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
-                Expanded(
-                  flex: 30,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(AppLocalizations.of(context).cancel),
+                TextField(
+                  controller: _nameFieldController,
+                  decoration: InputDecoration(
+                    labelText:
+                        "${AppLocalizations.of(context).name} (${AppLocalizations.of(context).required})",
+                    errorText: _isNameValid ? null : _errorText,
+                  ),
+                  maxLength: 50,
+                ),
+                const SizedBox(
+                  height: Spacing.betweenSections,
+                ),
+                Text(
+                  '${AppLocalizations.of(context).displayPicture}:',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    final ImagePicker picker = ImagePicker();
+                    // Pick an image.
+                    await picker
+                        .pickImage(source: ImageSource.gallery, imageQuality: 50)
+                        .then((pickedImage) {
+                      image = pickedImage;
+
+                      if (image == null) {
+                        const SnackBar snackBar = SnackBar(
+                          content: Text('no image selected'),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      } else {
+                        setState(() {
+                          picture = Image.file(
+                            File(image!.path),
+                            fit: BoxFit.cover,
+                          );
+                        });
+                      }
+                    });
+                  },
+                  child: Card(
+                    elevation: 5,
+                    child: Container(
+                      constraints: BoxConstraints(
+                        minWidth: MediaQuery.of(context).size.width * 0.3,
+                        maxWidth: MediaQuery.of(context).size.width * 0.4,
+                      ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: picture,
+                          ),
+                          const Icon(Icons.edit),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-                Expanded(
-                  flex: 70,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      _handleUpdate();
-                    },
-                    child: Text(AppLocalizations.of(context).update),
-                  ),
+                const SizedBox(
+                  height: Spacing.betweenSections,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 30,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(AppLocalizations.of(context).cancel),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 70,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _handleUpdate();
+                        },
+                        child: Text(AppLocalizations.of(context).update),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

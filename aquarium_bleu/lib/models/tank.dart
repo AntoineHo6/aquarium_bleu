@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/unit_of_length.dart';
 import 'package:aquarium_bleu/models/dimensions.dart';
 
 class Tank {
@@ -5,21 +6,26 @@ class Tank {
   String name;
   bool isFreshwater;
   String? imgName;
-  Dimensions? dimensions;
+  Dimensions dimensions;
 
   Tank(
     this.docId, {
     required this.name,
     required this.isFreshwater,
     this.imgName,
-    this.dimensions,
+    required this.dimensions,
   });
 
   Map<String, dynamic> toJson() => {
         'name': name,
         'isFreshwater': isFreshwater,
         'imgName': imgName,
-        // 'dimensions': dimensions, // rework
+        'dimensions': {
+          'unit': dimensions.unit.unitStr,
+          'width': dimensions.width,
+          'length': dimensions.length,
+          'height': dimensions.height,
+        },
       };
 
   static Tank fromJson(String docId, Map<String, dynamic> json) {
@@ -28,7 +34,7 @@ class Tank {
       name: json['name'],
       isFreshwater: json['isFreshwater'],
       imgName: json['imgName'],
-      dimensions: json['dimensions'] == null ? null : Dimensions.fromJson(json['dimensions']),
+      dimensions: Dimensions.fromJson(json['dimensions']),
     );
   }
 }

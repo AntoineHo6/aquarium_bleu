@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:aquarium_bleu/enums/unit_of_length.dart';
 import 'package:aquarium_bleu/firebase_storage_stuff.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/models/dimensions.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
@@ -33,7 +35,10 @@ class _AddTankPageState extends State<AddTankPage> {
   bool _isWidthValid = true;
   bool _isLengthValid = true;
   bool _isHeightValid = true;
-  String? _dimensionErrorText;
+  // String? _widthErrorText;
+  // String? _lengthErrorText;
+  // String? _heightErrorText;
+  UnitOfLength dropdownValue = UnitOfLength.cm;
 
   @override
   void initState() {
@@ -199,12 +204,12 @@ class _AddTankPageState extends State<AddTankPage> {
                         controller: _widthFieldController,
                         decoration: InputDecoration(
                           labelText: AppLocalizations.of(context).width,
-                          errorText: _isWidthValid ? null : _errorText,
+                          errorText: _isWidthValid ? null : '',
                         ),
                       ),
                     ),
                     const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Icon(
                         Icons.close,
                         size: 15,
@@ -217,12 +222,12 @@ class _AddTankPageState extends State<AddTankPage> {
                         controller: _lengthFieldController,
                         decoration: InputDecoration(
                           labelText: AppLocalizations.of(context).length,
-                          errorText: _isWidthValid ? null : _errorText,
+                          errorText: _isLengthValid ? null : '',
                         ),
                       ),
                     ),
                     const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Icon(
                         Icons.close,
                         size: 15,
@@ -235,9 +240,30 @@ class _AddTankPageState extends State<AddTankPage> {
                         controller: _heightFieldController,
                         decoration: InputDecoration(
                           labelText: AppLocalizations.of(context).height,
-                          errorText: _isWidthValid ? null : _errorText,
+                          errorText: _isHeightValid ? null : '',
                         ),
                       ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    DropdownButton<UnitOfLength>(
+                      value: dropdownValue,
+                      items: [
+                        DropdownMenuItem(
+                          value: UnitOfLength.cm,
+                          child: Text(AppLocalizations.of(context).cm),
+                        ),
+                        DropdownMenuItem(
+                          value: UnitOfLength.inches,
+                          child: Text(AppLocalizations.of(context).inches),
+                        ),
+                      ],
+                      onChanged: (UnitOfLength? value) {
+                        setState(() {
+                          dropdownValue = value!;
+                        });
+                      },
                     ),
                   ],
                 ),
@@ -301,21 +327,37 @@ class _AddTankPageState extends State<AddTankPage> {
     if (!StringUtil.isNumeric(width) && width.isNotEmpty) {
       hasError = true;
       _isWidthValid = false;
+    } else {
+      _isWidthValid = true;
     }
     if (!StringUtil.isNumeric(length) && length.isNotEmpty) {
       hasError = true;
       _isLengthValid = false;
+    } else {
+      _isLengthValid = true;
     }
     if (!StringUtil.isNumeric(height) && height.isNotEmpty) {
       hasError = true;
       _isHeightValid = false;
+    } else {
+      _isHeightValid = true;
     }
 
     if (!hasError) {
+      String widthStr = _widthFieldController.text.trim();
+      String lengthStr = _lengthFieldController.text.trim();
+      String heightStr = _heightFieldController.text.trim();
+
       Tank tank = Tank(
         const Uuid().v4(),
         name: _nameFieldController.text,
         isFreshwater: _isFreshwater!,
+        dimensions: Dimensions(
+          unit: dropdownValue,
+          width: widthStr.isEmpty ? null : double.parse(_widthFieldController.text.trim()),
+          length: lengthStr.isEmpty ? null : double.parse(_lengthFieldController.text.trim()),
+          height: heightStr.isEmpty ? null : double.parse(_heightFieldController.text.trim()),
+        ),
       );
 
       showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());

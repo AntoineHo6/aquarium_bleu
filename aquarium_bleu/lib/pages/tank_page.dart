@@ -28,7 +28,7 @@ class _TankPageState extends State<TankPage> {
             expandedHeight: MediaQuery.of(context).size.height * 0.2,
             flexibleSpace: FlexibleSpaceBar(
               background: Opacity(
-                opacity: 0.5,
+                opacity: 0.4,
                 child: tankProvider.image,
               ),
               centerTitle: true,
@@ -90,20 +90,22 @@ class _TankPageState extends State<TankPage> {
                                       );
                                     },
                                     child: Card(
+                                      surfaceTintColor: MyTheme.wcColor,
                                       clipBehavior: Clip.hardEdge,
                                       elevation: 3,
                                       child: Padding(
                                         padding: const EdgeInsets.all(Spacing.cardPadding),
                                         child: Stack(
                                           children: [
-                                            Align(
-                                              alignment: Alignment.centerLeft,
+                                            Positioned(
+                                              top: MediaQuery.of(context).size.height * 0.08,
+                                              left: MediaQuery.of(context).size.width * 0.6,
                                               child: Opacity(
                                                 opacity: 0.6,
                                                 child: Icon(
                                                   Icons.water_drop,
                                                   color: MyTheme.wcColor,
-                                                  size: MediaQuery.of(context).size.width * 0.55,
+                                                  size: MediaQuery.of(context).size.width * 0.3,
                                                 ),
                                               ),
                                             ),
@@ -112,7 +114,7 @@ class _TankPageState extends State<TankPage> {
                                               child: Text(
                                                 AppLocalizations.of(context)
                                                     .waterChangesAndParameters,
-                                                style: Theme.of(context).textTheme.headlineMedium,
+                                                style: Theme.of(context).textTheme.headlineLarge,
                                               ),
                                             ),
                                           ],
@@ -133,26 +135,28 @@ class _TankPageState extends State<TankPage> {
                                     bottom: _marginBetweenBigButtons,
                                   ),
                                   child: Card(
+                                    surfaceTintColor: Colors.yellow,
                                     clipBehavior: Clip.hardEdge,
                                     elevation: 3,
                                     child: Padding(
                                       padding: const EdgeInsets.all(Spacing.cardPadding),
                                       child: Stack(
                                         children: [
-                                          Align(
-                                            alignment: Alignment.centerRight,
+                                          Positioned(
+                                            top: MediaQuery.of(context).size.height * 0.08,
+                                            left: MediaQuery.of(context).size.width * 0.6,
                                             child: Opacity(
                                               opacity: 0.6,
                                               child: Icon(
                                                 Icons.calendar_month,
-                                                size: MediaQuery.of(context).size.width * 0.55,
+                                                size: MediaQuery.of(context).size.width * 0.3,
                                                 color: Colors.yellow[700],
                                               ),
                                             ),
                                           ),
                                           Text(
                                             AppLocalizations.of(context).tasks,
-                                            style: Theme.of(context).textTheme.headlineMedium,
+                                            style: Theme.of(context).textTheme.headlineLarge,
                                           ),
                                         ],
                                       ),

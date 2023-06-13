@@ -62,6 +62,9 @@
     "lastWaterChange": "Last water change",
     "xDaysAgo": "{x} days ago",
 
+    "cm": "cm",
+    "inches": "inches",
+    
     "ammonia": "Ammonia",
     "nitrite": "Nitrite",
     "nitrate": "Nitrate",
