@@ -5,7 +5,6 @@ import 'package:aquarium_bleu/pages/wcnp/param_picker_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
-import 'package:aquarium_bleu/utils/num_util.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:flutter/material.dart';
@@ -145,7 +144,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
     String value = _valueFieldController.text.trim();
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
-    if (NumUtil.isNumeric(value) && _param != null) {
+    if (StringUtil.isNumeric(value) && _param != null) {
       // 1. Combine _date and _time in a DateTime for Parameter object
       DateTime paramDate = DateTime(
         _date.year,
@@ -181,7 +180,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
         _isValueValid = false;
         _errorText = AppLocalizations.of(context).theValueIsEmpty;
       });
-    } else if (!NumUtil.isNumeric(value)) {
+    } else if (!StringUtil.isNumeric(value)) {
       setState(() {
         _isValueValid = false;
         _errorText = AppLocalizations.of(context).theValueIsNotAValidNumber;
