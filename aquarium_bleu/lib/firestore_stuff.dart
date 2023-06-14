@@ -222,6 +222,13 @@ class FirestoreStuff {
         .collection('tanks')
         .doc(tank.docId);
 
+    final dateRangeDoc = tankDoc.collection('wcnpPrefs').doc('dateRange');
+    final isParamVisibleDoc = tankDoc.collection('wcnpPrefs').doc('isParamVisible');
+    final showWaterChanges = tankDoc.collection('wcnpPrefs').doc('showWaterChanges');
+
+    await dateRangeDoc.delete();
+    await isParamVisibleDoc.delete();
+    await showWaterChanges.delete();
     await tankDoc.delete();
   }
 
