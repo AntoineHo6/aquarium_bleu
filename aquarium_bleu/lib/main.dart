@@ -70,6 +70,7 @@ class MyApp extends StatelessWidget {
     final settingsProvider = Provider.of<SettingsProvider>(context);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Aquarium Bleu',
       localizationsDelegates: const [
         AppLocalizations.delegate,

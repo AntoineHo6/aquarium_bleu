@@ -1,4 +1,5 @@
 import 'package:aquarium_bleu/pages/edit_tank_page.dart';
+import 'package:aquarium_bleu/pages/tasks_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
@@ -134,31 +135,41 @@ class _TankPageState extends State<TankPage> {
                                     left: _marginBetweenBigButtons,
                                     bottom: _marginBetweenBigButtons,
                                   ),
-                                  child: Card(
-                                    surfaceTintColor: Colors.yellow,
-                                    clipBehavior: Clip.hardEdge,
-                                    elevation: 10,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(Spacing.cardPadding),
-                                      child: Stack(
-                                        children: [
-                                          Positioned(
-                                            top: MediaQuery.of(context).size.height * 0.08,
-                                            left: MediaQuery.of(context).size.width * 0.6,
-                                            child: Opacity(
-                                              opacity: 0.6,
-                                              child: Icon(
-                                                Icons.task,
-                                                size: MediaQuery.of(context).size.width * 0.3,
-                                                color: Colors.yellow[700],
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const TasksPage(),
+                                        ),
+                                      );
+                                    },
+                                    child: Card(
+                                      surfaceTintColor: Colors.yellow,
+                                      clipBehavior: Clip.hardEdge,
+                                      elevation: 10,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(Spacing.cardPadding),
+                                        child: Stack(
+                                          children: [
+                                            Positioned(
+                                              top: MediaQuery.of(context).size.height * 0.08,
+                                              left: MediaQuery.of(context).size.width * 0.6,
+                                              child: Opacity(
+                                                opacity: 0.6,
+                                                child: Icon(
+                                                  Icons.task,
+                                                  size: MediaQuery.of(context).size.width * 0.3,
+                                                  color: Colors.yellow[700],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          Text(
-                                            AppLocalizations.of(context).tasks,
-                                            style: Theme.of(context).textTheme.headlineLarge,
-                                          ),
-                                        ],
+                                            Text(
+                                              AppLocalizations.of(context).tasks,
+                                              style: Theme.of(context).textTheme.headlineLarge,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),

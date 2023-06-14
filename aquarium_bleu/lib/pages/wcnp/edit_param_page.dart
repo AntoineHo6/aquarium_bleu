@@ -2,7 +2,6 @@ import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
-import 'package:aquarium_bleu/utils/num_util.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:aquarium_bleu/widgets/confirm_alert_dialog.dart';
@@ -131,7 +130,7 @@ class _EditParamPageState extends State<EditParamPage> {
         _isValueValid = false;
         _errorText = AppLocalizations.of(context).theValueIsEmpty;
       });
-    } else if (!NumUtil.isNumeric(value)) {
+    } else if (!StringUtil.isNumeric(value)) {
       setState(() {
         _isValueValid = false;
         _errorText = AppLocalizations.of(context).theValueIsNotAValidNumber;

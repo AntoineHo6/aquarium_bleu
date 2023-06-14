@@ -3,6 +3,7 @@ import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/pages/wcnp/edit_param_page.dart';
+import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/wcnp_page/param_chart.dart';
@@ -92,9 +93,14 @@ class _WcnpChartPageState extends State<WcnpChartPage> {
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    dataPoint.value.toString(),
-                    style: Theme.of(context).textTheme.labelLarge,
+                  RichText(
+                    text: TextSpan(
+                      text: dataPoint.value.toString(),
+                      style: const TextStyle(
+                        color: MyTheme.paramColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),

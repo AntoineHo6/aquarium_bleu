@@ -46,6 +46,12 @@ class _TanksPageState extends State<TanksPage> {
                       ),
                     ),
                   ),
+                  actions: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.sort_rounded),
+                    )
+                  ],
                 ),
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
@@ -68,9 +74,8 @@ class _TanksPageState extends State<TanksPage> {
                                 fit: BoxFit.cover,
                               );
                               return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: Spacing.screenEdgePadding,
-                                  vertical: Spacing.betweenSections,
+                                padding: const EdgeInsets.all(
+                                  Spacing.screenEdgePadding,
                                 ),
                                 child: TankCard(
                                   tank: tank,
@@ -98,8 +103,8 @@ class _TanksPageState extends State<TanksPage> {
                           fit: BoxFit.cover,
                         );
                         return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Spacing.screenEdgePadding,
+                          padding: const EdgeInsets.all(
+                            Spacing.screenEdgePadding,
                           ),
                           child: TankCard(
                             tank: tank,
