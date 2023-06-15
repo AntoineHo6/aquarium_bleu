@@ -1,5 +1,5 @@
 import 'package:aquarium_bleu/pages/edit_tank_page.dart';
-import 'package:aquarium_bleu/pages/tasks_page.dart';
+import 'package:aquarium_bleu/pages/tasks/tasks_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
@@ -93,7 +93,7 @@ class _TankPageState extends State<TankPage> {
                                     child: Card(
                                       surfaceTintColor: MyTheme.wcColor,
                                       clipBehavior: Clip.hardEdge,
-                                      elevation: 10,
+                                      elevation: 15,
                                       child: Padding(
                                         padding: const EdgeInsets.all(Spacing.cardPadding),
                                         child: Stack(
@@ -147,7 +147,7 @@ class _TankPageState extends State<TankPage> {
                                     child: Card(
                                       surfaceTintColor: Colors.yellow,
                                       clipBehavior: Clip.hardEdge,
-                                      elevation: 10,
+                                      elevation: 15,
                                       child: Padding(
                                         padding: const EdgeInsets.all(Spacing.cardPadding),
                                         child: Stack(

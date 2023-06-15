@@ -2,7 +2,6 @@ import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
-import 'package:aquarium_bleu/models/task/interval_task.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -165,31 +164,6 @@ class FirestoreStuff {
         .doc(waterChange.docId);
 
     await docWaterChange.set(waterChange.toJson());
-  }
-
-  static Stream<List<IntervalTask>> readIntervalTasks(String docId) {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('tanks')
-        .doc(docId)
-        .collection('intervalTasks')
-        .orderBy("dueDate")
-        .snapshots()
-        .map(
-            (event) => event.docs.map((doc) => IntervalTask.fromJson(doc.id, doc.data())).toList());
-  }
-
-  static Future updateIntervalTask(IntervalTask updatedTask, String tankId) async {
-    final intervalTask = FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('tanks')
-        .doc(tankId)
-        .collection('intervalTasks')
-        .doc(updatedTask.docId);
-
-    await intervalTask.update(updatedTask.toJson());
   }
 
   // remake

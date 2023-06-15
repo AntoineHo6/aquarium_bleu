@@ -1,10 +1,6 @@
-import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
-import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
-import 'package:aquarium_bleu/styles/my_theme.dart';
-import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -70,43 +66,6 @@ class _TankCardState extends State<TankCard> {
                       }
                     },
                   ),
-                  // StreamBuilder<Parameter>(
-                  //   // TODO: shouldn't be hardcoded to nitrate
-                  //   stream: FirestoreStuff.readLatestParameter(
-                  //       widget.tank.docId, WaterParamType.nitrate),
-                  //   builder: (context, snapshot) {
-                  //     if (snapshot.hasData) {
-                  //       final difference = DateTime.now().difference(snapshot.data!.date).inDays;
-
-                  //       return RichText(
-                  //         text: TextSpan(
-                  //           style: Theme.of(context).textTheme.titleMedium,
-                  //           children: <TextSpan>[
-                  //             // TODO: shouldn't be hardcoded to nitrate
-                  //             TextSpan(text: '${AppLocalizations.of(context).lastNitrateLevel}:'),
-                  //             TextSpan(
-                  //               text:
-                  //                   ' ${snapshot.data!.value.toString()}, ${AppLocalizations.of(context).xDaysAgo(difference)}',
-                  //               style: const TextStyle(
-                  //                 fontWeight: FontWeight.bold,
-                  //                 color: MyTheme.paramColor,
-                  //               ),
-                  //             ),
-                  //             // const TextSpan(text: ', '),
-                  //             // TextSpan(
-                  //             //   text: AppLocalizations.of(context).xDaysAgo(difference),
-                  //             //   style: const TextStyle(
-                  //             //     fontWeight: FontWeight.w300,
-                  //             //   ),
-                  //             // ),
-                  //           ],
-                  //         ),
-                  //       );
-                  //     } else {
-                  //       return const SizedBox();
-                  //     }
-                  //   },
-                  // ),
                 ],
               ),
             ),
