@@ -148,6 +148,11 @@
     "repeatEvery": "Répéter à chaque",
     "repeat": "Répéter",
     "doNotRepeat": "Ne pas répéter",
+    "ends": "Finit",
+    "never": "Jamais",
+    "on": "Le",
+    "after": "Après",
+    "nOccurrences": "{count, plural, =1{occurrence} other{occurrences}}",
 
     "sundayLetter": "D",
     "mondayLetter": "L",

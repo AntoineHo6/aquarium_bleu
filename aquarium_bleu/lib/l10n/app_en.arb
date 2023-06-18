@@ -142,6 +142,11 @@
     "repeatEvery": "Repeat every",
     "repeat": "Repeat",
     "doNotRepeat": "Do not repeat",
+    "ends": "Ends",
+    "never": "Never",
+    "on": "On",
+    "after": "After",
+    "nOccurrences": "{count, plural, =1{occurrence} other{occurrences}}",
 
     "sundayLetter": "S",
     "mondayLetter": "M",

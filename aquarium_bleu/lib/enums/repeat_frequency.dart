@@ -1,4 +1,4 @@
-enum Frequency {
+enum RepeatFrequency {
   daily,
   weekly,
   monthly,

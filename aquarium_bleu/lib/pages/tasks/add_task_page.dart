@@ -1,9 +1,10 @@
+import 'package:aquarium_bleu/enums/repeat_end_type.dart';
+import 'package:aquarium_bleu/enums/repeat_frequency.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:rrule/rrule.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -17,11 +18,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
   late TextEditingController _descFieldController;
   late TextEditingController _amountFieldController;
   bool _repeat = false;
-  Frequency _frequency = Frequency.daily;
+  RepeatFrequency _frequency = RepeatFrequency.daily;
   final List<bool> _activeDaysOfWeek = [false, true, false, false, false, false, false];
   int numOfActiveDaysOfWeek = 1;
-  DateTime _date = DateTime.now().toUtc();
-  TimeOfDay _time = TimeOfDay.now();
+  DateTime _nextDueDate = DateTime.now().toUtc();
+  TimeOfDay _nextDueTime = TimeOfDay.now();
+  RepeatEndType _repeatEndType = RepeatEndType.never;
+  DateTime _lastRepeatDate = DateTime.now().toUtc();
+  int _numOfOccurrences = 10;
+  late TextEditingController _numOfOccurrencesFieldController;
 
   @override
   void initState() {
@@ -29,6 +34,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     _titleFieldController = TextEditingController();
     _descFieldController = TextEditingController();
     _amountFieldController = TextEditingController();
+    _numOfOccurrencesFieldController = TextEditingController();
   }
 
   @override
@@ -36,6 +42,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     _titleFieldController.dispose();
     _descFieldController.dispose();
     _amountFieldController.dispose();
+    _numOfOccurrencesFieldController.dispose();
     super.dispose();
   }
 
@@ -100,12 +107,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
               IconTextBtn(
                 iconData: Icons.calendar_today,
-                text: StringUtil.formattedDate(context, _date),
-                onPressed: () => _handleDateBtn(context),
+                text: StringUtil.formattedDate(context, _nextDueDate),
+                onPressed: () => _handleDateBtn(context, _nextDueDate),
               ),
               IconTextBtn(
                 iconData: Icons.schedule,
-                text: StringUtil.formattedTime(context, _time),
+                text: StringUtil.formattedTime(context, _nextDueTime),
                 onPressed: () => _handleTimeBtn(context),
               ),
               const SizedBox(
@@ -158,27 +165,27 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         const SizedBox(
                           width: 10,
                         ),
-                        DropdownButton<Frequency>(
+                        DropdownButton<RepeatFrequency>(
                           value: _frequency,
                           items: [
                             DropdownMenuItem(
-                              value: Frequency.daily,
+                              value: RepeatFrequency.daily,
                               child: Text(AppLocalizations.of(context).nDays(amount)),
                             ),
                             DropdownMenuItem(
-                              value: Frequency.weekly,
+                              value: RepeatFrequency.weekly,
                               child: Text(AppLocalizations.of(context).nWeeks(amount)),
                             ),
                             DropdownMenuItem(
-                              value: Frequency.monthly,
+                              value: RepeatFrequency.monthly,
                               child: Text(AppLocalizations.of(context).nMonths(amount)),
                             ),
                             DropdownMenuItem(
-                              value: Frequency.yearly,
+                              value: RepeatFrequency.yearly,
                               child: Text(AppLocalizations.of(context).nYears(amount)),
                             ),
                           ],
-                          onChanged: (Frequency? value) {
+                          onChanged: (RepeatFrequency? value) {
                             setState(() {
                               _frequency = value!;
                             });
@@ -187,13 +194,83 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       ],
                     )
                   : const SizedBox(),
-              _frequency == Frequency.weekly && _repeat
+              _frequency == RepeatFrequency.weekly && _repeat
                   ? Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: _populateDayOfWeekChips(),
                       ),
+                    )
+                  : const SizedBox(),
+              _repeat
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context).ends,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        RadioMenuButton<RepeatEndType>(
+                          value: RepeatEndType.never,
+                          groupValue: _repeatEndType,
+                          onChanged: (value) {
+                            setState(() {
+                              _repeatEndType = value!;
+                            });
+                          },
+                          child: Text(AppLocalizations.of(context).never),
+                        ),
+                        RadioMenuButton<RepeatEndType>(
+                          value: RepeatEndType.on,
+                          groupValue: _repeatEndType,
+                          onChanged: (value) {
+                            setState(() {
+                              _repeatEndType = value!;
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Text(AppLocalizations.of(context).on),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              IconTextBtn(
+                                iconData: Icons.calendar_today,
+                                text: StringUtil.formattedDate(context, _lastRepeatDate),
+                                onPressed: _repeatEndType == RepeatEndType.on
+                                    ? () => _handleDateBtn(context, _lastRepeatDate)
+                                    : null,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            RadioMenuButton<RepeatEndType>(
+                              value: RepeatEndType.after,
+                              groupValue: _repeatEndType,
+                              onChanged: (value) {
+                                setState(() {
+                                  _repeatEndType = value!;
+                                });
+                              },
+                              child: Text(AppLocalizations.of(context).after),
+                            ),
+                            Flexible(
+                              child: TextField(
+                                enabled: _repeatEndType == RepeatEndType.after ? true : false,
+                                controller: _numOfOccurrencesFieldController,
+                                keyboardType: TextInputType.number,
+                                maxLength: 3,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     )
                   : const SizedBox(),
             ],
@@ -243,23 +320,23 @@ class _AddTaskPageState extends State<AddTaskPage> {
     return chips;
   }
 
-  _handleDateBtn(BuildContext context) {
+  _handleDateBtn(BuildContext context, DateTime date) {
     showDatePicker(
       context: context,
-      initialDate: _date,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      initialDate: date,
+      firstDate: DateTime(2000).toUtc(),
+      lastDate: DateTime(2100).toUtc(),
     ).then((value) => {
           setState(() {
-            value != null ? _date = value : null;
+            value != null ? date = value : null;
           })
         });
   }
 
   _handleTimeBtn(BuildContext context) {
-    showTimePicker(context: context, initialTime: _time).then((value) => {
+    showTimePicker(context: context, initialTime: _nextDueTime).then((value) => {
           setState(() {
-            value != null ? _time = value : null;
+            value != null ? _nextDueTime = value : null;
           })
         });
   }
