@@ -130,5 +130,24 @@
     "dec": "December",
 
     "tasks": "Tasks",
-    "due": "Due"
+    "due": "Due",
+    "dueDate": "Due date",
+    "nextDueDate": "Next due date",
+    "title": "Title",
+    "description": "Description",
+    "nDays": "{count, plural, =1{day} other{days}}",
+    "nWeeks": "{count, plural, =1{week} other{weeks}}",
+    "nMonths": "{count, plural, =1{month} other{months}}",
+    "nYears": "{count, plural, =1{year} other{years}}",
+    "repeatEvery": "Repeat every",
+    "repeat": "Repeat",
+    "doNotRepeat": "Do not repeat",
+
+    "sundayLetter": "S",
+    "mondayLetter": "M",
+    "tuesdayLetter": "T",
+    "wednesdayLetter": "W",
+    "thursdayLetter": "T",
+    "fridayLetter": "F",
+    "saturdayLetter": "S"
 }
