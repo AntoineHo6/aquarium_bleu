@@ -25,7 +25,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
   TimeOfDay _nextDueTime = TimeOfDay.now();
   RepeatEndType _repeatEndType = RepeatEndType.never;
   DateTime _lastRepeatDate = DateTime.now().toUtc();
-  int _numOfOccurrences = 10;
   late TextEditingController _numOfOccurrencesFieldController;
 
   @override
@@ -48,7 +47,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    int amount = int.tryParse(_amountFieldController.value.text) ?? 1;
+    int repeatInterval = int.tryParse(_amountFieldController.value.text) ?? 1;
+    int numOfOccurrences = int.tryParse(_numOfOccurrencesFieldController.value.text) ?? 10;
 
     return Scaffold(
       appBar: AppBar(),
@@ -99,21 +99,34 @@ class _AddTaskPageState extends State<AddTaskPage> {
               const SizedBox(
                 height: Spacing.betweenSections,
               ),
-              Text(
-                _repeat
-                    ? '${AppLocalizations.of(context).nextDueDate}:'
-                    : '${AppLocalizations.of(context).dueDate}:',
-                style: Theme.of(context).textTheme.titleMedium,
+              RichText(
+                text: TextSpan(
+                  style: Theme.of(context).textTheme.titleMedium,
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: _repeat
+                          ? '${AppLocalizations.of(context).nextDueDate}: '
+                          : '${AppLocalizations.of(context).dueDate}: ',
+                    ),
+                    const TextSpan(
+                      text: '*',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               IconTextBtn(
                 iconData: Icons.calendar_today,
                 text: StringUtil.formattedDate(context, _nextDueDate),
-                onPressed: () => _handleDateBtn(context, _nextDueDate),
+                onPressed: () => _handleDateBtn(_nextDueDate),
               ),
               IconTextBtn(
                 iconData: Icons.schedule,
                 text: StringUtil.formattedTime(context, _nextDueTime),
-                onPressed: () => _handleTimeBtn(context),
+                onPressed: () => _handleTimeBtn(),
               ),
               const SizedBox(
                 height: Spacing.betweenSections,
@@ -170,19 +183,19 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           items: [
                             DropdownMenuItem(
                               value: RepeatFrequency.daily,
-                              child: Text(AppLocalizations.of(context).nDays(amount)),
+                              child: Text(AppLocalizations.of(context).nDays(repeatInterval)),
                             ),
                             DropdownMenuItem(
                               value: RepeatFrequency.weekly,
-                              child: Text(AppLocalizations.of(context).nWeeks(amount)),
+                              child: Text(AppLocalizations.of(context).nWeeks(repeatInterval)),
                             ),
                             DropdownMenuItem(
                               value: RepeatFrequency.monthly,
-                              child: Text(AppLocalizations.of(context).nMonths(amount)),
+                              child: Text(AppLocalizations.of(context).nMonths(repeatInterval)),
                             ),
                             DropdownMenuItem(
                               value: RepeatFrequency.yearly,
-                              child: Text(AppLocalizations.of(context).nYears(amount)),
+                              child: Text(AppLocalizations.of(context).nYears(repeatInterval)),
                             ),
                           ],
                           onChanged: (RepeatFrequency? value) {
@@ -207,9 +220,22 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          AppLocalizations.of(context).ends,
-                          style: Theme.of(context).textTheme.titleMedium,
+                        RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.titleMedium,
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: '${AppLocalizations.of(context).ends}: ',
+                              ),
+                              const TextSpan(
+                                text: '*',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         RadioMenuButton<RepeatEndType>(
                           value: RepeatEndType.never,
@@ -220,6 +246,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             });
                           },
                           child: Text(AppLocalizations.of(context).never),
+                        ),
+                        const SizedBox(
+                          height: 10,
                         ),
                         RadioMenuButton<RepeatEndType>(
                           value: RepeatEndType.on,
@@ -239,11 +268,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 iconData: Icons.calendar_today,
                                 text: StringUtil.formattedDate(context, _lastRepeatDate),
                                 onPressed: _repeatEndType == RepeatEndType.on
-                                    ? () => _handleDateBtn(context, _lastRepeatDate)
+                                    ? () => _handleDateBtn(_lastRepeatDate)
                                     : null,
                               ),
                             ],
                           ),
+                        ),
+                        const SizedBox(
+                          height: 10,
                         ),
                         Row(
                           children: [
@@ -266,13 +298,45 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
                                 ),
+                                onChanged: (value) {
+                                  setState(() {});
+                                },
                               ),
                             ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(AppLocalizations.of(context).nOccurrences(numOfOccurrences)),
                           ],
                         ),
                       ],
                     )
                   : const SizedBox(),
+              const SizedBox(
+                height: Spacing.betweenSections,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 30,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(AppLocalizations.of(context).cancel),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 70,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        // _handleAdd();
+                      },
+                      child: Text(AppLocalizations.of(context).add),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -320,7 +384,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     return chips;
   }
 
-  _handleDateBtn(BuildContext context, DateTime date) {
+  _handleDateBtn(DateTime date) {
     showDatePicker(
       context: context,
       initialDate: date,
@@ -333,11 +397,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
         });
   }
 
-  _handleTimeBtn(BuildContext context) {
+  _handleTimeBtn() {
     showTimePicker(context: context, initialTime: _nextDueTime).then((value) => {
           setState(() {
             value != null ? _nextDueTime = value : null;
           })
         });
   }
+
+  _handleAdd() {}
 }
