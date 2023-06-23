@@ -18,8 +18,9 @@
     "height": "Height",
 
     "name": "Name",
-    "emptyName": "Empty name",
     "nameAlreadyExists": "Name already exists",
+
+    "emptyField": "Empty field",
     
     "add": "Add",
     "cancel": "Cancel",

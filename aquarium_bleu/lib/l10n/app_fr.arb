@@ -18,8 +18,9 @@
     "height": "Hauteur",
     
     "name": "Nom",
-    "emptyName": "Nom vide",
     "nameAlreadyExists": "Le nom existe déjà",
+
+    "emptyField": "Champ vide",
 
     "add": "Ajouter",
     "cancel": "Annuler",

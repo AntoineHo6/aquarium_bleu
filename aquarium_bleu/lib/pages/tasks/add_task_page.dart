@@ -1,10 +1,13 @@
 import 'package:aquarium_bleu/enums/repeat_end_type.dart';
 import 'package:aquarium_bleu/enums/repeat_frequency.dart';
+// import 'package:aquarium_bleu/enums/repeat_frequency.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
+import 'package:aquarium_bleu/utils/num_util.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rrule/rrule.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -16,9 +19,11 @@ class AddTaskPage extends StatefulWidget {
 class _AddTaskPageState extends State<AddTaskPage> {
   late TextEditingController _titleFieldController;
   late TextEditingController _descFieldController;
-  late TextEditingController _amountFieldController;
+  late TextEditingController _repeatEveryFieldController;
+  String? _titleErrorText;
+  String? _repeatEveryErrorText;
   bool _repeat = false;
-  RepeatFrequency _frequency = RepeatFrequency.daily;
+  Frequency _frequency = Frequency.daily;
   final List<bool> _activeDaysOfWeek = [false, true, false, false, false, false, false];
   int numOfActiveDaysOfWeek = 1;
   DateTime _nextDueDate = DateTime.now().toUtc();
@@ -32,7 +37,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     super.initState();
     _titleFieldController = TextEditingController();
     _descFieldController = TextEditingController();
-    _amountFieldController = TextEditingController();
+    _repeatEveryFieldController = TextEditingController();
     _numOfOccurrencesFieldController = TextEditingController();
   }
 
@@ -40,15 +45,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
   void dispose() {
     _titleFieldController.dispose();
     _descFieldController.dispose();
-    _amountFieldController.dispose();
+    _repeatEveryFieldController.dispose();
     _numOfOccurrencesFieldController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    int repeatInterval = int.tryParse(_amountFieldController.value.text) ?? 1;
-    int numOfOccurrences = int.tryParse(_numOfOccurrencesFieldController.value.text) ?? 10;
+    int repeatInterval = int.tryParse(_repeatEveryFieldController.value.text) ?? 1;
+    int numOfOccurrences = int.tryParse(_numOfOccurrencesFieldController.value.text) ?? 1;
 
     return Scaffold(
       appBar: AppBar(),
@@ -79,6 +84,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       ],
                     ),
                   ),
+                  errorText: _titleErrorText,
                 ),
               ),
               const SizedBox(
@@ -121,7 +127,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               IconTextBtn(
                 iconData: Icons.calendar_today,
                 text: StringUtil.formattedDate(context, _nextDueDate),
-                onPressed: () => _handleDateBtn(_nextDueDate),
+                onPressed: () => _handleNextDueDateBtn(),
               ),
               IconTextBtn(
                 iconData: Icons.schedule,
@@ -156,58 +162,75 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 ],
               ),
               _repeat
-                  ? Row(
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(AppLocalizations.of(context).repeatEvery),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Flexible(
-                          child: TextField(
-                            controller: _amountFieldController,
-                            keyboardType: TextInputType.number,
-                            maxLength: 3,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                            ),
-                            onChanged: (value) {
-                              setState(() {});
-                            },
+                        RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.titleMedium,
+                            children: <TextSpan>[
+                              TextSpan(text: '${AppLocalizations.of(context).repeatEvery}: '),
+                              const TextSpan(
+                                text: '*',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        DropdownButton<RepeatFrequency>(
-                          value: _frequency,
-                          items: [
-                            DropdownMenuItem(
-                              value: RepeatFrequency.daily,
-                              child: Text(AppLocalizations.of(context).nDays(repeatInterval)),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: TextField(
+                                controller: _repeatEveryFieldController,
+                                keyboardType: TextInputType.number,
+                                maxLength: 3,
+                                decoration: InputDecoration(
+                                  border: const OutlineInputBorder(),
+                                  errorText: _repeatEveryErrorText,
+                                ),
+                                onChanged: (value) {
+                                  setState(() {});
+                                },
+                              ),
                             ),
-                            DropdownMenuItem(
-                              value: RepeatFrequency.weekly,
-                              child: Text(AppLocalizations.of(context).nWeeks(repeatInterval)),
+                            const SizedBox(
+                              width: 10,
                             ),
-                            DropdownMenuItem(
-                              value: RepeatFrequency.monthly,
-                              child: Text(AppLocalizations.of(context).nMonths(repeatInterval)),
-                            ),
-                            DropdownMenuItem(
-                              value: RepeatFrequency.yearly,
-                              child: Text(AppLocalizations.of(context).nYears(repeatInterval)),
+                            DropdownButton<Frequency>(
+                              value: _frequency,
+                              items: [
+                                DropdownMenuItem(
+                                  value: Frequency.daily,
+                                  child: Text(AppLocalizations.of(context).nDays(repeatInterval)),
+                                ),
+                                DropdownMenuItem(
+                                  value: Frequency.weekly,
+                                  child: Text(AppLocalizations.of(context).nWeeks(repeatInterval)),
+                                ),
+                                DropdownMenuItem(
+                                  value: Frequency.monthly,
+                                  child: Text(AppLocalizations.of(context).nMonths(repeatInterval)),
+                                ),
+                                DropdownMenuItem(
+                                  value: Frequency.yearly,
+                                  child: Text(AppLocalizations.of(context).nYears(repeatInterval)),
+                                ),
+                              ],
+                              onChanged: (Frequency? value) {
+                                setState(() {
+                                  _frequency = value!;
+                                });
+                              },
                             ),
                           ],
-                          onChanged: (RepeatFrequency? value) {
-                            setState(() {
-                              _frequency = value!;
-                            });
-                          },
                         ),
                       ],
                     )
                   : const SizedBox(),
-              _frequency == RepeatFrequency.weekly && _repeat
+              _frequency == Frequency.weekly && _repeat
                   ? Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: Row(
@@ -268,7 +291,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 iconData: Icons.calendar_today,
                                 text: StringUtil.formattedDate(context, _lastRepeatDate),
                                 onPressed: _repeatEndType == RepeatEndType.on
-                                    ? () => _handleDateBtn(_lastRepeatDate)
+                                    ? () => _handleLastRepeatDateBtn()
                                     : null,
                               ),
                             ],
@@ -306,7 +329,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            Text(AppLocalizations.of(context).nOccurrences(numOfOccurrences)),
+                            Text(
+                              AppLocalizations.of(context).nOccurrences(numOfOccurrences),
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
                           ],
                         ),
                       ],
@@ -330,7 +356,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     flex: 70,
                     child: ElevatedButton(
                       onPressed: () async {
-                        // _handleAdd();
+                        _handleAdd();
                       },
                       child: Text(AppLocalizations.of(context).add),
                     ),
@@ -384,15 +410,31 @@ class _AddTaskPageState extends State<AddTaskPage> {
     return chips;
   }
 
-  _handleDateBtn(DateTime date) {
+  _handleNextDueDateBtn() {
     showDatePicker(
       context: context,
-      initialDate: date,
+      initialDate: _nextDueDate,
       firstDate: DateTime(2000).toUtc(),
       lastDate: DateTime(2100).toUtc(),
     ).then((value) => {
           setState(() {
-            value != null ? date = value : null;
+            if (value != null) {
+              _nextDueDate = value;
+              _lastRepeatDate = _nextDueDate.add(const Duration(days: 7));
+            }
+          })
+        });
+  }
+
+  _handleLastRepeatDateBtn() {
+    showDatePicker(
+      context: context,
+      initialDate: _lastRepeatDate,
+      firstDate: _nextDueDate,
+      lastDate: DateTime(2100).toUtc(),
+    ).then((value) => {
+          setState(() {
+            value != null ? _lastRepeatDate = value : null;
           })
         });
   }
@@ -405,5 +447,46 @@ class _AddTaskPageState extends State<AddTaskPage> {
         });
   }
 
-  _handleAdd() {}
+  _handleAdd() {
+    bool isValid = true;
+    String title = _titleFieldController.text.trim();
+    // 1. check if title is empty
+    if (title.isEmpty) {
+      isValid = false;
+      setState(() {
+        _titleErrorText = AppLocalizations.of(context).emptyField;
+      });
+    } else {
+      setState(() {
+        _titleErrorText = null;
+      });
+    }
+
+    // 2. Check if repeat field is empty or valid
+    String repeatEveryStr = _repeatEveryFieldController.text.trim();
+
+    if (!StringUtil.isNumeric(repeatEveryStr)) {
+      isValid = false;
+      _repeatEveryErrorText = AppLocalizations.of(context).theValueIsNotAValidNumber;
+    }
+    // else if check if int
+    else {
+      setState(() {
+        _repeatEveryErrorText = null;
+      });
+    }
+
+    // 3. validate after n Occurrences
+    // ...
+
+    final rrule = RecurrenceRule(
+      frequency: _frequency,
+      interval: int.parse(repeatEveryStr),
+      byHours: const {15},
+      byWeekDays: {
+        ByWeekDayEntry(DateTime.tuesday),
+        ByWeekDayEntry(DateTime.thursday),
+      },
+    );
+  }
 }

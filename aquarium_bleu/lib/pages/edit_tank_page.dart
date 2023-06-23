@@ -347,7 +347,7 @@ class _EditTankPageState extends State<EditTankPage> {
       hasError = true;
       setState(() {
         _isNameValid = false;
-        _errorText = AppLocalizations.of(context).emptyName;
+        _errorText = AppLocalizations.of(context).emptyField;
       });
     } else if (nameLowerCase != tankProvider.tank.name.toLowerCase() &&
         tankProvider.tankNames.contains(nameLowerCase)) {

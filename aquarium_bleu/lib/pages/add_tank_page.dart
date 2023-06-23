@@ -303,7 +303,7 @@ class _AddTankPageState extends State<AddTankPage> {
       hasError = true;
       setState(() {
         _isNameValid = false;
-        _errorText = AppLocalizations.of(context).emptyName;
+        _errorText = AppLocalizations.of(context).emptyField;
       });
     } else if (tankProvider.tankNames.contains(nameModified)) {
       hasError = true;
