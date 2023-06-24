@@ -2,6 +2,7 @@ import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
+import 'package:aquarium_bleu/models/task_r_rule.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -346,5 +347,36 @@ class FirestoreStuff {
         .doc('showWaterChanges');
 
     await dateRangeDoc.update({'value': newValue});
+  }
+
+  static Future addTaskRRule(String tankId, TaskRRule taskRRule) async {
+    final taskRRuleDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('taskRRules')
+        .doc(taskRRule.id);
+
+    await taskRRuleDoc.set(taskRRule.toJson());
+  }
+
+  static Future<List<TaskRRule>> readTaskRRules(String tankId) async {
+    List<TaskRRule> taskRRules = [];
+
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('taskRRules')
+        .get();
+
+    final allData =
+        querySnapshot.docs.map((doc) => TaskRRule.fromJson(doc.id, doc.data())).toList();
+
+    print(allData);
+
+    return allData;
   }
 }

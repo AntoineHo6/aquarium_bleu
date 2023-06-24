@@ -1,6 +1,9 @@
+import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/models/task_r_rule.dart';
 import 'package:aquarium_bleu/pages/tasks/add_task_page.dart';
+import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:rrule/rrule.dart';
+import 'package:provider/provider.dart';
 
 class TasksPage extends StatefulWidget {
   const TasksPage({super.key});
@@ -15,6 +18,8 @@ class _TasksPageState extends State<TasksPage> {
   @override
   void initState() {
     super.initState();
+
+    _fetchTaskDatesInMonth(DateTime.now().month).then((value) => print(value));
   }
 
   @override
@@ -32,31 +37,31 @@ class _TasksPageState extends State<TasksPage> {
               builder: (context) => const AddTaskPage(),
             ),
           );
-          final rrule = RecurrenceRule(
-            frequency: Frequency.daily,
-            byHours: const {15},
-            byWeekDays: {
-              ByWeekDayEntry(DateTime.tuesday),
-              ByWeekDayEntry(DateTime.thursday),
-            },
-          );
 
-          final Iterable<DateTime> instances = rrule.getInstances(
-            start: DateTime.now().copyWith(isUtc: true),
-          );
-
-          // final onlyThisMonth = instances.takeWhile(
-          //   (instance) => instance.month == DateTime.now().month,
+          // final Iterable<DateTime> instances = rrule.getInstances(
+          //   start: DateTime.now().copyWith(isUtc: true),
           // );
-
-          // for (DateTime date in onlyThisMonth) {
-          //   tasks.add(Text(date.toString()));
-          // }
-
-          // setState(() {});
         },
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  Future _fetchTaskDatesInMonth(int month) async {
+    final tankProvider = Provider.of<TankProvider>(context, listen: false);
+    List<TaskRRule> taskRRules = await FirestoreStuff.readTaskRRules(tankProvider.tank.docId);
+
+    Map<DateTime, String> taskDatesInMonth = {};
+
+    for (TaskRRule taskRRule in taskRRules) {
+      taskRRule.rRule
+          .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
+          .where((element) => element.month == month)
+          .forEach((dateTime) {
+        taskDatesInMonth[dateTime] = taskRRule.id;
+      });
+    }
+
+    return taskDatesInMonth;
   }
 }

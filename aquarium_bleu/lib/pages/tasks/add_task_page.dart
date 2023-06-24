@@ -1,13 +1,17 @@
 import 'package:aquarium_bleu/enums/repeat_end_type.dart';
 import 'package:aquarium_bleu/enums/repeat_frequency.dart';
-// import 'package:aquarium_bleu/enums/repeat_frequency.dart';
+import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/models/task_r_rule.dart';
+import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/num_util.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:rrule/rrule.dart';
+import 'package:uuid/uuid.dart';
 
 class AddTaskPage extends StatefulWidget {
   const AddTaskPage({super.key});
@@ -26,10 +30,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Frequency _frequency = Frequency.daily;
   final List<bool> _activeDaysOfWeek = [false, true, false, false, false, false, false];
   int numOfActiveDaysOfWeek = 1;
-  DateTime _nextDueDate = DateTime.now().toUtc();
-  TimeOfDay _nextDueTime = TimeOfDay.now();
+  DateTime _startDate = DateTime.now().toUtc();
+  TimeOfDay _startTime = TimeOfDay.now();
   RepeatEndType _repeatEndType = RepeatEndType.never;
-  DateTime _lastRepeatDate = DateTime.now().toUtc();
+  DateTime _endOnDate = DateTime.now().toUtc();
   late TextEditingController _numOfOccurrencesFieldController;
 
   @override
@@ -126,12 +130,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
               IconTextBtn(
                 iconData: Icons.calendar_today,
-                text: StringUtil.formattedDate(context, _nextDueDate),
+                text: StringUtil.formattedDate(context, _startDate),
                 onPressed: () => _handleNextDueDateBtn(),
               ),
               IconTextBtn(
                 iconData: Icons.schedule,
-                text: StringUtil.formattedTime(context, _nextDueTime),
+                text: StringUtil.formattedTime(context, _startTime),
                 onPressed: () => _handleTimeBtn(),
               ),
               const SizedBox(
@@ -289,7 +293,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               ),
                               IconTextBtn(
                                 iconData: Icons.calendar_today,
-                                text: StringUtil.formattedDate(context, _lastRepeatDate),
+                                text: StringUtil.formattedDate(context, _endOnDate),
                                 onPressed: _repeatEndType == RepeatEndType.on
                                     ? () => _handleLastRepeatDateBtn()
                                     : null,
@@ -413,14 +417,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
   _handleNextDueDateBtn() {
     showDatePicker(
       context: context,
-      initialDate: _nextDueDate,
+      initialDate: _startDate,
       firstDate: DateTime(2000).toUtc(),
       lastDate: DateTime(2100).toUtc(),
     ).then((value) => {
           setState(() {
             if (value != null) {
-              _nextDueDate = value;
-              _lastRepeatDate = _nextDueDate.add(const Duration(days: 7));
+              _startDate = value;
+              _endOnDate = _startDate.add(const Duration(days: 7));
             }
           })
         });
@@ -429,25 +433,26 @@ class _AddTaskPageState extends State<AddTaskPage> {
   _handleLastRepeatDateBtn() {
     showDatePicker(
       context: context,
-      initialDate: _lastRepeatDate,
-      firstDate: _nextDueDate,
+      initialDate: _endOnDate,
+      firstDate: _startDate,
       lastDate: DateTime(2100).toUtc(),
     ).then((value) => {
           setState(() {
-            value != null ? _lastRepeatDate = value : null;
+            value != null ? _endOnDate = value : null;
           })
         });
   }
 
   _handleTimeBtn() {
-    showTimePicker(context: context, initialTime: _nextDueTime).then((value) => {
+    showTimePicker(context: context, initialTime: _startTime).then((value) => {
           setState(() {
-            value != null ? _nextDueTime = value : null;
+            value != null ? _startTime = value : null;
           })
         });
   }
 
-  _handleAdd() {
+  _handleAdd() async {
+    final tankProvider = Provider.of<TankProvider>(context, listen: false);
     bool isValid = true;
     String title = _titleFieldController.text.trim();
     // 1. check if title is empty
@@ -479,14 +484,35 @@ class _AddTaskPageState extends State<AddTaskPage> {
     // 3. validate after n Occurrences
     // ...
 
-    final rrule = RecurrenceRule(
-      frequency: _frequency,
-      interval: int.parse(repeatEveryStr),
-      byHours: const {15},
-      byWeekDays: {
-        ByWeekDayEntry(DateTime.tuesday),
-        ByWeekDayEntry(DateTime.thursday),
-      },
-    );
+    // validate count
+
+    // 4. Create rrule
+    DateTime? until;
+    int? count;
+
+    if (_repeatEndType == RepeatEndType.on) {
+      until = _endOnDate;
+    } else if (_repeatEndType == RepeatEndType.after) {
+      count = int.parse(_numOfOccurrencesFieldController.text.trim());
+    }
+
+    if (_frequency == Frequency.daily) {
+      RecurrenceRule rRule = RecurrenceRule(
+        frequency: _frequency,
+        until: until,
+        count: count,
+        interval: int.parse(repeatEveryStr),
+      );
+
+      TaskRRule taskRRule = TaskRRule(
+        const Uuid().v4(),
+        title: title,
+        description: _descFieldController.text.trim(),
+        startDate: _startDate,
+        rRule: rRule,
+      );
+
+      await FirestoreStuff.addTaskRRule(tankProvider.tank.docId, taskRRule);
+    }
   }
 }

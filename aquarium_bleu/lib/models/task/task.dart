@@ -1,16 +1,13 @@
-import 'package:rrule/rrule.dart';
-
 abstract class Task {
   String docId;
   String title;
   String desc;
-  RecurrenceRule rRule;
-  // notify
+  DateTime dueDate;
 
   Task(
     this.docId, {
     required this.title,
     required this.desc,
-    required this.rRule,
+    required this.dueDate,
   });
 }
