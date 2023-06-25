@@ -1,11 +1,11 @@
 abstract class Task {
-  String docId;
+  String id;
   String title;
   String desc;
   DateTime dueDate;
 
   Task(
-    this.docId, {
+    this.id, {
     required this.title,
     required this.desc,
     required this.dueDate,

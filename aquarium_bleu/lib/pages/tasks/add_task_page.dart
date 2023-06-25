@@ -30,10 +30,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Frequency _frequency = Frequency.daily;
   final List<bool> _activeDaysOfWeek = [false, true, false, false, false, false, false];
   int numOfActiveDaysOfWeek = 1;
-  DateTime _startDate = DateTime.now().toUtc();
+  DateTime _startDate = DateTime.now();
   TimeOfDay _startTime = TimeOfDay.now();
   RepeatEndType _repeatEndType = RepeatEndType.never;
-  DateTime _endOnDate = DateTime.now().toUtc();
+  DateTime _endOnDate = DateTime.now();
   late TextEditingController _numOfOccurrencesFieldController;
 
   @override
@@ -418,8 +418,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
     showDatePicker(
       context: context,
       initialDate: _startDate,
-      firstDate: DateTime(2000).toUtc(),
-      lastDate: DateTime(2100).toUtc(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
     ).then((value) => {
           setState(() {
             if (value != null) {
@@ -435,7 +435,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       context: context,
       initialDate: _endOnDate,
       firstDate: _startDate,
-      lastDate: DateTime(2100).toUtc(),
+      lastDate: DateTime(2100),
     ).then((value) => {
           setState(() {
             value != null ? _endOnDate = value : null;

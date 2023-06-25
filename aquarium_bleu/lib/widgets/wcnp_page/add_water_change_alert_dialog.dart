@@ -16,7 +16,7 @@ class AddWaterChangeAlertDialog extends StatefulWidget {
 }
 
 class _AddWaterChangeAlertDialogState extends State<AddWaterChangeAlertDialog> {
-  DateTime _date = DateTime.now().toUtc();
+  DateTime _date = DateTime.now();
   TimeOfDay _time = TimeOfDay.now();
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class _AddWaterChangeAlertDialogState extends State<AddWaterChangeAlertDialog> {
       _date.day,
       _time.hour,
       _time.minute,
-    ).toUtc();
+    );
 
     WaterChange waterChange = WaterChange(docId: const Uuid().v4(), date: dateTime);
 

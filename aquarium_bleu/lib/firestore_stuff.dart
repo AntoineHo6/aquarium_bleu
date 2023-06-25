@@ -362,8 +362,6 @@ class FirestoreStuff {
   }
 
   static Future<List<TaskRRule>> readTaskRRules(String tankId) async {
-    List<TaskRRule> taskRRules = [];
-
     final querySnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -375,8 +373,30 @@ class FirestoreStuff {
     final allData =
         querySnapshot.docs.map((doc) => TaskRRule.fromJson(doc.id, doc.data())).toList();
 
-    print(allData);
-
     return allData;
+  }
+
+  static Future<Map<int, List<String>>> fetchTaskDaysInMonth(String tankId, int month) async {
+    List<TaskRRule> taskRRules = await readTaskRRules(tankId);
+
+    // fetch list of EXTASKS, map<taskRRuleId, List<DateTime>>
+
+    Map<int, List<String>> taskDatesInMonth = {};
+
+    for (TaskRRule taskRRule in taskRRules) {
+      taskRRule.rRule
+          .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
+          .where((element) => element.month == month)
+          .forEach((dateTime) {
+        // ignore those is EXTASKS
+        if (taskDatesInMonth[dateTime.day] == null) {
+          taskDatesInMonth[dateTime.day] = [];
+        }
+
+        taskDatesInMonth[dateTime.day]!.add(taskRRule.id);
+      });
+    }
+
+    return taskDatesInMonth;
   }
 }
