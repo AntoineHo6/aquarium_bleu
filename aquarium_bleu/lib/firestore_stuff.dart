@@ -2,6 +2,7 @@ import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
+import 'package:aquarium_bleu/models/task/task.dart';
 import 'package:aquarium_bleu/models/task_r_rule.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/strings.dart';
@@ -398,5 +399,30 @@ class FirestoreStuff {
     }
 
     return taskDatesInMonth;
+  }
+
+  static fetchTask(String tankId, String rRuleId, DateTime date) async {
+    // 1. If task is in EXTASKS, ignore
+
+    // 2. Query from tasks collection
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('tasks')
+        .where('rRuleId', isEqualTo: rRuleId)
+        .where('date', isEqualTo: date)
+        .limit(1) // should always be only one anyways
+        .get();
+
+    final task = querySnapshot.docs.map((doc) => Task.fromJson(doc.id, doc.data())).toList();
+
+    // 3. If task doesn't exist in tasks collection, generate from rule
+    if (task.isEmpty) {
+      // soji,,,
+    } else {
+      return task[0];
+    }
   }
 }
