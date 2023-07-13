@@ -122,9 +122,16 @@ class _TasksPageState extends State<TasksPage> {
                       children: headerDayTiles,
                     ),
                   ),
-                  Column(
-                    children: [],
-                  ),
+                  FutureBuilder(
+                    future: FirestoreStuff.fetchTask(tankProvider.tank.docId, snapshot.data![_currentDate.day]!.first, _currentDate),
+                    builder: (BuildContext context, taskSnapshot) {
+                    if (taskSnapshot.hasData) {
+                      return Text(taskSnapshot.data!.description);
+                    }
+                    else {
+                      return Text('dasd');
+                    }
+                  }),
                 ],
               );
             } else {

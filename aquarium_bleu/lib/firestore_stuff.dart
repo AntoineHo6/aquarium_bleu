@@ -8,6 +8,8 @@ import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:uuid/uuid.dart';
 
 class FirestoreStuff {
   static writeNewUser(String? uid, String? email) async {
@@ -401,11 +403,11 @@ class FirestoreStuff {
     return taskDatesInMonth;
   }
 
-  static fetchTask(String tankId, String rRuleId, DateTime date) async {
+  static Future<Task?> fetchTask(String tankId, String rRuleId, DateTime date) async {
     // 1. If task is in EXTASKS, ignore
 
     // 2. Query from tasks collection
-    final querySnapshot = await FirebaseFirestore.instance
+    final taskSnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('tanks')
@@ -413,14 +415,34 @@ class FirestoreStuff {
         .collection('tasks')
         .where('rRuleId', isEqualTo: rRuleId)
         .where('date', isEqualTo: date)
-        .limit(1) // should always be only one anyways
         .get();
 
-    final task = querySnapshot.docs.map((doc) => Task.fromJson(doc.id, doc.data())).toList();
+    final task = taskSnapshot.docs.map((doc) => Task.fromJson(doc.id, doc.data())).toList();
 
     // 3. If task doesn't exist in tasks collection, generate from rule
     if (task.isEmpty) {
-      // soji,,,
+      final rRuleDoc = FirebaseFirestore.instance
+      .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('taskRRules')
+        .doc(rRuleId);
+
+      late Task newTask;
+      final doc = await rRuleDoc.get();
+      
+      TaskRRule taskRRule = TaskRRule.fromJson(doc.id, doc.data()!);
+
+      final instances = taskRRule.rRule.getInstances(start: date.copyWith(isUtc: true));
+
+      final firstInstance = instances.first;
+
+      newTask = Task(const Uuid().v4(), title: taskRRule.title, description: taskRRule.description, dueDate: firstInstance, isCompleted: false);
+
+
+      return newTask;
+
     } else {
       return task[0];
     }
