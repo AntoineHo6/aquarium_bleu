@@ -1,10 +1,7 @@
 import 'package:aquarium_bleu/firestore_stuff.dart';
-import 'package:aquarium_bleu/models/task/task.dart';
-import 'package:aquarium_bleu/models/task_r_rule.dart';
 import 'package:aquarium_bleu/pages/tasks/add_task_page.dart';
 import 'package:aquarium_bleu/pages/tasks/date_picker_calendar_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
-import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/date_util.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/colored_dot.dart';
@@ -56,13 +53,15 @@ class _TasksPageState extends State<TasksPage> {
                   int numTasks = snapshot.data![day]!.length;
 
                   if (numTasks >= 1) {
-                    taskDots.add(const ColoredDot(color: Colors.amber));
+                    taskDots.add(const ColoredDot(color: Colors.lightBlue));
                   }
                   if (numTasks >= 2) {
-                    taskDots.add(const ColoredDot(color: Colors.amber));
+                    taskDots.add(const SizedBox(width: 3,));
+                    taskDots.add(const ColoredDot(color: Colors.lightBlue));
                   }
                   if (numTasks >= 3) {
-                    taskDots.add(const ColoredDot(color: Colors.amber));
+                    taskDots.add(const SizedBox(width: 3,));
+                    taskDots.add(const ColoredDot(color: Colors.lightBlue));
                   }
                 }
                 headerDayTiles.add(
@@ -93,12 +92,6 @@ class _TasksPageState extends State<TasksPage> {
                     ),
                   ),
                 );
-              }
-
-              List<Widget> currentDateTasks = [];
-
-              if (snapshot.data!.containsKey(_currentDate.day)) {
-                for (String taskId in snapshot.data![_currentDate.day]!) {}
               }
 
               return Column(
@@ -136,7 +129,9 @@ class _TasksPageState extends State<TasksPage> {
                       );
                     }
                     else {
-                      return Text('dasd');
+                      return const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      );
                     }
                   }),
                 ],

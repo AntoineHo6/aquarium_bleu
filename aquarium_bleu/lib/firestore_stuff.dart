@@ -382,8 +382,6 @@ class FirestoreStuff {
   static Future<Map<int, List<String>>> fetchTaskDaysInMonth(String tankId, DateTime date) async {
     List<TaskRRule> taskRRules = await readTaskRRules(tankId);
 
-    Map<String, List<int>> exDaysInMonth = {};
-
     Map<int, List<String>> taskDatesInMonth = {};
 
     DateTime firstDayOfMonth = DateTime(date.year, date.month, 1);
@@ -412,7 +410,6 @@ class FirestoreStuff {
           .forEach((dateTime) {
         // ignore those is EXTASKS
         if (allData.contains(dateTime)) {
-          print('booger');
           // do nothing
         }
         else if (taskDatesInMonth[dateTime.day] == null) {
