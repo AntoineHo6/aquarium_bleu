@@ -379,31 +379,107 @@ class FirestoreStuff {
     return allData;
   }
 
-  static Future<Map<int, List<String>>> fetchTaskDaysInMonth(String tankId, int month) async {
+  static Future<Map<int, List<String>>> fetchTaskDaysInMonth(String tankId, DateTime date) async {
     List<TaskRRule> taskRRules = await readTaskRRules(tankId);
 
-    // fetch list of EXTASKS, map<taskRRuleId, List<DateTime>>
+    Map<String, List<int>> exDaysInMonth = {};
 
     Map<int, List<String>> taskDatesInMonth = {};
 
+    DateTime firstDayOfMonth = DateTime(date.year, date.month, 1);
+    // check if its the last month of the year, if adding a month increments the year
+    DateTime firstDayOfNextMonth = DateTime(date.year, date.month + 1, 1);
+
     for (TaskRRule taskRRule in taskRRules) {
+      // fetch list of EXTASKS, map<taskRRuleId, List<DateTime>>
+      final exDatesSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('exTasks')
+        .where('rRuleId', isEqualTo: taskRRule.id)
+        .where('date', isGreaterThanOrEqualTo: firstDayOfMonth, isLessThanOrEqualTo: firstDayOfNextMonth)
+        .get();
+
+      final allData =
+        exDatesSnapshot.docs.map((doc) => (doc.data()['date'] as Timestamp).toDate().toUtc()).toList();
+
       taskRRule.rRule
           .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
-          .where((element) => element.month == month)
+          .take(31)
+          .where((element) => element.month == date.month && element.year == date.year)
           .forEach((dateTime) {
         // ignore those is EXTASKS
-        if (taskDatesInMonth[dateTime.day] == null) {
-          taskDatesInMonth[dateTime.day] = [];
+        if (allData.contains(dateTime)) {
+          print('booger');
+          // do nothing
         }
-
-        taskDatesInMonth[dateTime.day]!.add(taskRRule.id);
+        else if (taskDatesInMonth[dateTime.day] == null) {
+          taskDatesInMonth[dateTime.day] = [];
+          taskDatesInMonth[dateTime.day]!.add(taskRRule.id);
+        }
+        else {
+          taskDatesInMonth[dateTime.day]!.add(taskRRule.id);
+        }
       });
     }
 
     return taskDatesInMonth;
   }
 
-  static Future<Task?> fetchTask(String tankId, String rRuleId, DateTime date) async {
+  static Future addTask(String tankId, Task task) async {
+    final taskDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('tasks')
+        .doc(task.id);
+
+    await taskDoc.set(task.toJson());
+  }
+
+  static Future removeTask(String tankId, Task task) async {
+    final taskDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('tasks')
+        .doc(task.id);
+
+    await taskDoc.delete();
+
+    final exTaskDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('exTasks')
+        .doc(task.id);
+    
+    await exTaskDoc.set({
+      'rRuleId': task.rRuleId,
+      'date': task.dueDate,
+    });
+  }
+
+  static Future<Task> fetchTask(String tankId, String rRuleId, DateTime date) async {
+    final rRuleDoc = FirebaseFirestore.instance
+      .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('tanks')
+        .doc(tankId)
+        .collection('taskRRules')
+        .doc(rRuleId);
+
+    final doc = await rRuleDoc.get();
+    TaskRRule taskRRule = TaskRRule.fromJson(doc.id, doc.data()!);
+    
+    final instances = taskRRule.rRule.getInstances(start: date.copyWith(isUtc: true));
+    final firstInstance = instances.first;
+
     // 1. If task is in EXTASKS, ignore
 
     // 2. Query from tasks collection
@@ -414,37 +490,32 @@ class FirestoreStuff {
         .doc(tankId)
         .collection('tasks')
         .where('rRuleId', isEqualTo: rRuleId)
-        .where('date', isEqualTo: date)
+        .where('dueDate', isEqualTo: firstInstance)
         .get();
 
     final task = taskSnapshot.docs.map((doc) => Task.fromJson(doc.id, doc.data())).toList();
 
     // 3. If task doesn't exist in tasks collection, generate from rule
     if (task.isEmpty) {
-      final rRuleDoc = FirebaseFirestore.instance
-      .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('tanks')
-        .doc(tankId)
-        .collection('taskRRules')
-        .doc(rRuleId);
-
       late Task newTask;
-      final doc = await rRuleDoc.get();
-      
-      TaskRRule taskRRule = TaskRRule.fromJson(doc.id, doc.data()!);
 
-      final instances = taskRRule.rRule.getInstances(start: date.copyWith(isUtc: true));
+      newTask = Task(const Uuid().v4(), rRuleId: rRuleId, title: taskRRule.title, description: taskRRule.description, dueDate: firstInstance, isCompleted: false);
 
-      final firstInstance = instances.first;
-
-      newTask = Task(const Uuid().v4(), title: taskRRule.title, description: taskRRule.description, dueDate: firstInstance, isCompleted: false);
-
+      await addTask(tankId, newTask);
 
       return newTask;
 
     } else {
       return task[0];
     }
+  }
+
+  static Future<List<Task>> fetchTasksInDay(String tankId, List<String> rRuleIds, DateTime date) async {
+    List<Task> tasks = [];
+    for (String rRuleId in rRuleIds) {
+      tasks.add(await fetchTask(tankId, rRuleId, date));
+    }
+
+    return tasks;
   }
 }

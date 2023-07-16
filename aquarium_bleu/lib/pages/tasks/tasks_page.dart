@@ -21,11 +21,14 @@ class TasksPage extends StatefulWidget {
 
 class _TasksPageState extends State<TasksPage> {
   late List<int> _currentDays = [];
-  DateTime _currentDate = DateTime.now();
+  late DateTime _currentDate;
 
   @override
   void initState() {
     super.initState();
+    DateTime now = DateTime.now();
+    _currentDate = DateTime(now.year, now.month, now.day, 0, 0, 0, 0, 0);
+
     int numDays = DateUtil.getMonthDays(_currentDate);
     _currentDays = List<int>.generate(numDays, (i) => i + 1);
   }
@@ -39,7 +42,7 @@ class _TasksPageState extends State<TasksPage> {
         title: Text(AppLocalizations.of(context).tasks),
       ),
       body: FutureBuilder<Map<int, List<String>>>(
-          future: FirestoreStuff.fetchTaskDaysInMonth(tankProvider.tank.docId, _currentDate.month),
+          future: FirestoreStuff.fetchTaskDaysInMonth(tankProvider.tank.docId, _currentDate),
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
               List<Text> tasks = [];
@@ -123,10 +126,14 @@ class _TasksPageState extends State<TasksPage> {
                     ),
                   ),
                   FutureBuilder(
-                    future: FirestoreStuff.fetchTask(tankProvider.tank.docId, snapshot.data![_currentDate.day]!.first, _currentDate),
-                    builder: (BuildContext context, taskSnapshot) {
-                    if (taskSnapshot.hasData) {
-                      return Text(taskSnapshot.data!.description);
+                    future: FirestoreStuff.fetchTasksInDay(tankProvider.tank.docId, snapshot.data![_currentDate.day]!, _currentDate),
+                    builder: (BuildContext context, tasksSnapshot) {
+                    if (tasksSnapshot.hasData) {
+                      return Column(
+                        children: tasksSnapshot.data!.map((task) => ElevatedButton(onPressed: () async {
+                          await FirestoreStuff.removeTask(tankProvider.tank.docId, task);
+                        }, child: Text(task.title),)).toList(),
+                      );
                     }
                     else {
                       return Text('dasd');
