@@ -17,6 +17,7 @@ class TasksPage extends StatefulWidget {
 }
 
 class _TasksPageState extends State<TasksPage> {
+  late ScrollController _scrollController;
   late List<int> _currentDays = [];
   late DateTime _currentDate;
 
@@ -31,6 +32,21 @@ class _TasksPageState extends State<TasksPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _scrollController = ScrollController(
+        initialScrollOffset:
+            (MediaQuery.of(context).size.width * 0.2) * (_currentDate.day - 3));
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
@@ -39,12 +55,14 @@ class _TasksPageState extends State<TasksPage> {
         title: Text(AppLocalizations.of(context).tasks),
       ),
       body: FutureBuilder<Map<int, List<String>>>(
-          future: FirestoreStuff.fetchTaskDaysInMonth(tankProvider.tank.docId, _currentDate),
+          future: FirestoreStuff.fetchTaskDaysInMonth(
+              tankProvider.tank.docId, _currentDate),
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
               List<Text> tasks = [];
               // temp
-              snapshot.data!.forEach((day, taskRuleId) => tasks.add(Text(day.toString())));
+              snapshot.data!.forEach(
+                  (day, taskRuleId) => tasks.add(Text(day.toString())));
 
               List<Widget> headerDayTiles = [];
               for (int day in _currentDays) {
@@ -56,11 +74,15 @@ class _TasksPageState extends State<TasksPage> {
                     taskDots.add(const ColoredDot(color: Colors.lightBlue));
                   }
                   if (numTasks >= 2) {
-                    taskDots.add(const SizedBox(width: 3,));
+                    taskDots.add(const SizedBox(
+                      width: 3,
+                    ));
                     taskDots.add(const ColoredDot(color: Colors.lightBlue));
                   }
                   if (numTasks >= 3) {
-                    taskDots.add(const SizedBox(width: 3,));
+                    taskDots.add(const SizedBox(
+                      width: 3,
+                    ));
                     taskDots.add(const ColoredDot(color: Colors.lightBlue));
                   }
                 }
@@ -68,7 +90,15 @@ class _TasksPageState extends State<TasksPage> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        _currentDate = DateTime(_currentDate.year, _currentDate.month, day);
+                        _currentDate = DateTime(
+                            _currentDate.year, _currentDate.month, day);
+
+                        _scrollController.animateTo(
+                          (MediaQuery.of(context).size.width * 0.2) *
+                              (_currentDate.day - 3),
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.ease,
+                        );
                       });
                     },
                     child: SizedBox(
@@ -113,27 +143,37 @@ class _TasksPageState extends State<TasksPage> {
                     height: 20,
                   ),
                   SingleChildScrollView(
+                    controller: _scrollController,
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: headerDayTiles,
                     ),
                   ),
                   FutureBuilder(
-                    future: FirestoreStuff.fetchTasksInDay(tankProvider.tank.docId, snapshot.data![_currentDate.day]!, _currentDate),
+                    future: FirestoreStuff.fetchTasksInDay(
+                        tankProvider.tank.docId,
+                        snapshot.data![_currentDate.day]!,
+                        _currentDate),
                     builder: (BuildContext context, tasksSnapshot) {
-                    if (tasksSnapshot.hasData) {
-                      return Column(
-                        children: tasksSnapshot.data!.map((task) => ElevatedButton(onPressed: () async {
-                          await FirestoreStuff.removeTask(tankProvider.tank.docId, task);
-                        }, child: Text(task.title),)).toList(),
-                      );
-                    }
-                    else {
-                      return const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      );
-                    }
-                  }),
+                      if (tasksSnapshot.hasData) {
+                        return Column(
+                          children: tasksSnapshot.data!
+                              .map((task) => ElevatedButton(
+                                    onPressed: () async {
+                                      await FirestoreStuff.removeTask(
+                                          tankProvider.tank.docId, task);
+                                    },
+                                    child: Text(task.title),
+                                  ))
+                              .toList(),
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        );
+                      }
+                    },
+                  ),
                 ],
               );
             } else {
