@@ -1,6 +1,7 @@
 import 'package:aquarium_bleu/enums/repeat_end_type.dart';
 import 'package:aquarium_bleu/enums/repeat_frequency.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/models/task/task.dart';
 import 'package:aquarium_bleu/models/task_r_rule.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
@@ -28,7 +29,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
   String? _repeatEveryErrorText;
   bool _repeat = false;
   Frequency _frequency = Frequency.daily;
-  final List<bool> _activeDaysOfWeek = [false, true, false, false, false, false, false];
+  final List<bool> _activeDaysOfWeek = [
+    false,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
   int numOfActiveDaysOfWeek = 1;
   DateTime _startDate = DateTime.now();
   TimeOfDay _startTime = TimeOfDay.now();
@@ -56,8 +65,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    int repeatInterval = int.tryParse(_repeatEveryFieldController.value.text) ?? 1;
-    int numOfOccurrences = int.tryParse(_numOfOccurrencesFieldController.value.text) ?? 1;
+    int repeatInterval =
+        int.tryParse(_repeatEveryFieldController.value.text) ?? 1;
+    int numOfOccurrences =
+        int.tryParse(_numOfOccurrencesFieldController.value.text) ?? 1;
 
     return Scaffold(
       appBar: AppBar(),
@@ -173,7 +184,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           text: TextSpan(
                             style: Theme.of(context).textTheme.titleMedium,
                             children: <TextSpan>[
-                              TextSpan(text: '${AppLocalizations.of(context).repeatEvery}: '),
+                              TextSpan(
+                                  text:
+                                      '${AppLocalizations.of(context).repeatEvery}: '),
                               const TextSpan(
                                 text: '*',
                                 style: TextStyle(
@@ -208,19 +221,23 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               items: [
                                 DropdownMenuItem(
                                   value: Frequency.daily,
-                                  child: Text(AppLocalizations.of(context).nDays(repeatInterval)),
+                                  child: Text(AppLocalizations.of(context)
+                                      .nDays(repeatInterval)),
                                 ),
                                 DropdownMenuItem(
                                   value: Frequency.weekly,
-                                  child: Text(AppLocalizations.of(context).nWeeks(repeatInterval)),
+                                  child: Text(AppLocalizations.of(context)
+                                      .nWeeks(repeatInterval)),
                                 ),
                                 DropdownMenuItem(
                                   value: Frequency.monthly,
-                                  child: Text(AppLocalizations.of(context).nMonths(repeatInterval)),
+                                  child: Text(AppLocalizations.of(context)
+                                      .nMonths(repeatInterval)),
                                 ),
                                 DropdownMenuItem(
                                   value: Frequency.yearly,
-                                  child: Text(AppLocalizations.of(context).nYears(repeatInterval)),
+                                  child: Text(AppLocalizations.of(context)
+                                      .nYears(repeatInterval)),
                                 ),
                               ],
                               onChanged: (Frequency? value) {
@@ -293,7 +310,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               ),
                               IconTextBtn(
                                 iconData: Icons.calendar_today,
-                                text: StringUtil.formattedDate(context, _endOnDate),
+                                text: StringUtil.formattedDate(
+                                    context, _endOnDate),
                                 onPressed: _repeatEndType == RepeatEndType.on
                                     ? () => _handleLastRepeatDateBtn()
                                     : null,
@@ -318,7 +336,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             ),
                             Flexible(
                               child: TextField(
-                                enabled: _repeatEndType == RepeatEndType.after ? true : false,
+                                enabled: _repeatEndType == RepeatEndType.after
+                                    ? true
+                                    : false,
                                 controller: _numOfOccurrencesFieldController,
                                 keyboardType: TextInputType.number,
                                 maxLength: 3,
@@ -334,7 +354,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
                               width: 10,
                             ),
                             Text(
-                              AppLocalizations.of(context).nOccurrences(numOfOccurrences),
+                              AppLocalizations.of(context)
+                                  .nOccurrences(numOfOccurrences),
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                           ],
@@ -468,17 +489,20 @@ class _AddTaskPageState extends State<AddTaskPage> {
     }
 
     // 2. Check if repeat field is empty or valid
-    String repeatEveryStr = _repeatEveryFieldController.text.trim();
+    if (_repeat) {
+      String repeatEveryStr = _repeatEveryFieldController.text.trim();
 
-    if (!StringUtil.isNumeric(repeatEveryStr)) {
-      isValid = false;
-      _repeatEveryErrorText = AppLocalizations.of(context).theValueIsNotAValidNumber;
-    }
-    // else if check if int
-    else {
-      setState(() {
-        _repeatEveryErrorText = null;
-      });
+      if (!StringUtil.isNumeric(repeatEveryStr)) {
+        isValid = false;
+        _repeatEveryErrorText =
+            AppLocalizations.of(context).theValueIsNotAValidNumber;
+      }
+      // else if check if int
+      else {
+        setState(() {
+          _repeatEveryErrorText = null;
+        });
+      }
     }
 
     // 3. validate after n Occurrences
@@ -487,32 +511,47 @@ class _AddTaskPageState extends State<AddTaskPage> {
     // validate count
 
     // 4. Create rrule
-    DateTime? until;
-    int? count;
-
-    if (_repeatEndType == RepeatEndType.on) {
-      until = _endOnDate;
-    } else if (_repeatEndType == RepeatEndType.after) {
-      count = int.parse(_numOfOccurrencesFieldController.text.trim());
-    }
-
-    if (_frequency == Frequency.daily) {
-      RecurrenceRule rRule = RecurrenceRule(
-        frequency: _frequency,
-        until: until,
-        count: count,
-        interval: int.parse(repeatEveryStr),
-      );
-
-      TaskRRule taskRRule = TaskRRule(
+    if (isValid && !_repeat) {
+      Task newTask = Task(
         const Uuid().v4(),
+        rRuleId: null,
         title: title,
         description: _descFieldController.text.trim(),
-        startDate: _startDate,
-        rRule: rRule,
+        dueDate: _startDate,
+        isCompleted: false,
       );
 
-      await FirestoreStuff.addTaskRRule(tankProvider.tank.docId, taskRRule);
+      await FirestoreStuff.addTask(tankProvider.tank.docId, newTask);
     }
+
+    // if (isValid) {
+    //   DateTime? until;
+    //   int? count;
+
+    //   if (_repeatEndType == RepeatEndType.on) {
+    //     until = _endOnDate;
+    //   } else if (_repeatEndType == RepeatEndType.after) {
+    //     count = int.parse(_numOfOccurrencesFieldController.text.trim());
+    //   }
+
+    //   if (_frequency == Frequency.daily) {
+    //     RecurrenceRule rRule = RecurrenceRule(
+    //       frequency: _frequency,
+    //       until: until,
+    //       count: count,
+    //       interval: int.parse(repeatEveryStr),
+    //     );
+
+    //     TaskRRule taskRRule = TaskRRule(
+    //       const Uuid().v4(),
+    //       title: title,
+    //       description: _descFieldController.text.trim(),
+    //       startDate: _startDate,
+    //       rRule: rRule,
+    //     );
+
+    //     await FirestoreStuff.addTaskRRule(tankProvider.tank.docId, taskRRule);
+    //   }
+    // }
   }
 }

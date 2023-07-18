@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Task {
   String id;
-  String rRuleId;
+  String? rRuleId;
   String title;
   String description;
   DateTime dueDate;
@@ -35,6 +35,4 @@ class Task {
       isCompleted: json['isCompleted'],
     );
   }
-
-
 }

@@ -50,138 +50,130 @@ class _TasksPageState extends State<TasksPage> {
   Widget build(BuildContext context) {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
+    DateTime firstDayOfMonth =
+        DateTime(_currentDate.year, _currentDate.month, 1);
+    // check if its the last month of the year, if adding a month increments the year
+    DateTime firstDayOfNextMonth =
+        DateTime(_currentDate.year, _currentDate.month + 1, 1);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).tasks),
       ),
-      body: FutureBuilder<Map<int, List<String>>>(
-          future: FirestoreStuff.fetchTaskDaysInMonth(
-              tankProvider.tank.docId, _currentDate),
-          builder: (BuildContext context, snapshot) {
-            if (snapshot.hasData) {
-              List<Text> tasks = [];
-              // temp
-              snapshot.data!.forEach(
-                  (day, taskRuleId) => tasks.add(Text(day.toString())));
+      body: Column(
+        children: [
+          IconButton(
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DatePickerCalendarPage(
+                  selectedDate: _currentDate,
+                ),
+              ),
+            ),
+            icon: const Icon(Icons.calendar_month_outlined),
+            style: const ButtonStyle(),
+          ),
+          Text(StringUtil.formattedDate(context, _currentDate)),
+          const SizedBox(
+            height: 20,
+          ),
+          FutureBuilder(
+              future: FirestoreStuff.fetchNumOfTasksPerDayInMonth(
+                  tankProvider.tank.docId,
+                  firstDayOfMonth,
+                  firstDayOfNextMonth),
+              builder: (BuildContext context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Widget> headerDayTiles = [];
+                  for (int day in _currentDays) {
+                    List<Widget> taskDots = [];
+                    if (snapshot.data!.containsKey(day)) {
+                      int numTasks = snapshot.data![day]!;
 
-              List<Widget> headerDayTiles = [];
-              for (int day in _currentDays) {
-                List<Widget> taskDots = [];
-                if (snapshot.data!.containsKey(day)) {
-                  int numTasks = snapshot.data![day]!.length;
-
-                  if (numTasks >= 1) {
-                    taskDots.add(const ColoredDot(color: Colors.lightBlue));
-                  }
-                  if (numTasks >= 2) {
-                    taskDots.add(const SizedBox(
-                      width: 3,
-                    ));
-                    taskDots.add(const ColoredDot(color: Colors.lightBlue));
-                  }
-                  if (numTasks >= 3) {
-                    taskDots.add(const SizedBox(
-                      width: 3,
-                    ));
-                    taskDots.add(const ColoredDot(color: Colors.lightBlue));
-                  }
-                }
-                headerDayTiles.add(
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _currentDate = DateTime(
-                            _currentDate.year, _currentDate.month, day);
-
-                        _scrollController.animateTo(
-                          (MediaQuery.of(context).size.width * 0.2) *
-                              (_currentDate.day - 3),
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.ease,
-                        );
-                      });
-                    },
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.2,
-                      height: MediaQuery.of(context).size.height * 0.125,
-                      child: Card(
-                        elevation: _currentDate.day == day ? 15 : 1,
-                        child: Column(
-                          children: [
-                            Text(
-                              day.toString(),
-                              style: Theme.of(context).textTheme.headlineLarge,
+                      for (int i = 0; i < numTasks; i++) {
+                        taskDots.add(const ColoredDot(
+                          color: Colors.lightBlue,
+                        ));
+                      }
+                    }
+                    headerDayTiles.add(
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _currentDate = DateTime(
+                                _currentDate.year, _currentDate.month, day);
+                            _scrollController.animateTo(
+                              (MediaQuery.of(context).size.width * 0.2) *
+                                  (_currentDate.day - 3),
+                              duration: const Duration(milliseconds: 500),
+                              curve: Curves.ease,
+                            );
+                          });
+                        },
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          height: MediaQuery.of(context).size.height * 0.125,
+                          child: Card(
+                            elevation: _currentDate.day == day ? 15 : 1,
+                            child: Column(
+                              children: [
+                                Text(
+                                  day.toString(),
+                                  style:
+                                      Theme.of(context).textTheme.headlineLarge,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: taskDots,
+                                ),
+                              ],
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: taskDots,
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              }
-
-              return Column(
-                children: [
-                  IconButton(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DatePickerCalendarPage(
-                          selectedDate: _currentDate,
-                        ),
-                      ),
-                    ),
-                    icon: const Icon(Icons.calendar_month_outlined),
-                    style: const ButtonStyle(),
-                  ),
-                  Text(StringUtil.formattedDate(context, _currentDate)),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SingleChildScrollView(
+                    );
+                  }
+                  return SingleChildScrollView(
                     controller: _scrollController,
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: headerDayTiles,
                     ),
-                  ),
-                  FutureBuilder(
-                    future: FirestoreStuff.fetchTasksInDay(
-                        tankProvider.tank.docId,
-                        snapshot.data![_currentDate.day]!,
-                        _currentDate),
-                    builder: (BuildContext context, tasksSnapshot) {
-                      if (tasksSnapshot.hasData) {
-                        return Column(
-                          children: tasksSnapshot.data!
-                              .map((task) => ElevatedButton(
-                                    onPressed: () async {
-                                      await FirestoreStuff.removeTask(
-                                          tankProvider.tank.docId, task);
-                                    },
-                                    child: Text(task.title),
-                                  ))
-                              .toList(),
-                        );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            }
-          }),
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                }
+              }),
+          // FutureBuilder(
+          //   future: FirestoreStuff.fetchTasksInDay(
+          //       tankProvider.tank.docId,
+          //       snapshot.data![_currentDate.day]!,
+          //       _currentDate,),
+          //   builder: (BuildContext context, tasksSnapshot) {
+          //     if (tasksSnapshot.hasData) {
+          //       return Column(
+          //         children: tasksSnapshot.data!
+          //             .map((task) => ElevatedButton(
+          //                   onPressed: () async {
+          //                     await FirestoreStuff.removeTask(
+          //                         tankProvider.tank.docId, task);
+          //                   },
+          //                   child: Text(task.title),
+          //                 ))
+          //             .toList(),
+          //       );
+          //     } else {
+          //       return const Center(
+          //         child: CircularProgressIndicator.adaptive(),
+          //       );
+          //     }
+          //   },
+          // ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
