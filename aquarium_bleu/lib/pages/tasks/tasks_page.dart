@@ -147,31 +147,33 @@ class _TasksPageState extends State<TasksPage> {
                   );
                 }
               }),
-          // FutureBuilder(
-          //   future: FirestoreStuff.fetchTasksInDay(
-          //       tankProvider.tank.docId,
-          //       snapshot.data![_currentDate.day]!,
-          //       _currentDate,),
-          //   builder: (BuildContext context, tasksSnapshot) {
-          //     if (tasksSnapshot.hasData) {
-          //       return Column(
-          //         children: tasksSnapshot.data!
-          //             .map((task) => ElevatedButton(
-          //                   onPressed: () async {
-          //                     await FirestoreStuff.removeTask(
-          //                         tankProvider.tank.docId, task);
-          //                   },
-          //                   child: Text(task.title),
-          //                 ))
-          //             .toList(),
-          //       );
-          //     } else {
-          //       return const Center(
-          //         child: CircularProgressIndicator.adaptive(),
-          //       );
-          //     }
-          //   },
-          // ),
+          FutureBuilder(
+            future: FirestoreStuff.fetchTasksInDay(
+              tankProvider.tank.docId,
+              _currentDate,
+            ),
+            builder: (BuildContext context, tasksSnapshot) {
+              if (tasksSnapshot.hasData) {
+                print(_currentDate);
+                print(tasksSnapshot.data);
+                return Column(
+                  children: tasksSnapshot.data!
+                      .map((task) => ElevatedButton(
+                            onPressed: () async {
+                              await FirestoreStuff.removeTask(
+                                  tankProvider.tank.docId, task);
+                            },
+                            child: Text(task.title),
+                          ))
+                      .toList(),
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                );
+              }
+            },
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
