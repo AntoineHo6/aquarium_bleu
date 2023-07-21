@@ -5,7 +5,7 @@ class Task {
   String? rRuleId;
   String title;
   String description;
-  DateTime dueDate;
+  DateTime date;
   bool isCompleted;
 
   Task(
@@ -13,7 +13,7 @@ class Task {
     required this.rRuleId,
     required this.title,
     required this.description,
-    required this.dueDate,
+    required this.date,
     required this.isCompleted,
   });
 
@@ -21,7 +21,7 @@ class Task {
         'rRuleId': rRuleId,
         'title': title,
         'description': description,
-        'dueDate': dueDate,
+        'date': date,
         'isCompleted': isCompleted,
       };
 
@@ -31,7 +31,7 @@ class Task {
       rRuleId: json['rRuleId'],
       title: json['title'],
       description: json['description'],
-      dueDate: (json['dueDate'] as Timestamp).toDate(),
+      date: (json['date'] as Timestamp).toDate(),
       isCompleted: json['isCompleted'],
     );
   }

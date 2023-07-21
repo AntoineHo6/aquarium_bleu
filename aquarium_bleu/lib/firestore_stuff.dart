@@ -8,6 +8,7 @@ import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class FirestoreStuff {
@@ -21,8 +22,7 @@ class FirestoreStuff {
 
   static writeNewUser(String? uid, String? email) async {
     uid = uid!;
-    final docUser =
-        FirebaseFirestore.instance.collection(usersCollection).doc(uid);
+    final docUser = FirebaseFirestore.instance.collection(usersCollection).doc(uid);
 
     final json = {'email': email};
 
@@ -32,8 +32,7 @@ class FirestoreStuff {
   static Future<bool> checkIfDocExists(String docId) async {
     try {
       // Get reference to Firestore collection
-      var collectionRef =
-          FirebaseFirestore.instance.collection(usersCollection);
+      var collectionRef = FirebaseFirestore.instance.collection(usersCollection);
 
       var doc = await collectionRef.doc(docId).get();
 
@@ -49,9 +48,7 @@ class FirestoreStuff {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection(tanksCollection)
         .snapshots()
-        .map((event) => event.docs
-            .map((doc) => Tank.fromJson(doc.id, doc.data()))
-            .toList());
+        .map((event) => event.docs.map((doc) => Tank.fromJson(doc.id, doc.data())).toList());
   }
 
   // static Stream<Parameter> readLatestParameter(
@@ -81,9 +78,7 @@ class FirestoreStuff {
         .where('date', isLessThanOrEqualTo: end)
         .orderBy('date', descending: true)
         .snapshots()
-        .map((event) => event.docs
-            .map((doc) => Parameter.fromJson(doc.id, doc.data()))
-            .toList());
+        .map((event) => event.docs.map((doc) => Parameter.fromJson(doc.id, doc.data())).toList());
   }
 
   static Future addParameter(String tankId, Parameter param) async {
@@ -122,8 +117,7 @@ class FirestoreStuff {
     await paramDoc.delete();
   }
 
-  static Stream<List<WaterChange>> readWcWithRange(
-      String tankId, DateTime start, DateTime end) {
+  static Stream<List<WaterChange>> readWcWithRange(String tankId, DateTime start, DateTime end) {
     return FirebaseFirestore.instance
         .collection(usersCollection)
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -134,9 +128,7 @@ class FirestoreStuff {
         .where('date', isLessThanOrEqualTo: end)
         .orderBy("date", descending: true)
         .snapshots()
-        .map((event) => event.docs
-            .map((doc) => WaterChange.fromJson(doc.id, doc.data()))
-            .toList());
+        .map((event) => event.docs.map((doc) => WaterChange.fromJson(doc.id, doc.data())).toList());
   }
 
   static Future deleteWc(String tankId, String wcId) async {
@@ -173,8 +165,7 @@ class FirestoreStuff {
         .orderBy("date", descending: true)
         .limit(1)
         .snapshots()
-        .map((event) =>
-            WaterChange.fromJson(event.docs.first.id, event.docs.first.data()));
+        .map((event) => WaterChange.fromJson(event.docs.first.id, event.docs.first.data()));
   }
 
   static Future addWaterChange(String tankId, WaterChange waterChange) async {
@@ -219,12 +210,9 @@ class FirestoreStuff {
         .collection(tanksCollection)
         .doc(tank.docId);
 
-    final dateRangeDoc =
-        tankDoc.collection(wcnpPrefsCollection).doc('dateRange');
-    final isParamVisibleDoc =
-        tankDoc.collection(wcnpPrefsCollection).doc('isParamVisible');
-    final showWaterChanges =
-        tankDoc.collection(wcnpPrefsCollection).doc('showWaterChanges');
+    final dateRangeDoc = tankDoc.collection(wcnpPrefsCollection).doc('dateRange');
+    final isParamVisibleDoc = tankDoc.collection(wcnpPrefsCollection).doc('isParamVisible');
+    final showWaterChanges = tankDoc.collection(wcnpPrefsCollection).doc('showWaterChanges');
 
     await dateRangeDoc.delete();
     await isParamVisibleDoc.delete();
@@ -232,8 +220,7 @@ class FirestoreStuff {
     await tankDoc.delete();
   }
 
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> readParamVis(
-      String tankId) {
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> readParamVis(String tankId) {
     return FirebaseFirestore.instance
         .collection(usersCollection)
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -244,8 +231,7 @@ class FirestoreStuff {
         .snapshots();
   }
 
-  static Future updateParamVis(
-      String tankId, Map<String, dynamic> visibleParams) async {
+  static Future updateParamVis(String tankId, Map<String, dynamic> visibleParams) async {
     final visibilityDoc = FirebaseFirestore.instance
         .collection(usersCollection)
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -257,8 +243,7 @@ class FirestoreStuff {
     await visibilityDoc.update(visibleParams);
   }
 
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> readDateRangeWcnpPrefs(
-      String tankId) {
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> readDateRangeWcnpPrefs(String tankId) {
     return FirebaseFirestore.instance
         .collection(usersCollection)
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -354,8 +339,7 @@ class FirestoreStuff {
     await showWaterChangesDoc.set(json3);
   }
 
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> readShowWaterChanges(
-      String tankId) {
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> readShowWaterChanges(String tankId) {
     return FirebaseFirestore.instance
         .collection(usersCollection)
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -399,15 +383,14 @@ class FirestoreStuff {
         .collection('taskRRules')
         .get();
 
-    final allData = querySnapshot.docs
-        .map((doc) => TaskRRule.fromJson(doc.id, doc.data()))
-        .toList();
+    final allData =
+        querySnapshot.docs.map((doc) => TaskRRule.fromJson(doc.id, doc.data())).toList();
 
     return allData;
   }
 
-  static Future<Map<int, int>> fetchNumOfTasksPerDayInMonth(String tankId,
-      DateTime firstDayOfMonth, DateTime firstDayOfNextMonth) async {
+  static Future<Map<int, int>> fetchNumOfTasksPerDayInMonth(
+      String tankId, DateTime firstDayOfMonth, DateTime firstDayOfNextMonth) async {
     // 1. count the rRule tasks
     List<TaskRRule> taskRRules = await readTaskRRules(tankId);
 
@@ -436,8 +419,7 @@ class FirestoreStuff {
           .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
           .take(31)
           .where((element) =>
-              element.month == firstDayOfMonth.month &&
-              element.year == firstDayOfMonth.year)
+              element.month == firstDayOfMonth.month && element.year == firstDayOfMonth.year)
           .forEach((dateTime) {
         if (exDates.contains(dateTime)) {
           // do nothing
@@ -508,7 +490,7 @@ class FirestoreStuff {
 
     await exTaskDoc.set({
       'rRuleId': task.rRuleId,
-      'date': task.dueDate,
+      'date': task.date,
     });
   }
 
@@ -588,92 +570,67 @@ class FirestoreStuff {
       //     )
       //     .get();
 
-      final instances = taskRRule.rRule
-          .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
-          .where((element) =>
-              element.day == day.day &&
-              element.month == day.month &&
-              element.year == day.year);
+      if (taskRRule.startDate.compareTo(day) < 0) {
+        DateTime instance = taskRRule.rRule
+            .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
+            .firstWhere(
+                (instance) =>
+                    instance.day == day.day &&
+                    instance.month == day.month &&
+                    instance.year == day.year,
+                orElse: () => dayEnd);
 
-      if (instances.isNotEmpty) {
-        final firstInstance = instances.first;
+        if (instance != dayEnd) {
+          // 1. If task is in EXTASKS, ignore
 
-        // 1. If task is in EXTASKS, ignore
+          // 2. Query from tasks collection
+          final taskSnapshot = await FirebaseFirestore.instance
+              .collection(usersCollection)
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection(tanksCollection)
+              .doc(tankId)
+              .collection(tasksCollection)
+              .where('rRuleId', isEqualTo: taskRRule.id)
+              .where('date', isEqualTo: instance)
+              .get();
 
-        // 2. Query from tasks collection
-        final taskSnapshot = await FirebaseFirestore.instance
-            .collection(usersCollection)
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection(tanksCollection)
-            .doc(tankId)
-            .collection(tasksCollection)
-            .where('rRuleId', isEqualTo: taskRRule.id)
-            .where('date', isEqualTo: firstInstance)
-            .get();
+          final task = taskSnapshot.docs.map((doc) => Task.fromJson(doc.id, doc.data())).toList();
 
-        final task = taskSnapshot.docs
-            .map((doc) => Task.fromJson(doc.id, doc.data()))
-            .toList();
+          // 3. If task doesn't exist in tasks collection, generate from rule
+          if (task.isEmpty) {
+            Task newTask;
 
-        // 3. If task doesn't exist in tasks collection, generate from rule
-        if (task.isEmpty) {
-          Task newTask;
+            newTask = Task(const Uuid().v4(),
+                rRuleId: taskRRule.id,
+                title: taskRRule.title,
+                description: taskRRule.description,
+                date: instance,
+                isCompleted: false);
 
-          newTask = Task(const Uuid().v4(),
-              rRuleId: taskRRule.id,
-              title: taskRRule.title,
-              description: taskRRule.description,
-              dueDate: firstInstance,
-              isCompleted: false);
+            await addTask(tankId, newTask);
 
-          await addTask(tankId, newTask);
-
-          tasks.add(newTask);
-        } else {
-          tasks.add(task[0]);
+            tasks.add(newTask);
+          } else {
+            tasks.add(task[0]);
+          }
         }
       }
     }
 
-    // taskRRule.rRule
-    //     .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
-    //     .take(1)
-    //     .where((element) =>
-    // element.day == day.day &&
-    // element.month == day.month &&
-    // element.year == day.year)
-    //     .forEach((dateTime) {
-    //   if (exDates.contains(dateTime)) {
-    //     // do nothing
-    //   } else {
-    //     Task newTask = Task(
-    //       const Uuid().v4(),
-    //       rRuleId: taskRRule.id,
-    //       title: taskRRule.title,
-    //       description: taskRRule.description,
-    //       dueDate: dateTime,
-    //       isCompleted: false,
-    //     );
-
-    //     addTask(tankId, newTask);
-    //     tasks.add(newTask);
-    //   }
-    // });
-
     // 2. check unique tasks
-    final uniqueTasksSnapshot = await FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection('exTasks')
-        .where('rRuleId', isNull: true)
-        .where(
-          'date',
-          isGreaterThanOrEqualTo: day,
-          isLessThanOrEqualTo: dayEnd,
-        )
-        .get();
+    // final uniqueTasksSnapshot = await FirebaseFirestore.instance
+    //     .collection(usersCollection)
+    //     .doc(FirebaseAuth.instance.currentUser!.uid)
+    //     .collection(tanksCollection)
+    //     .doc(tankId)
+    //     .collection('exTasks')
+    //     .where('rRuleId', isNull: true)
+    //     .where(
+    //       'date',
+    //       isGreaterThanOrEqualTo: day,
+    //       isLessThanOrEqualTo: dayEnd,
+    //     )
+    //     .get();
 
     return tasks;
   }

@@ -517,7 +517,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         rRuleId: null,
         title: title,
         description: _descFieldController.text.trim(),
-        dueDate: _startDate,
+        date: _startDate,
         isCompleted: false,
       );
 
