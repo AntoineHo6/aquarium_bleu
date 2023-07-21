@@ -417,7 +417,7 @@ class FirestoreStuff {
 
       taskRRule.rRule
           .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
-          .take(31)
+          .take(80)
           .where((element) =>
               element.month == firstDayOfMonth.month && element.year == firstDayOfMonth.year)
           .forEach((dateTime) {
@@ -550,7 +550,8 @@ class FirestoreStuff {
   static Future<List<Task>> fetchTasksInDay(String tankId, DateTime day) async {
     List<Task> tasks = [];
 
-    DateTime dayEnd = DateTime(day.year, day.month, day.day, 23, 59, 59);
+    DateTime bidonDay = DateTime(1969, 12, 12);
+    // DateTime dayEnd = DateTime(day.year, day.month, day.day, 23, 59, 59);
 
     // 1. check rrules
     List<TaskRRule> taskRRules = await readTaskRRules(tankId);
@@ -570,7 +571,7 @@ class FirestoreStuff {
       //     )
       //     .get();
 
-      if (taskRRule.startDate.compareTo(day) < 0) {
+      if (taskRRule.startDate.compareTo(day) <= 0) {
         DateTime instance = taskRRule.rRule
             .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
             .firstWhere(
@@ -578,9 +579,9 @@ class FirestoreStuff {
                     instance.day == day.day &&
                     instance.month == day.month &&
                     instance.year == day.year,
-                orElse: () => dayEnd);
+                orElse: () => bidonDay);
 
-        if (instance != dayEnd) {
+        if (instance != bidonDay) {
           // 1. If task is in EXTASKS, ignore
 
           // 2. Query from tasks collection

@@ -36,8 +36,7 @@ class _TasksPageState extends State<TasksPage> {
     super.didChangeDependencies();
 
     _scrollController = ScrollController(
-        initialScrollOffset:
-            (MediaQuery.of(context).size.width * 0.2) * (_currentDate.day - 3));
+        initialScrollOffset: (MediaQuery.of(context).size.width * 0.2) * (_currentDate.day - 3));
   }
 
   @override
@@ -50,11 +49,9 @@ class _TasksPageState extends State<TasksPage> {
   Widget build(BuildContext context) {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
-    DateTime firstDayOfMonth =
-        DateTime(_currentDate.year, _currentDate.month, 1);
+    DateTime firstDayOfMonth = DateTime(_currentDate.year, _currentDate.month, 1);
     // check if its the last month of the year, if adding a month increments the year
-    DateTime firstDayOfNextMonth =
-        DateTime(_currentDate.year, _currentDate.month + 1, 1);
+    DateTime firstDayOfNextMonth = DateTime(_currentDate.year, _currentDate.month + 1, 1);
 
     return Scaffold(
       appBar: AppBar(
@@ -79,10 +76,8 @@ class _TasksPageState extends State<TasksPage> {
             height: 20,
           ),
           FutureBuilder(
-              future: FirestoreStuff.fetchNumOfTasksPerDayInMonth(
-                  tankProvider.tank.docId,
-                  firstDayOfMonth,
-                  firstDayOfNextMonth),
+              future: FirestoreStuff.fetchNumOfTasksPerDayInMonth(tankProvider.tank.docId,
+                  firstDayOfMonth.copyWith(isUtc: true), firstDayOfNextMonth.copyWith(isUtc: true)),
               builder: (BuildContext context, snapshot) {
                 if (snapshot.hasData) {
                   List<Widget> headerDayTiles = [];
@@ -101,11 +96,9 @@ class _TasksPageState extends State<TasksPage> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            _currentDate = DateTime(
-                                _currentDate.year, _currentDate.month, day);
+                            _currentDate = DateTime(_currentDate.year, _currentDate.month, day);
                             _scrollController.animateTo(
-                              (MediaQuery.of(context).size.width * 0.2) *
-                                  (_currentDate.day - 3),
+                              (MediaQuery.of(context).size.width * 0.2) * (_currentDate.day - 3),
                               duration: const Duration(milliseconds: 500),
                               curve: Curves.ease,
                             );
@@ -120,8 +113,7 @@ class _TasksPageState extends State<TasksPage> {
                               children: [
                                 Text(
                                   day.toString(),
-                                  style:
-                                      Theme.of(context).textTheme.headlineLarge,
+                                  style: Theme.of(context).textTheme.headlineLarge,
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -150,18 +142,15 @@ class _TasksPageState extends State<TasksPage> {
           FutureBuilder(
             future: FirestoreStuff.fetchTasksInDay(
               tankProvider.tank.docId,
-              _currentDate,
+              _currentDate.copyWith(isUtc: true),
             ),
             builder: (BuildContext context, tasksSnapshot) {
               if (tasksSnapshot.hasData) {
-                print(_currentDate);
-                print(tasksSnapshot.data);
                 return Column(
                   children: tasksSnapshot.data!
                       .map((task) => ElevatedButton(
                             onPressed: () async {
-                              await FirestoreStuff.removeTask(
-                                  tankProvider.tank.docId, task);
+                              await FirestoreStuff.removeTask(tankProvider.tank.docId, task);
                             },
                             child: Text(task.title),
                           ))
