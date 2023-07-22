@@ -412,25 +412,34 @@ class FirestoreStuff {
           .get();
 
       final exDates = exDatesSnapshot.docs
-          .map((doc) => (doc.data()['date'] as Timestamp).toDate().toUtc())
+          .map((doc) => (doc.data()['date'] as Timestamp).toDate().copyWith(isUtc: true))
           .toList();
 
-      taskRRule.rRule
-          .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
-          .take(80)
-          .where((element) =>
-              element.month == firstDayOfMonth.month && element.year == firstDayOfMonth.year)
-          .forEach((dateTime) {
-        if (exDates.contains(dateTime)) {
+      final instances = taskRRule.rRule
+          .getInstances(
+            start: taskRRule.startDate.copyWith(isUtc: true),
+          )
+          .where(
+            (instance) =>
+                instance.compareTo(firstDayOfMonth) > 0 &&
+                instance.compareTo(firstDayOfNextMonth) < 0,
+          );
+
+      // if rrule is never ending, use takewhile
+      print(taskRRule.rRule.interval);
+
+      // or specify num of days in that month
+      for (var instance in instances) {
+        if (exDates.contains(instance)) {
           // do nothing
         } else {
           numTasksPerDay.update(
-            dateTime.day,
+            instance.day,
             (value) => ++value,
             ifAbsent: () => 1,
           );
         }
-      });
+      }
     }
 
     // 2. count the unique tasks
@@ -449,7 +458,7 @@ class FirestoreStuff {
         .get();
 
     uniqueTasksSnapshot.docs.map((doc) => numTasksPerDay.update(
-          (doc.data()['date'] as Timestamp).toDate().toUtc().day,
+          (doc.data()['date'] as Timestamp).toDate().day,
           (value) => ++value,
           ifAbsent: () => 1,
         ));
@@ -469,7 +478,7 @@ class FirestoreStuff {
     await taskDoc.set(task.toJson());
   }
 
-  static Future removeTask(String tankId, Task task) async {
+  static Future deleteTask(String tankId, Task task) async {
     final taskDoc = FirebaseFirestore.instance
         .collection(usersCollection)
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -494,125 +503,82 @@ class FirestoreStuff {
     });
   }
 
-  // static Future<Task> fetchTask(
-  //     String tankId, String rRuleId, DateTime date) async {
-  //   final rRuleDoc = FirebaseFirestore.instance
-  //       .collection(usersCollection)
-  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-  //       .collection(tanksCollection)
-  //       .doc(tankId)
-  //       .collection(taskRRulesCollection)
-  //       .doc(rRuleId);
-
-  //   final doc = await rRuleDoc.get();
-  //   TaskRRule taskRRule = TaskRRule.fromJson(doc.id, doc.data()!);
-
-  //   final instances =
-  //       taskRRule.rRule.getInstances(start: date.copyWith(isUtc: true));
-  //   final firstInstance = instances.first;
-
-  //   // 1. If task is in EXTASKS, ignore
-
-  //   // 2. Query from tasks collection
-  //   final taskSnapshot = await FirebaseFirestore.instance
-  //       .collection(usersCollection)
-  //       .doc(FirebaseAuth.instance.currentUser!.uid)
-  //       .collection(tanksCollection)
-  //       .doc(tankId)
-  //       .collection(tasksCollection)
-  //       .where('rRuleId', isEqualTo: rRuleId)
-  //       .where('date', isEqualTo: firstInstance)
-  //       .get();
-
-  //   final task = taskSnapshot.docs
-  //       .map((doc) => Task.fromJson(doc.id, doc.data()))
-  //       .toList();
-
-  //   // 3. If task doesn't exist in tasks collection, generate from rule
-  //   if (task.isEmpty) {
-  //     late Task newTask;
-
-  //     newTask = Task(const Uuid().v4(),
-  //         rRuleId: rRuleId,
-  //         title: taskRRule.title,
-  //         description: taskRRule.description,
-  //         dueDate: firstInstance,
-  //         isCompleted: false);
-
-  //     await addTask(tankId, newTask);
-
-  //     return newTask;
-  //   } else {
-  //     return task[0];
-  //   }
-  // }
-
   static Future<List<Task>> fetchTasksInDay(String tankId, DateTime day) async {
     List<Task> tasks = [];
 
     DateTime bidonDay = DateTime(1969, 12, 12);
-    // DateTime dayEnd = DateTime(day.year, day.month, day.day, 23, 59, 59);
+    DateTime dayEnd = DateTime(day.year, day.month, day.day, 23, 59, 59);
 
     // 1. check rrules
     List<TaskRRule> taskRRules = await readTaskRRules(tankId);
 
     for (TaskRRule taskRRule in taskRRules) {
-      // final exDatesSnapshot = await FirebaseFirestore.instance
-      //     .collection(usersCollection)
-      //     .doc(FirebaseAuth.instance.currentUser!.uid)
-      //     .collection(tanksCollection)
-      //     .doc(tankId)
-      //     .collection('exTasks')
-      //     .where('rRuleId', isEqualTo: taskRRule.id)
-      //     .where(
-      //       'date',
-      //       isGreaterThanOrEqualTo: day,
-      //       isLessThanOrEqualTo: dayEnd,
-      //     )
-      //     .get();
+      final exDatesSnapshot = await FirebaseFirestore.instance
+          .collection(usersCollection)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection(tanksCollection)
+          .doc(tankId)
+          .collection('exTasks')
+          .where('rRuleId', isEqualTo: taskRRule.id)
+          .where(
+            'date',
+            isGreaterThanOrEqualTo: day,
+            isLessThanOrEqualTo: dayEnd,
+          )
+          .get();
+
+      final exDates = exDatesSnapshot.docs
+          .map((doc) => (doc.data()['date'] as Timestamp).toDate().copyWith(isUtc: true))
+          .toList();
 
       if (taskRRule.startDate.compareTo(day) <= 0) {
         DateTime instance = taskRRule.rRule
             .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
             .firstWhere(
-                (instance) =>
-                    instance.day == day.day &&
-                    instance.month == day.month &&
-                    instance.year == day.year,
-                orElse: () => bidonDay);
+              (instance) =>
+                  instance.day == day.day &&
+                  instance.month == day.month &&
+                  instance.year == day.year,
+              orElse: () => bidonDay,
+            );
 
         if (instance != bidonDay) {
           // 1. If task is in EXTASKS, ignore
+          if (exDates.contains(instance)) {
+            // do nothing
+          } else {
+            // 2. Query from tasks collection
+            final taskSnapshot = await FirebaseFirestore.instance
+                .collection(usersCollection)
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection(tanksCollection)
+                .doc(tankId)
+                .collection(tasksCollection)
+                .where('rRuleId', isEqualTo: taskRRule.id)
+                .where('date', isEqualTo: instance)
+                .get();
 
-          // 2. Query from tasks collection
-          final taskSnapshot = await FirebaseFirestore.instance
-              .collection(usersCollection)
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .collection(tanksCollection)
-              .doc(tankId)
-              .collection(tasksCollection)
-              .where('rRuleId', isEqualTo: taskRRule.id)
-              .where('date', isEqualTo: instance)
-              .get();
+            final task = taskSnapshot.docs.map((doc) => Task.fromJson(doc.id, doc.data())).toList();
 
-          final task = taskSnapshot.docs.map((doc) => Task.fromJson(doc.id, doc.data())).toList();
+            // 3. If task doesn't exist in tasks collection, generate from rule
+            if (task.isEmpty) {
+              Task newTask;
 
-          // 3. If task doesn't exist in tasks collection, generate from rule
-          if (task.isEmpty) {
-            Task newTask;
-
-            newTask = Task(const Uuid().v4(),
+              newTask = Task(
+                const Uuid().v4(),
                 rRuleId: taskRRule.id,
                 title: taskRRule.title,
                 description: taskRRule.description,
-                date: instance,
-                isCompleted: false);
+                date: instance.copyWith(isUtc: false),
+                isCompleted: false,
+              );
 
-            await addTask(tankId, newTask);
+              await addTask(tankId, newTask);
 
-            tasks.add(newTask);
-          } else {
-            tasks.add(task[0]);
+              tasks.add(newTask);
+            } else {
+              tasks.add(task[0]);
+            }
           }
         }
       }

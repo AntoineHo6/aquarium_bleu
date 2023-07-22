@@ -28,7 +28,7 @@ class TaskRRule {
       docId,
       title: json['title'],
       description: json['description'],
-      startDate: (json['startDate'] as Timestamp).toDate().copyWith(isUtc: true),
+      startDate: (json['startDate'] as Timestamp).toDate(),
       rRule: const RecurrenceRuleStringCodec().decoder.convert(json['rRule']),
     );
   }

@@ -150,7 +150,7 @@ class _TasksPageState extends State<TasksPage> {
                   children: tasksSnapshot.data!
                       .map((task) => ElevatedButton(
                             onPressed: () async {
-                              await FirestoreStuff.removeTask(tankProvider.tank.docId, task);
+                              await FirestoreStuff.deleteTask(tankProvider.tank.docId, task);
                             },
                             child: Text(task.title),
                           ))
