@@ -525,7 +525,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           const Uuid().v4(),
           title: title,
           description: _descFieldController.text.trim(),
-          startDate: _startDate,
+          startDate: _startDate.toUtc(),
           rRule: rRule,
         );
 

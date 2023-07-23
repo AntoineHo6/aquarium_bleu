@@ -569,7 +569,7 @@ class FirestoreStuff {
                 rRuleId: taskRRule.id,
                 title: taskRRule.title,
                 description: taskRRule.description,
-                date: instance.copyWith(isUtc: false),
+                date: instance,
                 isCompleted: false,
               );
 
