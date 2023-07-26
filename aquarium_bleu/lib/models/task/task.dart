@@ -21,7 +21,7 @@ class Task {
         'rRuleId': rRuleId,
         'title': title,
         'description': description,
-        'date': date,
+        'date': date.toUtc(),
         'isCompleted': isCompleted,
       };
 
@@ -31,7 +31,7 @@ class Task {
       rRuleId: json['rRuleId'],
       title: json['title'],
       description: json['description'],
-      date: (json['date'] as Timestamp).toDate().copyWith(isUtc: true),
+      date: (json['date'] as Timestamp).toDate(),
       isCompleted: json['isCompleted'],
     );
   }

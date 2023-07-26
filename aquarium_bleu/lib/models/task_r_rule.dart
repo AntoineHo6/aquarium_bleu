@@ -19,7 +19,7 @@ class TaskRRule {
   Map<String, dynamic> toJson() => {
         'title': title,
         'description': description,
-        'startDate': startDate,
+        'startDate': startDate.toUtc(),
         'rRule': const RecurrenceRuleStringCodec().encoder.convert(rRule),
       };
 
@@ -28,7 +28,7 @@ class TaskRRule {
       docId,
       title: json['title'],
       description: json['description'],
-      startDate: (json['startDate'] as Timestamp).toDate().copyWith(isUtc: true),
+      startDate: (json['startDate'] as Timestamp).toDate(),
       rRule: const RecurrenceRuleStringCodec().decoder.convert(json['rRule']),
     );
   }

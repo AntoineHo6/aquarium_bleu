@@ -521,11 +521,19 @@ class _AddTaskPageState extends State<AddTaskPage> {
           interval: int.parse(_repeatEveryFieldController.text.trim()), // temp
         );
 
+        DateTime taskStartDate = DateTime(
+          _startDate.year,
+          _startDate.month,
+          _startDate.day,
+          _startTime.hour,
+          _startTime.minute,
+        );
+
         TaskRRule taskRRule = TaskRRule(
           const Uuid().v4(),
           title: title,
           description: _descFieldController.text.trim(),
-          startDate: _startDate.toUtc(),
+          startDate: taskStartDate,
           rRule: rRule,
         );
 

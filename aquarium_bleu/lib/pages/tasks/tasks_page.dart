@@ -142,7 +142,7 @@ class _TasksPageState extends State<TasksPage> {
           FutureBuilder(
             future: FirestoreStuff.fetchTasksInDay(
               tankProvider.tank.docId,
-              _currentDate.copyWith(isUtc: true),
+              _currentDate,
             ),
             builder: (BuildContext context, tasksSnapshot) {
               if (tasksSnapshot.hasData) {
@@ -152,8 +152,7 @@ class _TasksPageState extends State<TasksPage> {
                             onPressed: () async {
                               await FirestoreStuff.deleteTask(tankProvider.tank.docId, task);
                             },
-                            child: Text(
-                                '${task.title}: ${task.date.copyWith(isUtc: false).toString()}'),
+                            child: Text('${task.title}: ${task.date}'),
                           ))
                       .toList(),
                 );

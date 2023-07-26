@@ -531,16 +531,17 @@ class FirestoreStuff {
           .map((doc) => (doc.data()['date'] as Timestamp).toDate().copyWith(isUtc: true))
           .toList();
 
-      if (taskRRule.startDate.compareTo(day) <= 0) {
-        DateTime instance = taskRRule.rRule
-            .getInstances(start: taskRRule.startDate.copyWith(isUtc: true))
-            .firstWhere(
-              (instance) =>
-                  instance.day == day.day &&
-                  instance.month == day.month &&
-                  instance.year == day.year,
-              orElse: () => bidonDay,
-            );
+      if (taskRRule.startDate.compareTo(dayEnd) <= 0) {
+        DateTime test = taskRRule.startDate.toUtc();
+
+        DateTime instance =
+            taskRRule.rRule.getInstances(start: taskRRule.startDate.toUtc()).firstWhere(
+                  (instance) =>
+                      instance.day == day.day &&
+                      instance.month == day.month &&
+                      instance.year == day.year,
+                  orElse: () => bidonDay,
+                );
 
         if (instance != bidonDay) {
           // 1. If task is in EXTASKS, ignore
@@ -569,7 +570,7 @@ class FirestoreStuff {
                 rRuleId: taskRRule.id,
                 title: taskRRule.title,
                 description: taskRRule.description,
-                date: instance,
+                date: instance.toLocal(),
                 isCompleted: false,
               );
 
