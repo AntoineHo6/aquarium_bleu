@@ -527,9 +527,8 @@ class FirestoreStuff {
           )
           .get();
 
-      final exDates = exDatesSnapshot.docs
-          .map((doc) => (doc.data()['date'] as Timestamp).toDate().copyWith(isUtc: true))
-          .toList();
+      final exDates =
+          exDatesSnapshot.docs.map((doc) => (doc.data()['date'] as Timestamp).toDate()).toList();
 
       if (taskRRule.startDate.compareTo(dayEnd) <= 0) {
         DateTime test = taskRRule.startDate.toUtc();
@@ -545,7 +544,7 @@ class FirestoreStuff {
 
         if (instance != bidonDay) {
           // 1. If task is in EXTASKS, ignore
-          if (exDates.contains(instance)) {
+          if (exDates.contains(instance.toLocal())) {
             // do nothing
           } else {
             // 2. Query from tasks collection
