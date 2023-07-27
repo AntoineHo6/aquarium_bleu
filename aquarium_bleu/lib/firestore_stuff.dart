@@ -426,8 +426,6 @@ class FirestoreStuff {
           );
 
       // if rrule is never ending, use takewhile
-      print(taskRRule.rRule.interval);
-
       // or specify num of days in that month
       for (var instance in instances) {
         if (exDates.contains(instance)) {

@@ -1,11 +1,9 @@
 import 'package:aquarium_bleu/enums/repeat_end_type.dart';
-import 'package:aquarium_bleu/enums/repeat_frequency.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/task/task.dart';
 import 'package:aquarium_bleu/models/task_r_rule.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
-import 'package:aquarium_bleu/utils/num_util.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +25,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   late TextEditingController _repeatEveryFieldController;
   String? _titleErrorText;
   String? _repeatEveryErrorText;
+  String? _numOfOccurrencesErrorText;
   bool _repeat = false;
   Frequency _frequency = Frequency.daily;
   final List<bool> _activeDaysOfWeek = [false, true, false, false, false, false, false];
@@ -323,8 +322,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 controller: _numOfOccurrencesFieldController,
                                 keyboardType: TextInputType.number,
                                 maxLength: 3,
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
+                                decoration: InputDecoration(
+                                  border: const OutlineInputBorder(),
+                                  errorText: _numOfOccurrencesErrorText,
                                 ),
                                 onChanged: (value) {
                                   setState(() {});
@@ -455,8 +455,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
   _handleAdd() async {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
     bool isValid = true;
+
+    // check if title is empty
     String title = _titleFieldController.text.trim();
-    // 1. check if title is empty
     if (title.isEmpty) {
       isValid = false;
       setState(() {
@@ -468,29 +469,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       });
     }
 
-    // 2. Check if repeat field is empty or valid
-    if (_repeat) {
-      String repeatEveryStr = _repeatEveryFieldController.text.trim();
-
-      if (!StringUtil.isNumeric(repeatEveryStr)) {
-        isValid = false;
-        _repeatEveryErrorText = AppLocalizations.of(context).theValueIsNotAValidNumber;
-      }
-      // else if check if int
-      else {
-        setState(() {
-          _repeatEveryErrorText = null;
-        });
-      }
-    }
-
-    // 3. validate after n Occurrences
-    // ...
-
-    // validate count
-
-    // 4. Create rrule
-    if (isValid && !_repeat) {
+    if (!_repeat && isValid) {
       Task newTask = Task(
         const Uuid().v4(),
         rRuleId: null,
@@ -501,43 +480,70 @@ class _AddTaskPageState extends State<AddTaskPage> {
       );
 
       await FirestoreStuff.addTask(tankProvider.tank.docId, newTask);
-    }
+    } else {
+      // 2. Check if "repeat every" field is valid
+      int? repeatEveryVal = int.tryParse(_repeatEveryFieldController.text.trim());
 
-    if (isValid) {
-      DateTime? until;
-      int? count;
-
-      if (_repeatEndType == RepeatEndType.on) {
-        until = _endOnDate;
-      } else if (_repeatEndType == RepeatEndType.after) {
-        count = int.parse(_numOfOccurrencesFieldController.text.trim());
+      if (repeatEveryVal == null) {
+        isValid = false;
+        _repeatEveryErrorText = AppLocalizations.of(context).theValueIsNotAValidNumber;
+      } else {
+        setState(() {
+          _repeatEveryErrorText = null;
+        });
       }
 
-      if (_frequency == Frequency.daily) {
-        RecurrenceRule rRule = RecurrenceRule(
-          frequency: _frequency,
-          until: until!.toUtc(),
-          count: count,
-          interval: int.parse(_repeatEveryFieldController.text.trim()), // temp
-        );
+      // 3. validate after n Occurrences
+      if (_repeatEndType == RepeatEndType.after) {
+        int? numOfOccurrences = int.tryParse(_numOfOccurrencesFieldController.text.trim());
 
-        DateTime taskStartDate = DateTime(
-          _startDate.year,
-          _startDate.month,
-          _startDate.day,
-          _startTime.hour,
-          _startTime.minute,
-        );
+        if (numOfOccurrences == null) {
+          isValid = false;
+          _numOfOccurrencesErrorText = AppLocalizations.of(context).theValueIsNotAValidNumber;
+        } else {
+          setState(() {
+            _numOfOccurrencesErrorText = null;
+          });
+        }
+      }
 
-        TaskRRule taskRRule = TaskRRule(
-          const Uuid().v4(),
-          title: title,
-          description: _descFieldController.text.trim(),
-          startDate: taskStartDate,
-          rRule: rRule,
-        );
+      // 4. Create rrule
+      if (isValid) {
+        DateTime? until;
+        int? count;
 
-        await FirestoreStuff.addTaskRRule(tankProvider.tank.docId, taskRRule);
+        if (_repeatEndType == RepeatEndType.on) {
+          until = _endOnDate;
+        } else if (_repeatEndType == RepeatEndType.after) {
+          count = int.parse(_numOfOccurrencesFieldController.text.trim());
+        }
+
+        if (_frequency == Frequency.daily) {
+          RecurrenceRule rRule = RecurrenceRule(
+            frequency: _frequency,
+            until: until!.toUtc(),
+            count: count,
+            interval: int.parse(_repeatEveryFieldController.text.trim()), // temp
+          );
+
+          DateTime taskStartDate = DateTime(
+            _startDate.year,
+            _startDate.month,
+            _startDate.day,
+            _startTime.hour,
+            _startTime.minute,
+          );
+
+          TaskRRule taskRRule = TaskRRule(
+            const Uuid().v4(),
+            title: title,
+            description: _descFieldController.text.trim(),
+            startDate: taskStartDate,
+            rRule: rRule,
+          );
+
+          await FirestoreStuff.addTaskRRule(tankProvider.tank.docId, taskRRule);
+        }
       }
     }
   }
