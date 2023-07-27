@@ -516,7 +516,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       if (_frequency == Frequency.daily) {
         RecurrenceRule rRule = RecurrenceRule(
           frequency: _frequency,
-          until: until,
+          until: until!.toUtc(),
           count: count,
           interval: int.parse(_repeatEveryFieldController.text.trim()), // temp
         );
