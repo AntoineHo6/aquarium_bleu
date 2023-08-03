@@ -470,17 +470,25 @@ class _AddTaskPageState extends State<AddTaskPage> {
     }
 
     if (!_repeat && isValid) {
+      DateTime taskDate = DateTime(
+        _startDate.year,
+        _startDate.month,
+        _startDate.day,
+        _startTime.hour,
+        _startTime.minute,
+      );
+
       Task newTask = Task(
         const Uuid().v4(),
         rRuleId: null,
         title: title,
         description: _descFieldController.text.trim(),
-        date: _startDate,
+        date: taskDate,
         isCompleted: false,
       );
 
       await FirestoreStuff.addTask(tankProvider.tank.docId, newTask);
-    } else {
+    } else if (_repeat && isValid) {
       // 2. Check if "repeat every" field is valid
       int? repeatEveryVal = int.tryParse(_repeatEveryFieldController.text.trim());
 

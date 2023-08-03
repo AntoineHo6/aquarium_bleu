@@ -455,11 +455,13 @@ class FirestoreStuff {
         )
         .get();
 
-    uniqueTasksSnapshot.docs.map((doc) => numTasksPerDay.update(
-          (doc.data()['date'] as Timestamp).toDate().day,
-          (value) => ++value,
-          ifAbsent: () => 1,
-        ));
+    for (var doc in uniqueTasksSnapshot.docs) {
+      numTasksPerDay.update(
+        (doc.data()['date'] as Timestamp).toDate().day,
+        (value) => ++value,
+        ifAbsent: () => 1,
+      );
+    }
 
     return numTasksPerDay;
   }
@@ -529,8 +531,6 @@ class FirestoreStuff {
           exDatesSnapshot.docs.map((doc) => (doc.data()['date'] as Timestamp).toDate()).toList();
 
       if (taskRRule.startDate.compareTo(dayEnd) <= 0) {
-        DateTime test = taskRRule.startDate.toUtc();
-
         DateTime instance =
             taskRRule.rRule.getInstances(start: taskRRule.startDate.toUtc()).firstWhere(
                   (instance) =>
@@ -582,20 +582,24 @@ class FirestoreStuff {
       }
     }
 
-    // 2. check unique tasks
-    // final uniqueTasksSnapshot = await FirebaseFirestore.instance
-    //     .collection(usersCollection)
-    //     .doc(FirebaseAuth.instance.currentUser!.uid)
-    //     .collection(tanksCollection)
-    //     .doc(tankId)
-    //     .collection('exTasks')
-    //     .where('rRuleId', isNull: true)
-    //     .where(
-    //       'date',
-    //       isGreaterThanOrEqualTo: day,
-    //       isLessThanOrEqualTo: dayEnd,
-    //     )
-    //     .get();
+    // 2. get unique tasks
+    final uniqueTasksSnapshot = await FirebaseFirestore.instance
+        .collection(usersCollection)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection(tanksCollection)
+        .doc(tankId)
+        .collection('tasks')
+        .where('rRuleId', isNull: true)
+        .where(
+          'date',
+          isGreaterThanOrEqualTo: day,
+          isLessThanOrEqualTo: dayEnd,
+        )
+        .get();
+
+    for (var taskDoc in uniqueTasksSnapshot.docs) {
+      tasks.add(Task.fromJson(taskDoc.id, taskDoc.data()));
+    }
 
     return tasks;
   }
