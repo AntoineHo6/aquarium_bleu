@@ -162,11 +162,11 @@ class _TasksPageState extends State<TasksPage> {
                 if (tasksSnapshot.hasData) {
                   return Column(
                     children: tasksSnapshot.data!
-                        .map((task) => ElevatedButton(
-                              onPressed: () async {
-                                await FirestoreStuff.deleteTask(tankProvider.tank.docId, task);
-                              },
-                              child: Text('${task.title}: ${task.date}'),
+                        .map((task) => CheckboxListTile.adaptive(
+                              title: Text(task.title),
+                              subtitle: Text(task.description),
+                              value: task.isCompleted,
+                              onChanged: (value) {},
                             ))
                         .toList(),
                   );
