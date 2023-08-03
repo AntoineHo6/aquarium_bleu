@@ -2,6 +2,7 @@ import 'package:aquarium_bleu/pages/edit_tank_page.dart';
 import 'package:aquarium_bleu/pages/tasks/tasks_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
+import 'package:aquarium_bleu/providers/tasks_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/tank_page/horizontal_list_card.dart';
@@ -20,7 +21,6 @@ class _TankPageState extends State<TankPage> {
   @override
   Widget build(BuildContext context) {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
-
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -140,7 +140,11 @@ class _TankPageState extends State<TankPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const TasksPage(),
+                                          builder: (context) => ChangeNotifierProvider(
+                                            create: (context) =>
+                                                TasksProvider(tankProvider.tank.docId),
+                                            child: const TasksPage(),
+                                          ),
                                         ),
                                       );
                                     },

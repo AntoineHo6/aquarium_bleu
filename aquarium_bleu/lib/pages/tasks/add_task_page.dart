@@ -3,6 +3,7 @@ import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/task/task.dart';
 import 'package:aquarium_bleu/models/task_r_rule.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
+import 'package:aquarium_bleu/providers/tasks_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
@@ -360,8 +361,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   Expanded(
                     flex: 70,
                     child: ElevatedButton(
-                      onPressed: () async {
-                        _handleAdd();
+                      onPressed: () {
+                        _handleAdd().then((value) {
+                          Navigator.pop(context);
+                        });
                       },
                       child: Text(AppLocalizations.of(context).add),
                     ),
@@ -452,7 +455,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         });
   }
 
-  _handleAdd() async {
+  Future<void> _handleAdd() async {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
     bool isValid = true;
 

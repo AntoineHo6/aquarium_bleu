@@ -390,7 +390,11 @@ class FirestoreStuff {
   }
 
   static Future<Map<int, int>> fetchNumOfTasksPerDayInMonth(
-      String tankId, DateTime firstDayOfMonth, DateTime firstDayOfNextMonth) async {
+      String tankId, int year, int month) async {
+    DateTime firstDayOfMonth = DateTime(year, month, 1);
+    // check if its the last month of the year, if adding a month increments the year
+    DateTime firstDayOfNextMonth = DateTime(year, month + 1, 1);
+
     // 1. count the rRule tasks
     List<TaskRRule> taskRRules = await readTaskRRules(tankId);
 
@@ -598,11 +602,14 @@ class FirestoreStuff {
           isGreaterThanOrEqualTo: day,
           isLessThanOrEqualTo: dayEnd,
         )
+        .orderBy('date', descending: false)
         .get();
 
     for (var taskDoc in uniqueTasksSnapshot.docs) {
       tasks.add(Task.fromJson(taskDoc.id, taskDoc.data()));
     }
+
+    tasks.sort((a, b) => a.date.compareTo(b.date));
 
     return tasks;
   }
