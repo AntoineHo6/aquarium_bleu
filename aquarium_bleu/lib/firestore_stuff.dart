@@ -489,18 +489,21 @@ class FirestoreStuff {
 
     await taskDoc.delete();
 
-    final exTaskDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(exTasksCollection)
-        .doc(task.id);
+    // if task was generated from a rrule, we prevent generation
+    if (task.rRuleId != null) {
+      final exTaskDoc = FirebaseFirestore.instance
+          .collection(usersCollection)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection(tanksCollection)
+          .doc(tankId)
+          .collection(exTasksCollection)
+          .doc(task.id);
 
-    await exTaskDoc.set({
-      'rRuleId': task.rRuleId,
-      'date': task.date,
-    });
+      await exTaskDoc.set({
+        'rRuleId': task.rRuleId,
+        'date': task.date,
+      });
+    }
   }
 
   static Future<List<Task>> fetchTasksInDay(String tankId, DateTime day) async {
