@@ -362,9 +362,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     flex: 70,
                     child: ElevatedButton(
                       onPressed: () {
-                        _handleAdd().then((value) {
-                          Navigator.pop(context);
-                        });
+                        _handleAdd().then((success) => success ? Navigator.pop(context) : null);
                       },
                       child: Text(AppLocalizations.of(context).add),
                     ),
@@ -455,7 +453,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
         });
   }
 
-  Future<void> _handleAdd() async {
+  Future<bool> _handleAdd() async {
+    bool success = false;
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
     bool isValid = true;
 
@@ -491,6 +490,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       );
 
       await FirestoreStuff.addTask(tankProvider.tank.docId, newTask);
+      success = true;
     } else if (_repeat && isValid) {
       // 2. Check if "repeat every" field is valid
       int? repeatEveryVal = int.tryParse(_repeatEveryFieldController.text.trim());
@@ -554,8 +554,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
           );
 
           await FirestoreStuff.addTaskRRule(tankProvider.tank.docId, taskRRule);
+          success = true;
         }
       }
     }
+
+    return success;
   }
 }
