@@ -613,4 +613,16 @@ class FirestoreStuff {
 
     return tasks;
   }
+
+  static Future<void> updateTask(String tankId, Task task) async {
+    final taskDoc = FirebaseFirestore.instance
+        .collection(usersCollection)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection(tanksCollection)
+        .doc(tankId)
+        .collection('tasks')
+        .doc(task.id);
+
+    await taskDoc.update(task.toJson());
+  }
 }

@@ -1,6 +1,10 @@
-import 'package:aquarium_bleu/utils/string_util.dart';
+import 'package:aquarium_bleu/providers/tank_provider.dart';
+import 'package:aquarium_bleu/providers/tasks_provider.dart';
+import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DatePickerCalendarPage extends StatefulWidget {
   final DateTime selectedDate;
@@ -29,6 +33,9 @@ class _DatePickerCalendarPageState extends State<DatePickerCalendarPage> {
       body: Column(
         children: [
           TableCalendar(
+            headerStyle: const HeaderStyle(
+              formatButtonVisible: false,
+            ),
             focusedDay: _focusedDate,
             firstDay: DateTime.utc(2000, 12, 1),
             lastDay: DateTime.utc(2050, 12, 1),
@@ -41,7 +48,16 @@ class _DatePickerCalendarPageState extends State<DatePickerCalendarPage> {
                 _focusedDate = focusedDay;
               });
             },
-          )
+          ),
+          const SizedBox(
+            height: Spacing.betweenSections,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context, _selectedDate);
+            },
+            child: Text(AppLocalizations.of(context).select),
+          ),
         ],
       ),
     );

@@ -3,18 +3,23 @@ import 'package:aquarium_bleu/models/task/task.dart';
 import 'package:flutter/material.dart';
 
 class TasksProvider extends ChangeNotifier {
-  late List<int> currentDays = [];
+  late List<int> currentDaysInMonth = [];
   late DateTime currentDate;
   late List<Task> selectedDayTasks = [];
 
   TasksProvider(String tankId) {
-    DateTime now = DateTime.now();
-    currentDate = DateTime(now.year, now.month, now.day, 0, 0, 0, 0, 0);
-
-    int numDays = DateUtils.getDaysInMonth(currentDate.year, currentDate.month);
-    currentDays = List<int>.generate(numDays, (i) => i + 1);
-
+    updateCurrentDate(DateTime.now());
+    updateCurrentDays(currentDate);
     setSelectedDayTasks(tankId);
+  }
+
+  void updateCurrentDate(DateTime newDate) {
+    currentDate = DateTime(newDate.year, newDate.month, newDate.day, 0, 0, 0, 0, 0);
+  }
+
+  void updateCurrentDays(DateTime date) {
+    int numDays = DateUtils.getDaysInMonth(currentDate.year, currentDate.month);
+    currentDaysInMonth = List<int>.generate(numDays, (i) => i + 1);
   }
 
   void setSelectedDayTasks(String tankId) {

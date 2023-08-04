@@ -67,7 +67,14 @@ class _TasksPageState extends State<TasksPage> {
                             selectedDate: tasksProvider.currentDate,
                           ),
                         ),
-                      ),
+                      ).then((newDate) {
+                        if (newDate != null) {
+                          tasksProvider.updateCurrentDate(newDate);
+                          tasksProvider.updateCurrentDays(newDate);
+                          tasksProvider.setSelectedDayTasks(tankProvider.tank.docId);
+                          _moveScrollController(newDate.day);
+                        }
+                      }),
                       child: const Icon(Icons.calendar_month_outlined),
                     )
                   ],
@@ -84,7 +91,7 @@ class _TasksPageState extends State<TasksPage> {
                     builder: (BuildContext context, snapshot) {
                       if (snapshot.hasData) {
                         List<Widget> headerDayTiles = [];
-                        for (int day in tasksProvider.currentDays) {
+                        for (int day in tasksProvider.currentDaysInMonth) {
                           List<Widget> taskDots = [];
                           if (snapshot.data!.containsKey(day)) {
                             int numTasks = snapshot.data![day]!;
@@ -103,12 +110,7 @@ class _TasksPageState extends State<TasksPage> {
                                       tasksProvider.currentDate.year,
                                       tasksProvider.currentDate.month,
                                       day);
-                                  _scrollController.animateTo(
-                                    (MediaQuery.of(context).size.width * 0.2) *
-                                        (tasksProvider.currentDate.day - 3),
-                                    duration: const Duration(milliseconds: 500),
-                                    curve: Curves.ease,
-                                  );
+                                  _moveScrollController(tasksProvider.currentDate.day);
                                 });
 
                                 tasksProvider.setSelectedDayTasks(tankProvider.tank.docId);
@@ -153,18 +155,24 @@ class _TasksPageState extends State<TasksPage> {
                       .map((task) => Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(StringUtil.formattedTime(
-                                context,
-                                TimeOfDay.fromDateTime(task.date),
-                              )),
+                              Text(
+                                StringUtil.formattedTime(
+                                  context,
+                                  TimeOfDay.fromDateTime(task.date),
+                                ),
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
                               CheckboxListTile.adaptive(
                                 title: Text(task.title),
                                 subtitle: Text(task.description),
                                 value: task.isCompleted,
                                 onChanged: (value) {
-                                  // TODO: update the task in firebase aswell
                                   setState(() {
                                     task.isCompleted = value!;
+                                    FirestoreStuff.updateTask(
+                                      tankProvider.tank.docId,
+                                      task,
+                                    );
                                   });
                                 },
                               ),
@@ -189,5 +197,13 @@ class _TasksPageState extends State<TasksPage> {
         ),
       );
     });
+  }
+
+  _moveScrollController(int day) {
+    _scrollController.animateTo(
+      (MediaQuery.of(context).size.width * 0.2) * (day - 3),
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.ease,
+    );
   }
 }
