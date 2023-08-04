@@ -1,4 +1,5 @@
 import 'package:aquarium_bleu/enums/date_range_type.dart';
+import 'package:aquarium_bleu/enums/repeat_end_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
@@ -419,18 +420,30 @@ class FirestoreStuff {
           .map((doc) => (doc.data()['date'] as Timestamp).toDate().copyWith(isUtc: true))
           .toList();
 
-      final instances = taskRRule.rRule
-          .getInstances(
-            start: taskRRule.startDate.copyWith(isUtc: true),
-          )
-          .where(
-            (instance) =>
-                instance.compareTo(firstDayOfMonth) > 0 &&
-                instance.compareTo(firstDayOfNextMonth) < 0,
-          );
-
+      late final instances;
       // if rrule is never ending, use takewhile
-      // or specify num of days in that month
+      if (taskRRule.repeatEndType == RepeatEndType.never) {
+        DateTime startDate = taskRRule.rRule
+            .getInstances(
+              start: taskRRule.startDate.copyWith(isUtc: true),
+            )
+            .firstWhere((dateTime) => dateTime.year == year && dateTime.month == month);
+
+        instances = taskRRule.rRule
+            .getInstances(start: startDate)
+            .takeWhile((dateTime) => dateTime.year == year && dateTime.month == month);
+      } else {
+        instances = taskRRule.rRule
+            .getInstances(
+              start: taskRRule.startDate.copyWith(isUtc: true),
+            )
+            .where(
+              (instance) =>
+                  instance.compareTo(firstDayOfMonth) > 0 &&
+                  instance.compareTo(firstDayOfNextMonth) < 0,
+            );
+      }
+
       for (var instance in instances) {
         if (exDates.contains(instance)) {
           // do nothing

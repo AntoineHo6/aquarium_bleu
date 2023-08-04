@@ -530,12 +530,26 @@ class _AddTaskPageState extends State<AddTaskPage> {
         }
 
         if (_frequency == Frequency.daily) {
-          RecurrenceRule rRule = RecurrenceRule(
-            frequency: _frequency,
-            until: until!.toUtc(),
-            count: count,
-            interval: int.parse(_repeatEveryFieldController.text.trim()), // temp
-          );
+          late RecurrenceRule rRule;
+
+          if (_repeatEndType == RepeatEndType.never) {
+            rRule = RecurrenceRule(
+              frequency: _frequency,
+              interval: int.parse(_repeatEveryFieldController.text.trim()),
+            );
+          } else if (_repeatEndType == RepeatEndType.on) {
+            rRule = RecurrenceRule(
+              frequency: _frequency,
+              until: until!.toUtc(),
+              interval: int.parse(_repeatEveryFieldController.text.trim()),
+            );
+          } else {
+            rRule = RecurrenceRule(
+              frequency: _frequency,
+              count: count,
+              interval: int.parse(_repeatEveryFieldController.text.trim()),
+            );
+          }
 
           DateTime taskStartDate = DateTime(
             _startDate.year,
@@ -551,6 +565,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             description: _descFieldController.text.trim(),
             startDate: taskStartDate,
             rRule: rRule,
+            repeatEndType: _repeatEndType,
           );
 
           await FirestoreStuff.addTaskRRule(tankProvider.tank.docId, taskRRule);
