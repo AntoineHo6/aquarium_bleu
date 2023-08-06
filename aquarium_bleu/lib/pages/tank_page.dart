@@ -91,7 +91,6 @@ class _TankPageState extends State<TankPage> {
                                       );
                                     },
                                     child: Card(
-                                      surfaceTintColor: MyTheme.wcColor,
                                       clipBehavior: Clip.hardEdge,
                                       elevation: 15,
                                       child: Padding(
@@ -149,7 +148,6 @@ class _TankPageState extends State<TankPage> {
                                       );
                                     },
                                     child: Card(
-                                      surfaceTintColor: Colors.yellow,
                                       clipBehavior: Clip.hardEdge,
                                       elevation: 15,
                                       child: Padding(

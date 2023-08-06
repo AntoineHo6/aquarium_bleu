@@ -9,14 +9,13 @@ import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class FirestoreStuff {
   static const usersCollection = 'users';
   static const tanksCollection = 'tanks';
   static const wcCollection = 'waterChanges';
-  static const wcnpPrefsCollection = 'wcnpPrefs';
+  // static const wcnpPrefsCollection = 'wcnpPrefs';
   static const tasksCollection = 'tasks';
   static const exTasksCollection = 'exTasks';
   static const taskRRulesCollection = 'taskRRules';
@@ -211,156 +210,7 @@ class FirestoreStuff {
         .collection(tanksCollection)
         .doc(tank.docId);
 
-    final dateRangeDoc = tankDoc.collection(wcnpPrefsCollection).doc('dateRange');
-    final isParamVisibleDoc = tankDoc.collection(wcnpPrefsCollection).doc('isParamVisible');
-    final showWaterChanges = tankDoc.collection(wcnpPrefsCollection).doc('showWaterChanges');
-
-    await dateRangeDoc.delete();
-    await isParamVisibleDoc.delete();
-    await showWaterChanges.delete();
     await tankDoc.delete();
-  }
-
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> readParamVis(String tankId) {
-    return FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcnpPrefsCollection)
-        .doc('isParamVisible')
-        .snapshots();
-  }
-
-  static Future updateParamVis(String tankId, Map<String, dynamic> visibleParams) async {
-    final visibilityDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcnpPrefsCollection)
-        .doc('isParamVisible');
-
-    await visibilityDoc.update(visibleParams);
-  }
-
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> readDateRangeWcnpPrefs(String tankId) {
-    return FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcnpPrefsCollection)
-        .doc('dateRange')
-        .snapshots();
-  }
-
-  static Future updateDateRangeType(String tankId, DateRangeType type) async {
-    final dateRangeDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcnpPrefsCollection)
-        .doc('dateRange');
-
-    await dateRangeDoc.update({'type': type.getStr});
-  }
-
-  static Future updateCustomStartDate(String tankId, DateTime newDate) async {
-    final dateRangeDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcnpPrefsCollection)
-        .doc('dateRange');
-
-    await dateRangeDoc.update({'customDateStart': newDate});
-  }
-
-  static Future updateCustomEndDate(String tankId, DateTime newDate) async {
-    final dateRangeDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcnpPrefsCollection)
-        .doc('dateRange');
-
-    await dateRangeDoc.update({'customDateEnd': newDate});
-  }
-
-  static Future addDefaultWcnpPrefs(String tankId) async {
-    // 1. Add date range pref
-    final dateRangeDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcnpPrefsCollection)
-        .doc('dateRange');
-
-    final json1 = {
-      'type': Strings.all,
-      'customDateStart': DateTime.now().subtract(const Duration(days: 7)),
-      'customDateEnd': DateTime.now(),
-    };
-
-    await dateRangeDoc.set(json1);
-
-    // 2. Add param visibility pref
-    final visibilityDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcnpPrefsCollection)
-        .doc('isParamVisible');
-
-    final json2 = {
-      for (var paramType in WaterParamType.values) paramType.getStr: true,
-    };
-
-    await visibilityDoc.set(json2);
-
-    // 3. Add show water change pref
-    final showWaterChangesDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcnpPrefsCollection)
-        .doc('showWaterChanges');
-
-    final json3 = {
-      'value': true,
-    };
-
-    await showWaterChangesDoc.set(json3);
-  }
-
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> readShowWaterChanges(String tankId) {
-    return FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcnpPrefsCollection)
-        .doc('showWaterChanges')
-        .snapshots();
-  }
-
-  static Future updateShowWaterChanges(String tankId, bool newValue) async {
-    final dateRangeDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcnpPrefsCollection)
-        .doc('showWaterChanges');
-
-    await dateRangeDoc.update({'value': newValue});
   }
 
   static Future addTaskRRule(String tankId, TaskRRule taskRRule) async {

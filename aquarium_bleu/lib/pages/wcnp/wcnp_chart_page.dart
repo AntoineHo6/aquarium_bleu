@@ -3,21 +3,21 @@ import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/pages/wcnp/edit_param_page.dart';
+import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/wcnp_page/param_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class WcnpChartPage extends StatefulWidget {
-  final String tankId;
   final WaterParamType paramType;
   final DateTime start;
   final DateTime end;
   final List<WaterChange> waterChanges;
 
-  const WcnpChartPage(this.tankId, this.paramType, this.start, this.end, this.waterChanges,
-      {super.key});
+  const WcnpChartPage(this.paramType, this.start, this.end, this.waterChanges, {super.key});
 
   @override
   State<WcnpChartPage> createState() => _WcnpChartPageState();
@@ -26,9 +26,11 @@ class WcnpChartPage extends StatefulWidget {
 class _WcnpChartPageState extends State<WcnpChartPage> {
   @override
   Widget build(BuildContext context) {
+    TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
+
     return StreamBuilder<List<Parameter>>(
         stream: FirestoreStuff.readParamWithRange(
-            widget.tankId, widget.paramType, widget.start, widget.end),
+            tankProvider.tank.docId, widget.paramType, widget.start, widget.end),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Scaffold(

@@ -7,14 +7,12 @@ import 'package:aquarium_bleu/pages/wcnp/edit_wc_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_tune_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_chart_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
-import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/wcnp_page/add_param_val_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/wcnp_page/add_water_change_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/wcnp_page/param_chart.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -31,170 +29,130 @@ class WcnpPage extends StatefulWidget {
 class _WcnpPageState extends State<WcnpPage> {
   @override
   Widget build(BuildContext context) {
-    List<Stream<DocumentSnapshot<Map<String, dynamic>>>> prefsStreams = [];
+    TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
 
-    String tankId = Provider.of<TankProvider>(context, listen: false).tank.docId;
-    prefsStreams.add(FirestoreStuff.readParamVis(tankId));
-    prefsStreams.add(FirestoreStuff.readDateRangeWcnpPrefs(tankId));
-    prefsStreams.add(FirestoreStuff.readShowWaterChanges(tankId));
+    DateTime dateStart = _calculateDateStart(
+      tankProvider.tank.dateRangeType,
+      tankProvider.tank.customDateStart,
+    );
+    DateTime dateEnd = _calculateDateEnd(
+      tankProvider.tank.dateRangeType,
+      tankProvider.tank.customDateEnd,
+    );
+
+    List<Stream<List<Parameter>>> dataStreams = [];
+
+    for (var paramType in WaterParamType.values) {
+      if (tankProvider.tank.visibleParams[paramType.getStr]) {
+        dataStreams.add(
+          FirestoreStuff.readParamWithRange(tankProvider.tank.docId, paramType, dateStart, dateEnd),
+        );
+      }
+    }
 
     return StreamBuilder(
-      stream: CombineLatestStream.list(prefsStreams),
-      builder: (context, prefsSnapshots) {
-        if (prefsSnapshots.hasData) {
-          Map<String, dynamic>? paramVisibility = prefsSnapshots.data![0].data();
+        stream: FirestoreStuff.readWcWithRange(tankProvider.tank.docId, dateStart, dateEnd),
+        builder: (context, wcSnapshot) {
+          if (wcSnapshot.hasData) {
+            return StreamBuilder(
+              stream: CombineLatestStream.list(dataStreams),
+              builder: (context, paramSnapshot) {
+                if (paramSnapshot.hasData) {
+                  List<Widget> charts = _createParamCharts(
+                    paramSnapshot.data!,
+                    wcSnapshot.data!,
+                    dateStart,
+                    dateEnd,
+                  );
 
-          DateRangeType dateRangeType =
-              DateRangeType.values.byName(prefsSnapshots.data![1][Strings.type]);
+                  List<Widget> wcListTiles = _createWcListTiles(wcSnapshot.data!);
 
-          // should only convert to date if actually in custom date range type
-          DateTime customDateStart =
-              (prefsSnapshots.data![1][Strings.customDateStart] as Timestamp).toDate();
-          DateTime customDateEnd =
-              (prefsSnapshots.data![1][Strings.customDateEnd] as Timestamp).toDate();
-
-          List<Stream<List<Parameter>>> dataStreams = [];
-
-          DateTime dateStart = _calculateDateStart(
-            dateRangeType,
-            customDateStart,
-          );
-          DateTime dateEnd = _calculateDateEnd(
-            dateRangeType,
-            customDateEnd,
-          );
-
-          for (var type in WaterParamType.values) {
-            if (paramVisibility![type.getStr]) {
-              dataStreams.add(
-                FirestoreStuff.readParamWithRange(tankId, type, dateStart, dateEnd),
-              );
-            }
-          }
-
-          bool showWaterChanges = (prefsSnapshots.data![2]['value']);
-
-          return StreamBuilder(
-              stream: FirestoreStuff.readWcWithRange(tankId, dateStart, dateEnd),
-              builder: (context, wcSnapshot) {
-                if (wcSnapshot.hasData) {
-                  return StreamBuilder(
-                    stream: CombineLatestStream.list(dataStreams),
-                    builder: (context, paramSnapshot) {
-                      if (paramSnapshot.hasData) {
-                        String dateRangeTypeStr =
-                            StringUtil.dateRangeTypeToString(context, dateRangeType);
-
-                        List<Widget> charts = _createParamCharts(
-                          paramSnapshot.data!,
-                          wcSnapshot.data!,
-                          showWaterChanges,
-                          dateStart,
-                          dateEnd,
-                          tankId,
-                        );
-
-                        List<Widget> wcListTiles = _createWcListTiles(wcSnapshot.data!);
-
-                        return DefaultTabController(
-                          length: 2,
-                          child: Scaffold(
-                              appBar: AppBar(
-                                title: Text(
-                                    '${AppLocalizations.of(context).dateRange}: $dateRangeTypeStr'),
-                                actions: [
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => WcnpTunePage(
-                                            DateRangeType.values
-                                                .byName(prefsSnapshots.data![1][Strings.type]),
-                                            customDateStart,
-                                            customDateEnd,
-                                            paramVisibility,
-                                            showWaterChanges,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    icon: const Icon(Icons.tune_rounded),
-                                  )
-                                ],
-                                bottom: TabBar(
-                                  tabs: [
-                                    Tab(
-                                      icon: const Icon(Icons.show_chart),
-                                      text: AppLocalizations.of(context).waterParameters,
-                                    ),
-                                    Tab(
-                                      icon: const Icon(Icons.water_drop),
-                                      text: AppLocalizations.of(context).waterChanges,
-                                    ),
-                                  ],
+                  return DefaultTabController(
+                    length: 2,
+                    child: Scaffold(
+                        appBar: AppBar(
+                          title: Text(
+                            '${AppLocalizations.of(context).dateRange}: ${tankProvider.tank.dateRangeType.getStr}',
+                          ),
+                          actions: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const WcnpTunePage(),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.tune_rounded),
+                            )
+                          ],
+                          bottom: TabBar(
+                            tabs: [
+                              Tab(
+                                icon: const Icon(Icons.show_chart),
+                                text: AppLocalizations.of(context).waterParameters,
+                              ),
+                              Tab(
+                                icon: const Icon(Icons.water_drop),
+                                text: AppLocalizations.of(context).waterChanges,
+                              ),
+                            ],
+                          ),
+                        ),
+                        body: TabBarView(
+                          children: [
+                            ListView(children: [
+                              Column(
+                                children: charts,
+                              ),
+                            ]),
+                            Padding(
+                              padding: const EdgeInsets.all(Spacing.screenEdgePadding),
+                              child: ListView(children: wcListTiles),
+                            ),
+                          ],
+                        ),
+                        floatingActionButton: SpeedDial(
+                          icon: Icons.add,
+                          children: [
+                            SpeedDialChild(
+                              child: const Icon(Icons.show_chart_outlined),
+                              label: AppLocalizations.of(context).addParameterValue,
+                              backgroundColor: MyTheme.paramColor,
+                              onTap: () => showDialog(
+                                context: context,
+                                builder: (BuildContext context) => AddParamValAlertDialog(
+                                  tankProvider.tank.visibleParams,
                                 ),
                               ),
-                              body: TabBarView(
-                                children: [
-                                  ListView(children: [
-                                    Column(
-                                      children: charts,
-                                    ),
-                                  ]),
-                                  Padding(
-                                    padding: const EdgeInsets.all(Spacing.screenEdgePadding),
-                                    child: ListView(children: wcListTiles),
-                                  ),
-                                ],
+                            ),
+                            SpeedDialChild(
+                              child: const Icon(Icons.water_drop),
+                              label: AppLocalizations.of(context).addWaterChange,
+                              backgroundColor: MyTheme.wcColor,
+                              onTap: () => showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    AddWaterChangeAlertDialog(tankProvider.tank.docId),
                               ),
-                              floatingActionButton: SpeedDial(
-                                icon: Icons.add,
-                                children: [
-                                  SpeedDialChild(
-                                    child: const Icon(Icons.show_chart_outlined),
-                                    label: AppLocalizations.of(context).addParameterValue,
-                                    backgroundColor: MyTheme.paramColor,
-                                    onTap: () => showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) => AddParamValAlertDialog(
-                                        paramVisibility,
-                                      ),
-                                    ),
-                                  ),
-                                  SpeedDialChild(
-                                    child: const Icon(Icons.water_drop),
-                                    label: AppLocalizations.of(context).addWaterChange,
-                                    backgroundColor: MyTheme.wcColor,
-                                    onTap: () => showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          AddWaterChangeAlertDialog(tankId),
-                                    ),
-                                  ),
-                                ],
-                              )),
-                        );
-                      } else {
-                        return const Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        );
-                      }
-                    },
+                            ),
+                          ],
+                        )),
                   );
                 } else {
                   return const Center(
                     child: CircularProgressIndicator.adaptive(),
                   );
                 }
-              });
-        } else {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
-        }
-      },
-    );
+              },
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          }
+        });
   }
 
   DateTime _calculateDateStart(DateRangeType type, DateTime customDateStart) {
@@ -229,13 +187,9 @@ class _WcnpPageState extends State<WcnpPage> {
     }
   }
 
-  List<Widget> _createParamCharts(
-      List<List<Parameter>> allParamData,
-      List<WaterChange> waterChanges,
-      bool showWaterChanges,
-      DateTime dateStart,
-      DateTime dateEnd,
-      String tankId) {
+  List<Widget> _createParamCharts(List<List<Parameter>> allParamData,
+      List<WaterChange> waterChanges, DateTime dateStart, DateTime dateEnd) {
+    TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
     List<Widget> charts = [];
     for (var i = 0; i < allParamData.length; i++) {
       if (allParamData[i].isNotEmpty) {
@@ -252,11 +206,10 @@ class _WcnpPageState extends State<WcnpPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => WcnpChartPage(
-                          tankId,
                           allParamData[i][0].type,
                           dateStart,
                           dateEnd,
-                          showWaterChanges ? waterChanges : [],
+                          tankProvider.tank.showWcInCharts ? waterChanges : [],
                         ),
                       ),
                     );
@@ -264,7 +217,7 @@ class _WcnpPageState extends State<WcnpPage> {
                   icon: const Icon(Icons.open_in_new_rounded),
                 ),
               ],
-              waterChanges: showWaterChanges ? waterChanges : [],
+              waterChanges: tankProvider.tank.showWcInCharts ? waterChanges : [],
             ),
           ),
         );

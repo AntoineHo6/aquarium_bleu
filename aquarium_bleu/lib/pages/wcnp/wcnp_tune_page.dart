@@ -5,19 +5,12 @@ import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 class WcnpTunePage extends StatefulWidget {
-  final DateRangeType currentDateRangeType;
-  final DateTime customDateStart;
-  final DateTime customDateEnd;
-  final Map<String, dynamic>? visibleParams;
-  final bool showWaterChanges;
-
-  const WcnpTunePage(this.currentDateRangeType, this.customDateStart, this.customDateEnd,
-      this.visibleParams, this.showWaterChanges,
-      {super.key});
+  const WcnpTunePage({super.key});
 
   @override
   State<WcnpTunePage> createState() => _WcnpTunePageState();
@@ -25,31 +18,27 @@ class WcnpTunePage extends StatefulWidget {
 
 class _WcnpTunePageState extends State<WcnpTunePage> {
   bool isSelected = false;
-  late DateRangeType currentDateRangeType;
-  late DateTime customDateStart;
-  late DateTime customDateEnd;
-  late Map<String, dynamic> visibleParams;
   late int numOfVisibleParams;
-  late bool showWaterChanges;
 
   @override
   void initState() {
     super.initState();
-    currentDateRangeType = widget.currentDateRangeType;
-    customDateStart = widget.customDateStart;
-    customDateEnd = widget.customDateEnd;
-    visibleParams = widget.visibleParams!;
-    numOfVisibleParams = 0;
-    for (var paramType in WaterParamType.values) {
-      if (widget.visibleParams![paramType.getStr]) {
-        numOfVisibleParams++;
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      numOfVisibleParams = 0;
+      for (var paramType in WaterParamType.values) {
+        if (Provider.of<TankProvider>(context, listen: false)
+            .tank
+            .visibleParams[paramType.getStr]) {
+          numOfVisibleParams++;
+        }
       }
-    }
-    showWaterChanges = widget.showWaterChanges;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
+
     // populate date range radiobtns list
     List<Widget> dateRangeRadioBtns = [];
     for (var dateRangeType in DateRangeType.values) {
@@ -58,10 +47,10 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
           title: Text(StringUtil.dateRangeTypeToString(context, dateRangeType)),
           leading: Radio<DateRangeType>(
             value: dateRangeType,
-            groupValue: currentDateRangeType,
+            groupValue: tankProvider.tank.dateRangeType,
             onChanged: (DateRangeType? value) async {
               setState(() {
-                currentDateRangeType = value!;
+                tankProvider.tank.dateRangeType = value!;
               });
             },
           ),
@@ -74,15 +63,15 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
     for (var paramType in WaterParamType.values) {
       choiceChips.add(ChoiceChip(
         label: Text(StringUtil.paramTypeToString(context, paramType)),
-        selected: widget.visibleParams![paramType.getStr],
+        selected: tankProvider.tank.visibleParams[paramType.getStr],
         onSelected: (isVisible) {
           setState(() {
             if (numOfVisibleParams > 1 && !isVisible) {
               numOfVisibleParams--;
-              visibleParams[paramType.getStr] = isVisible;
+              tankProvider.tank.visibleParams[paramType.getStr] = isVisible;
             } else if (isVisible) {
               numOfVisibleParams++;
-              visibleParams[paramType.getStr] = isVisible;
+              tankProvider.tank.visibleParams[paramType.getStr] = isVisible;
             } else {
               // animate a nono animation to show that there has to be at least 1 visible param.
             }
@@ -93,12 +82,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
 
     return WillPopScope(
       onWillPop: () async {
-        String tankId = Provider.of<TankProvider>(context, listen: false).tank.docId;
-        await FirestoreStuff.updateDateRangeType(tankId, currentDateRangeType);
-        await FirestoreStuff.updateCustomStartDate(tankId, customDateStart);
-        await FirestoreStuff.updateCustomEndDate(tankId, customDateEnd);
-        await FirestoreStuff.updateParamVis(tankId, visibleParams);
-        await FirestoreStuff.updateShowWaterChanges(tankId, showWaterChanges);
+        FirestoreStuff.updateTank(tankProvider.tank);
         return true;
       },
       child: Scaffold(
@@ -124,30 +108,30 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    currentDateRangeType == DateRangeType.custom
+                    tankProvider.tank.dateRangeType == DateRangeType.custom
                         ? FilledButton.tonal(
-                            onPressed: () => _handleDatePicker(customDateStart),
+                            onPressed: () => _handleDatePicker(tankProvider.tank.customDateStart),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Icon(Icons.date_range),
                                 _sectionSeparator,
                                 Text(
-                                    '${AppLocalizations.of(context).customDateStart}: ${StringUtil.formattedDate(context, customDateStart)}'),
+                                    '${AppLocalizations.of(context).customDateStart}: ${StringUtil.formattedDate(context, tankProvider.tank.customDateStart)}'),
                               ],
                             ),
                           )
                         : const SizedBox(),
-                    currentDateRangeType == DateRangeType.custom
+                    tankProvider.tank.dateRangeType == DateRangeType.custom
                         ? FilledButton.tonal(
-                            onPressed: () => _handleDatePicker(customDateEnd),
+                            onPressed: () => _handleDatePicker(tankProvider.tank.customDateEnd),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Icon(Icons.date_range),
                                 _sectionSeparator,
                                 Text(
-                                    '${AppLocalizations.of(context).customDateEnd}: ${StringUtil.formattedDate(context, customDateEnd)}'),
+                                    '${AppLocalizations.of(context).customDateEnd}: ${StringUtil.formattedDate(context, tankProvider.tank.customDateEnd)}'),
                               ],
                             ),
                           )
@@ -162,9 +146,9 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 Switch.adaptive(
-                  value: showWaterChanges,
+                  value: tankProvider.tank.showWcInCharts,
                   onChanged: (newValue) => setState(() {
-                    showWaterChanges = !showWaterChanges;
+                    tankProvider.tank.showWcInCharts = newValue;
                   }),
                 ),
                 const SizedBox(
@@ -187,7 +171,10 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
     );
   }
 
+  // TODO: fix make 2 datePickers
   _handleDatePicker(DateTime date) {
+    TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
+
     showDatePicker(
       context: context,
       initialDate: date,
@@ -196,7 +183,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
     ).then((newDate) async {
       if (newDate != null) {
         setState(() {
-          customDateStart = newDate;
+          date = newDate;
         });
       }
     });

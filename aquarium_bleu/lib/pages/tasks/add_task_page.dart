@@ -3,7 +3,6 @@ import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/task/task.dart';
 import 'package:aquarium_bleu/models/task_r_rule.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
-import 'package:aquarium_bleu/providers/tasks_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';

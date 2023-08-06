@@ -1,8 +1,5 @@
-import 'package:aquarium_bleu/providers/tank_provider.dart';
-import 'package:aquarium_bleu/providers/tasks_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

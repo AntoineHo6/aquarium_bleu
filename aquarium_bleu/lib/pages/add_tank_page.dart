@@ -369,10 +369,8 @@ class _AddTankPageState extends State<AddTankPage> {
       }
 
       FirestoreStuff.addTank(tank).then((docId) {
-        FirestoreStuff.addDefaultWcnpPrefs(docId).then((value) {
-          Navigator.pop(context);
-          Navigator.pop(context);
-        });
+        Navigator.pop(context);
+        Navigator.pop(context);
       });
     }
   }

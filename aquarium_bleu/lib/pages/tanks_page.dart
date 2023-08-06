@@ -24,6 +24,7 @@ class _TanksPageState extends State<TanksPage> {
   Widget build(BuildContext context) {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
+    // TODO: deepen the stream
     return Scaffold(
       body: StreamBuilder<List<Tank>>(
         stream: FirestoreStuff.readTanks(),

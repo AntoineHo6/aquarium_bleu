@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class AddParamValAlertDialog extends StatefulWidget {
-  final Map<String, dynamic>? paramVisibility;
+  final Map<dynamic, dynamic> paramVisibility;
 
   const AddParamValAlertDialog(this.paramVisibility, {super.key});
 

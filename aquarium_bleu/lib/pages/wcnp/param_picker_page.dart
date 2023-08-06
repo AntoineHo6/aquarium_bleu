@@ -6,7 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ParamPickerPage extends StatefulWidget {
   final WaterParamType? currentParam;
-  final Map<String, dynamic>? paramVis;
+  final Map<dynamic, dynamic> paramVis;
 
   const ParamPickerPage(this.currentParam, this.paramVis, {super.key});
 
@@ -24,7 +24,7 @@ class _ParamPickerPageState extends State<ParamPickerPage> {
     currentParam = widget.currentParam;
 
     for (var paramType in WaterParamType.values) {
-      if (widget.paramVis![paramType.getStr]) {
+      if (widget.paramVis[paramType.getStr]) {
         visibleParamTypes.add(paramType);
       }
     }
