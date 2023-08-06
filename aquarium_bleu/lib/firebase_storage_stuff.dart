@@ -11,8 +11,8 @@ class FirebaseStorageStuff {
 
     try {
       await storage.ref('${FirebaseAuth.instance.currentUser!.uid}/$name').putFile(file);
-    } on FirebaseException catch (e) {
-      print(e);
+    } on FirebaseException catch (_) {
+      // print(e);
     }
   }
 }

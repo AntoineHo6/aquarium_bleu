@@ -17,7 +17,6 @@ class WcnpTunePage extends StatefulWidget {
 }
 
 class _WcnpTunePageState extends State<WcnpTunePage> {
-  bool isSelected = false;
   late int numOfVisibleParams;
 
   @override
@@ -110,7 +109,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                   children: [
                     tankProvider.tank.dateRangeType == DateRangeType.custom
                         ? FilledButton.tonal(
-                            onPressed: () => _handleDatePicker(tankProvider.tank.customDateStart),
+                            onPressed: () => _handleCustomDateStartPicker(),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -124,7 +123,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                         : const SizedBox(),
                     tankProvider.tank.dateRangeType == DateRangeType.custom
                         ? FilledButton.tonal(
-                            onPressed: () => _handleDatePicker(tankProvider.tank.customDateEnd),
+                            onPressed: () => _handleCustomDateEndPicker(),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -171,19 +170,35 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
     );
   }
 
-  // TODO: fix make 2 datePickers
-  _handleDatePicker(DateTime date) {
+  _handleCustomDateStartPicker() {
     TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
 
     showDatePicker(
       context: context,
-      initialDate: date,
+      initialDate: tankProvider.tank.customDateStart,
       firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      lastDate: DateTime.now(),
     ).then((newDate) async {
       if (newDate != null) {
         setState(() {
-          date = newDate;
+          tankProvider.tank.customDateStart = newDate;
+        });
+      }
+    });
+  }
+
+  _handleCustomDateEndPicker() {
+    TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
+
+    showDatePicker(
+      context: context,
+      initialDate: tankProvider.tank.customDateEnd,
+      firstDate: tankProvider.tank.customDateStart,
+      lastDate: DateTime.now(),
+    ).then((newDate) async {
+      if (newDate != null) {
+        setState(() {
+          tankProvider.tank.customDateEnd = newDate;
         });
       }
     });

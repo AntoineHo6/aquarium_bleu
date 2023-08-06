@@ -1,4 +1,3 @@
-import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/repeat_end_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
@@ -6,7 +5,6 @@ import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/models/task/task.dart';
 import 'package:aquarium_bleu/models/task_r_rule.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
-import 'package:aquarium_bleu/strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uuid/uuid.dart';
@@ -15,7 +13,6 @@ class FirestoreStuff {
   static const usersCollection = 'users';
   static const tanksCollection = 'tanks';
   static const wcCollection = 'waterChanges';
-  // static const wcnpPrefsCollection = 'wcnpPrefs';
   static const tasksCollection = 'tasks';
   static const exTasksCollection = 'exTasks';
   static const taskRRulesCollection = 'taskRRules';
@@ -252,6 +249,7 @@ class FirestoreStuff {
     Map<int, int> numTasksPerDay = {};
 
     for (TaskRRule taskRRule in taskRRules) {
+      // problematic
       final exDatesSnapshot = await FirebaseFirestore.instance
           .collection(usersCollection)
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -270,7 +268,7 @@ class FirestoreStuff {
           .map((doc) => (doc.data()['date'] as Timestamp).toDate().copyWith(isUtc: true))
           .toList();
 
-      late final instances;
+      late final Iterable<DateTime> instances;
       // if rrule is never ending, use takewhile
       if (taskRRule.repeatEndType == RepeatEndType.never) {
         DateTime startDate = taskRRule.rRule

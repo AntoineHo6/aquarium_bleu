@@ -503,7 +503,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         });
       }
 
-      // 3. validate after n Occurrences
+      // Validate after n Occurrences
       if (_repeatEndType == RepeatEndType.after) {
         int? numOfOccurrences = int.tryParse(_numOfOccurrencesFieldController.text.trim());
 
@@ -528,48 +528,46 @@ class _AddTaskPageState extends State<AddTaskPage> {
           count = int.parse(_numOfOccurrencesFieldController.text.trim());
         }
 
-        if (_frequency == Frequency.daily) {
-          late RecurrenceRule rRule;
+        late RecurrenceRule rRule;
 
-          if (_repeatEndType == RepeatEndType.never) {
-            rRule = RecurrenceRule(
-              frequency: _frequency,
-              interval: int.parse(_repeatEveryFieldController.text.trim()),
-            );
-          } else if (_repeatEndType == RepeatEndType.on) {
-            rRule = RecurrenceRule(
-              frequency: _frequency,
-              until: until!.toUtc(),
-              interval: int.parse(_repeatEveryFieldController.text.trim()),
-            );
-          } else {
-            rRule = RecurrenceRule(
-              frequency: _frequency,
-              count: count,
-              interval: int.parse(_repeatEveryFieldController.text.trim()),
-            );
-          }
-
-          DateTime taskStartDate = DateTime(
-            _startDate.year,
-            _startDate.month,
-            _startDate.day,
-            _startTime.hour,
-            _startTime.minute,
+        if (_repeatEndType == RepeatEndType.never) {
+          rRule = RecurrenceRule(
+            frequency: _frequency,
+            interval: int.parse(_repeatEveryFieldController.text.trim()),
           );
-
-          TaskRRule taskRRule = TaskRRule(
-            const Uuid().v4(),
-            title: title,
-            description: _descFieldController.text.trim(),
-            startDate: taskStartDate,
-            rRule: rRule,
-            repeatEndType: _repeatEndType,
+        } else if (_repeatEndType == RepeatEndType.on) {
+          rRule = RecurrenceRule(
+            frequency: _frequency,
+            until: until!.toUtc(),
+            interval: int.parse(_repeatEveryFieldController.text.trim()),
           );
-
-          await FirestoreStuff.addTaskRRule(tankProvider.tank.docId, taskRRule);
-          success = true;
+        } else {
+          rRule = RecurrenceRule(
+            frequency: _frequency,
+            count: count,
+            interval: int.parse(_repeatEveryFieldController.text.trim()),
+          );
         }
+
+        DateTime taskStartDate = DateTime(
+          _startDate.year,
+          _startDate.month,
+          _startDate.day,
+          _startTime.hour,
+          _startTime.minute,
+        );
+
+        TaskRRule taskRRule = TaskRRule(
+          const Uuid().v4(),
+          title: title,
+          description: _descFieldController.text.trim(),
+          startDate: taskStartDate,
+          rRule: rRule,
+          repeatEndType: _repeatEndType,
+        );
+
+        await FirestoreStuff.addTaskRRule(tankProvider.tank.docId, taskRRule);
+        success = true;
       }
     }
 

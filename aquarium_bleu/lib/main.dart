@@ -110,11 +110,6 @@ class MyApp extends StatelessWidget {
                 if (!state.user!.emailVerified) {
                   Navigator.pushNamed(context, '/verify-email');
                 } else {
-                  // TODO: if user signs in with an existing acc from an anonymous one,
-                  //       ask if they want to migrate current data or not
-                  // 1. if yes, copy tanks (make an algorithm)
-                  // 2. paste tanks to existing user account
-
                   Navigator.pop(context);
                   Navigator.pushReplacementNamed(context, '/all-pages');
                 }
