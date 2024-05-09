@@ -49,10 +49,10 @@ class _TankCardState extends State<TankCard> {
                             style: Theme.of(context).textTheme.titleMedium,
                             children: <TextSpan>[
                               TextSpan(
-                                text: '${AppLocalizations.of(context).lastWaterChange}: ',
+                                text: '${AppLocalizations.of(context)!.lastWaterChange}: ',
                               ),
                               TextSpan(
-                                text: AppLocalizations.of(context).xDaysAgo(difference.toString()),
+                                text: AppLocalizations.of(context)!.xDaysAgo(difference.toString()),
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.lightBlueAccent,

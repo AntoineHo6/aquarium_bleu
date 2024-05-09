@@ -34,7 +34,7 @@ class _ParamPickerPageState extends State<ParamPickerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).addParameterValue),
+        title: Text(AppLocalizations.of(context)!.addParameterValue),
       ),
       body: ListView(
         children: [
@@ -69,7 +69,7 @@ class _ParamPickerPageState extends State<ParamPickerPage> {
               top: Spacing.betweenSections,
             ),
             child: ElevatedButton(
-              child: Text(AppLocalizations.of(context).select),
+              child: Text(AppLocalizations.of(context)!.select),
               onPressed: () {
                 Navigator.pop(context, currentParam);
               },

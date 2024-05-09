@@ -1,8 +1,6 @@
 import 'package:aquarium_bleu/pages/edit_tank_page.dart';
-import 'package:aquarium_bleu/pages/tasks/tasks_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
-import 'package:aquarium_bleu/providers/tasks_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/tank_page/horizontal_list_card.dart';
@@ -112,63 +110,10 @@ class _TankPageState extends State<TankPage> {
                                             Align(
                                               alignment: Alignment.topLeft,
                                               child: Text(
-                                                AppLocalizations.of(context)
+                                                AppLocalizations.of(context)!
                                                     .waterChangesAndParameters,
                                                 style: Theme.of(context).textTheme.headlineLarge,
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              flex: 50,
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: Container(
-                                  margin: const EdgeInsets.only(
-                                    left: _marginBetweenBigButtons,
-                                    bottom: _marginBetweenBigButtons,
-                                  ),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ChangeNotifierProvider(
-                                            create: (context) =>
-                                                TasksProvider(tankProvider.tank.docId),
-                                            child: const TasksPage(),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Card(
-                                      clipBehavior: Clip.hardEdge,
-                                      elevation: 15,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(Spacing.cardPadding),
-                                        child: Stack(
-                                          children: [
-                                            Positioned(
-                                              top: MediaQuery.of(context).size.height * 0.08,
-                                              left: MediaQuery.of(context).size.width * 0.6,
-                                              child: Opacity(
-                                                opacity: 0.6,
-                                                child: Icon(
-                                                  Icons.task,
-                                                  size: MediaQuery.of(context).size.width * 0.3,
-                                                  color: Colors.yellow[700],
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              AppLocalizations.of(context).tasks,
-                                              style: Theme.of(context).textTheme.headlineLarge,
                                             ),
                                           ],
                                         ),
@@ -188,7 +133,7 @@ class _TankPageState extends State<TankPage> {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () => {},
-                          child: Text(AppLocalizations.of(context).viewAll),
+                          child: Text(AppLocalizations.of(context)!.viewAll),
                         ),
                       ),
                       SizedBox(
@@ -197,22 +142,22 @@ class _TankPageState extends State<TankPage> {
                           scrollDirection: Axis.horizontal,
                           children: [
                             HorizontalListCard(
-                              title: AppLocalizations.of(context).animals,
+                              title: AppLocalizations.of(context)!.animals,
                               iconData: Icons.pets,
                               color: Colors.teal,
                             ),
                             HorizontalListCard(
-                              title: AppLocalizations.of(context).plants,
+                              title: AppLocalizations.of(context)!.plants,
                               iconData: Icons.eco,
                               color: Colors.lightGreen,
                             ),
                             HorizontalListCard(
-                              title: AppLocalizations.of(context).equipment,
+                              title: AppLocalizations.of(context)!.equipment,
                               iconData: Icons.token_outlined,
                               color: Colors.brown,
                             ),
                             HorizontalListCard(
-                              title: AppLocalizations.of(context).equipment,
+                              title: AppLocalizations.of(context)!.equipment,
                               iconData: Icons.attach_money,
                               color: Colors.green,
                             ),

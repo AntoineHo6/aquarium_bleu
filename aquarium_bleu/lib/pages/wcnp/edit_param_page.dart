@@ -50,8 +50,8 @@ class _EditParamPageState extends State<EditParamPage> {
             onPressed: () => showDialog(
               context: context,
               builder: (BuildContext context) => ConfirmAlertDialog(
-                title: Text(AppLocalizations.of(context).confirm),
-                content: Text(AppLocalizations.of(context).confirmDeleteX('')),
+                title: Text(AppLocalizations.of(context)!.confirm),
+                content: Text(AppLocalizations.of(context)!.confirmDeleteX('')),
                 onConfirm: () async {
                   await FirestoreStuff.deleteParam(tankId, widget.dataPoint).then((value) {
                     Navigator.pop(context);
@@ -72,7 +72,7 @@ class _EditParamPageState extends State<EditParamPage> {
               controller: _valueFieldController,
               decoration: InputDecoration(
                 labelText:
-                    "${AppLocalizations.of(context).value} (${AppLocalizations.of(context).required})",
+                    "${AppLocalizations.of(context)!.value} (${AppLocalizations.of(context)!.required})",
                 errorText: _isValueValid ? null : _errorText,
               ),
               maxLength: 50,
@@ -104,14 +104,14 @@ class _EditParamPageState extends State<EditParamPage> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text(AppLocalizations.of(context).cancel),
+                    child: Text(AppLocalizations.of(context)!.cancel),
                   ),
                 ),
                 Expanded(
                   flex: 70,
                   child: ElevatedButton(
                     onPressed: () => _handleUpdate(tankId),
-                    child: Text(AppLocalizations.of(context).update),
+                    child: Text(AppLocalizations.of(context)!.update),
                   ),
                 ),
               ],
@@ -128,12 +128,12 @@ class _EditParamPageState extends State<EditParamPage> {
     if (value.isEmpty) {
       setState(() {
         _isValueValid = false;
-        _errorText = AppLocalizations.of(context).theValueIsEmpty;
+        _errorText = AppLocalizations.of(context)!.theValueIsEmpty;
       });
     } else if (!StringUtil.isNumeric(value)) {
       setState(() {
         _isValueValid = false;
-        _errorText = AppLocalizations.of(context).theValueIsNotAValidNumber;
+        _errorText = AppLocalizations.of(context)!.theValueIsNotAValidNumber;
       });
     } else {
       DateTime paramDate = DateTime(

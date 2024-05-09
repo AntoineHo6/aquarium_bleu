@@ -79,10 +79,9 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
       ));
     }
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      onPopInvoked: (b) {
         FirestoreStuff.updateTank(tankProvider.tank);
-        return true;
       },
       child: Scaffold(
         appBar: AppBar(),
@@ -93,7 +92,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  AppLocalizations.of(context).dateRange,
+                  AppLocalizations.of(context)!.dateRange,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 GridView.count(
@@ -116,7 +115,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                                 const Icon(Icons.date_range),
                                 _sectionSeparator,
                                 Text(
-                                    '${AppLocalizations.of(context).customDateStart}: ${StringUtil.formattedDate(context, tankProvider.tank.customDateStart)}'),
+                                    '${AppLocalizations.of(context)!.customDateStart}: ${StringUtil.formattedDate(context, tankProvider.tank.customDateStart)}'),
                               ],
                             ),
                           )
@@ -130,7 +129,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                                 const Icon(Icons.date_range),
                                 _sectionSeparator,
                                 Text(
-                                    '${AppLocalizations.of(context).customDateEnd}: ${StringUtil.formattedDate(context, tankProvider.tank.customDateEnd)}'),
+                                    '${AppLocalizations.of(context)!.customDateEnd}: ${StringUtil.formattedDate(context, tankProvider.tank.customDateEnd)}'),
                               ],
                             ),
                           )
@@ -141,7 +140,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                   height: Spacing.betweenSections,
                 ),
                 Text(
-                  AppLocalizations.of(context).showWaterChangeLines,
+                  AppLocalizations.of(context)!.showWaterChangeLines,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 Switch.adaptive(
@@ -154,7 +153,7 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
                   height: Spacing.betweenSections,
                 ),
                 Text(
-                  AppLocalizations.of(context).visibleParameters,
+                  AppLocalizations.of(context)!.visibleParameters,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 _sectionSeparator,

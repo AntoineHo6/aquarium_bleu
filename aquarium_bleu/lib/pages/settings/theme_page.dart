@@ -18,26 +18,26 @@ class ThemePageState extends State<ThemePage> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context).theme),
+          title: Text(AppLocalizations.of(context)!.theme),
         ),
         body: Column(
           children: [
             RadioListTile(
-              title: Text(AppLocalizations.of(context).system),
+              title: Text(AppLocalizations.of(context)!.system),
               value: ThemeMode.system,
               groupValue: settingsProvider.themeMode,
               onChanged: (newTheme) async =>
                   await _onThemeChanged(newTheme as ThemeMode, settingsProvider),
             ),
             RadioListTile(
-              title: Text(AppLocalizations.of(context).light),
+              title: Text(AppLocalizations.of(context)!.light),
               value: ThemeMode.light,
               groupValue: settingsProvider.themeMode,
               onChanged: (newTheme) async =>
                   await _onThemeChanged(newTheme as ThemeMode, settingsProvider),
             ),
             RadioListTile(
-              title: Text(AppLocalizations.of(context).dark),
+              title: Text(AppLocalizations.of(context)!.dark),
               value: ThemeMode.dark,
               groupValue: settingsProvider.themeMode,
               onChanged: (newTheme) async =>

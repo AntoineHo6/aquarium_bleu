@@ -40,7 +40,7 @@ class _TanksPageState extends State<TanksPage> {
                       padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
                       child: FittedBox(
                         child: Text(
-                          AppLocalizations.of(context).tanks,
+                          AppLocalizations.of(context)!.tanks,
                           style: Theme.of(context).textTheme.displayLarge,
                         ),
                       ),

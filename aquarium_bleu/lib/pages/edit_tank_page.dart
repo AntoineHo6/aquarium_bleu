@@ -82,14 +82,14 @@ class _EditTankPageState extends State<EditTankPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).editTank),
+        title: Text(AppLocalizations.of(context)!.editTank),
         actions: [
           IconButton(
             onPressed: () => showDialog(
               context: context,
               builder: (BuildContext context) => ConfirmAlertDialog(
-                title: Text('${AppLocalizations.of(context).delete} ${tankProvider.tank.name}'),
-                content: Text(AppLocalizations.of(context).confirmDeleteX(tankProvider.tank.name)),
+                title: Text('${AppLocalizations.of(context)!.delete} ${tankProvider.tank.name}'),
+                content: Text(AppLocalizations.of(context)!.confirmDeleteX(tankProvider.tank.name)),
                 onConfirm: () async {
                   tankProvider.tankNames.remove(tankProvider.tank.name);
                   await FirestoreStuff.deleteTank(tankProvider.tank).then((value) {
@@ -121,7 +121,7 @@ class _EditTankPageState extends State<EditTankPage> {
                         style: Theme.of(context).textTheme.titleMedium,
                         children: <TextSpan>[
                           TextSpan(
-                            text: '${AppLocalizations.of(context).name}: ',
+                            text: '${AppLocalizations.of(context)!.name}: ',
                           ),
                           const TextSpan(
                             text: '*',
@@ -140,7 +140,7 @@ class _EditTankPageState extends State<EditTankPage> {
                   height: Spacing.betweenSections,
                 ),
                 Text(
-                  '${AppLocalizations.of(context).displayPicture}:',
+                  '${AppLocalizations.of(context)!.displayPicture}:',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 GestureDetector(
@@ -191,13 +191,13 @@ class _EditTankPageState extends State<EditTankPage> {
                   height: Spacing.betweenSections,
                 ),
                 Text(
-                  '${AppLocalizations.of(context).tankType}:',
+                  '${AppLocalizations.of(context)!.tankType}:',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Wrap(
                   children: [
                     ListTile(
-                      title: Text(AppLocalizations.of(context).freshwater),
+                      title: Text(AppLocalizations.of(context)!.freshwater),
                       leading: Radio<bool>(
                         value: true,
                         groupValue: _isFreshwater,
@@ -209,7 +209,7 @@ class _EditTankPageState extends State<EditTankPage> {
                       ),
                     ),
                     ListTile(
-                      title: Text(AppLocalizations.of(context).saltwater),
+                      title: Text(AppLocalizations.of(context)!.saltwater),
                       leading: Radio<bool>(
                         value: false,
                         groupValue: _isFreshwater,
@@ -228,7 +228,7 @@ class _EditTankPageState extends State<EditTankPage> {
                 Row(
                   children: [
                     Text(
-                      '${AppLocalizations.of(context).dimensions}:',
+                      '${AppLocalizations.of(context)!.dimensions}:',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     IconButton(onPressed: () {}, icon: const Icon(Icons.info)),
@@ -242,7 +242,7 @@ class _EditTankPageState extends State<EditTankPage> {
                         keyboardType: TextInputType.number,
                         controller: _widthFieldController,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).width,
+                          labelText: AppLocalizations.of(context)!.width,
                           errorText: _isWidthValid ? null : '',
                         ),
                       ),
@@ -259,7 +259,7 @@ class _EditTankPageState extends State<EditTankPage> {
                         keyboardType: TextInputType.number,
                         controller: _lengthFieldController,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).length,
+                          labelText: AppLocalizations.of(context)!.length,
                           errorText: _isLengthValid ? null : '',
                         ),
                       ),
@@ -276,7 +276,7 @@ class _EditTankPageState extends State<EditTankPage> {
                         keyboardType: TextInputType.number,
                         controller: _heightFieldController,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).height,
+                          labelText: AppLocalizations.of(context)!.height,
                           errorText: _isHeightValid ? null : '',
                         ),
                       ),
@@ -289,11 +289,11 @@ class _EditTankPageState extends State<EditTankPage> {
                       items: [
                         DropdownMenuItem(
                           value: UnitOfLength.cm,
-                          child: Text(AppLocalizations.of(context).cm),
+                          child: Text(AppLocalizations.of(context)!.cm),
                         ),
                         DropdownMenuItem(
                           value: UnitOfLength.inches,
-                          child: Text(AppLocalizations.of(context).inches),
+                          child: Text(AppLocalizations.of(context)!.inches),
                         ),
                       ],
                       onChanged: (UnitOfLength? value) {
@@ -315,7 +315,7 @@ class _EditTankPageState extends State<EditTankPage> {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text(AppLocalizations.of(context).cancel),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                       ),
                     ),
                     Expanded(
@@ -324,7 +324,7 @@ class _EditTankPageState extends State<EditTankPage> {
                         onPressed: () {
                           _handleUpdate();
                         },
-                        child: Text(AppLocalizations.of(context).update),
+                        child: Text(AppLocalizations.of(context)!.update),
                       ),
                     ),
                   ],
@@ -347,14 +347,14 @@ class _EditTankPageState extends State<EditTankPage> {
       hasError = true;
       setState(() {
         _isNameValid = false;
-        _errorText = AppLocalizations.of(context).emptyField;
+        _errorText = AppLocalizations.of(context)!.emptyField;
       });
     } else if (nameLowerCase != tankProvider.tank.name.toLowerCase() &&
         tankProvider.tankNames.contains(nameLowerCase)) {
       hasError = true;
       setState(() {
         _isNameValid = false;
-        _errorText = AppLocalizations.of(context).nameAlreadyExists;
+        _errorText = AppLocalizations.of(context)!.nameAlreadyExists;
       });
     }
 

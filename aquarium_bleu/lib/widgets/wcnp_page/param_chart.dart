@@ -52,7 +52,7 @@ class _ParamChartState extends State<ParamChart> {
         ),
         SfCartesianChart(
           tooltipBehavior: TooltipBehavior(
-              enable: true, header: AppLocalizations.of(context).date, format: 'point.x'),
+              enable: true, header: AppLocalizations.of(context)!.date, format: 'point.x'),
           primaryXAxis: DateTimeAxis(
             plotBands: widget.waterChanges
                 .map(
@@ -66,7 +66,7 @@ class _ParamChartState extends State<ParamChart> {
                 )
                 .toList(),
           ),
-          series: <ChartSeries>[
+          series: <CartesianSeries>[
             LineSeries(
               color: MyTheme.paramColor,
               animationDuration: 800,

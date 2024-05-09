@@ -11,7 +11,7 @@ class LoadingAlertDialog extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text(
-            '${AppLocalizations.of(context).loading}...',
+            '${AppLocalizations.of(context)!.loading}...',
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const CircularProgressIndicator.adaptive(),

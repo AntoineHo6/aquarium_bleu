@@ -21,7 +21,7 @@ class _AddWaterChangeAlertDialogState extends State<AddWaterChangeAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(AppLocalizations.of(context).addWaterChange),
+      title: Text(AppLocalizations.of(context)!.addWaterChange),
       content: SingleChildScrollView(
         child: ListBody(
           children: [
@@ -40,11 +40,11 @@ class _AddWaterChangeAlertDialogState extends State<AddWaterChangeAlertDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context).cancel),
+          child: Text(AppLocalizations.of(context)!.cancel),
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
-          child: Text(AppLocalizations.of(context).add),
+          child: Text(AppLocalizations.of(context)!.add),
           onPressed: () => _handleAdd(context),
         ),
       ],

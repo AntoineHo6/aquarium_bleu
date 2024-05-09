@@ -59,7 +59,7 @@ class _AddTankPageState extends State<AddTankPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).addANewTank),
+        title: Text(AppLocalizations.of(context)!.addANewTank),
       ),
       body: Scrollbar(
         child: SingleChildScrollView(
@@ -78,7 +78,7 @@ class _AddTankPageState extends State<AddTankPage> {
                         style: Theme.of(context).textTheme.titleMedium,
                         children: <TextSpan>[
                           TextSpan(
-                            text: '${AppLocalizations.of(context).name}: ',
+                            text: '${AppLocalizations.of(context)!.name}: ',
                           ),
                           const TextSpan(
                             text: '*',
@@ -97,7 +97,7 @@ class _AddTankPageState extends State<AddTankPage> {
                   height: Spacing.betweenSections,
                 ),
                 Text(
-                  '${AppLocalizations.of(context).displayPicture}:',
+                  '${AppLocalizations.of(context)!.displayPicture}:',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 GestureDetector(
@@ -147,13 +147,13 @@ class _AddTankPageState extends State<AddTankPage> {
                   height: Spacing.betweenSections,
                 ),
                 Text(
-                  '${AppLocalizations.of(context).tankType}:',
+                  '${AppLocalizations.of(context)!.tankType}:',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Wrap(
                   children: [
                     ListTile(
-                      title: Text(AppLocalizations.of(context).freshwater),
+                      title: Text(AppLocalizations.of(context)!.freshwater),
                       leading: Radio<bool>(
                         value: true,
                         groupValue: _isFreshwater,
@@ -165,7 +165,7 @@ class _AddTankPageState extends State<AddTankPage> {
                       ),
                     ),
                     ListTile(
-                      title: Text(AppLocalizations.of(context).saltwater),
+                      title: Text(AppLocalizations.of(context)!.saltwater),
                       leading: Radio<bool>(
                         value: false,
                         groupValue: _isFreshwater,
@@ -184,7 +184,7 @@ class _AddTankPageState extends State<AddTankPage> {
                 Row(
                   children: [
                     Text(
-                      '${AppLocalizations.of(context).dimensions}:',
+                      '${AppLocalizations.of(context)!.dimensions}:',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     IconButton(onPressed: () {}, icon: const Icon(Icons.info)),
@@ -198,7 +198,7 @@ class _AddTankPageState extends State<AddTankPage> {
                         keyboardType: TextInputType.number,
                         controller: _widthFieldController,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).width,
+                          labelText: AppLocalizations.of(context)!.width,
                           errorText: _isWidthValid ? null : '',
                         ),
                       ),
@@ -215,7 +215,7 @@ class _AddTankPageState extends State<AddTankPage> {
                         keyboardType: TextInputType.number,
                         controller: _lengthFieldController,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).length,
+                          labelText: AppLocalizations.of(context)!.length,
                           errorText: _isLengthValid ? null : '',
                         ),
                       ),
@@ -232,7 +232,7 @@ class _AddTankPageState extends State<AddTankPage> {
                         keyboardType: TextInputType.number,
                         controller: _heightFieldController,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).height,
+                          labelText: AppLocalizations.of(context)!.height,
                           errorText: _isHeightValid ? null : '',
                         ),
                       ),
@@ -245,11 +245,11 @@ class _AddTankPageState extends State<AddTankPage> {
                       items: [
                         DropdownMenuItem(
                           value: UnitOfLength.cm,
-                          child: Text(AppLocalizations.of(context).cm),
+                          child: Text(AppLocalizations.of(context)!.cm),
                         ),
                         DropdownMenuItem(
                           value: UnitOfLength.inches,
-                          child: Text(AppLocalizations.of(context).inches),
+                          child: Text(AppLocalizations.of(context)!.inches),
                         ),
                       ],
                       onChanged: (UnitOfLength? value) {
@@ -271,7 +271,7 @@ class _AddTankPageState extends State<AddTankPage> {
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text(AppLocalizations.of(context).cancel),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                       ),
                     ),
                     Expanded(
@@ -280,7 +280,7 @@ class _AddTankPageState extends State<AddTankPage> {
                         onPressed: () async {
                           _handleAdd();
                         },
-                        child: Text(AppLocalizations.of(context).add),
+                        child: Text(AppLocalizations.of(context)!.add),
                       ),
                     ),
                   ],
@@ -303,13 +303,13 @@ class _AddTankPageState extends State<AddTankPage> {
       hasError = true;
       setState(() {
         _isNameValid = false;
-        _errorText = AppLocalizations.of(context).emptyField;
+        _errorText = AppLocalizations.of(context)!.emptyField;
       });
     } else if (tankProvider.tankNames.contains(nameModified)) {
       hasError = true;
       setState(() {
         _isNameValid = false;
-        _errorText = AppLocalizations.of(context).nameAlreadyExists;
+        _errorText = AppLocalizations.of(context)!.nameAlreadyExists;
       });
     }
 

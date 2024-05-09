@@ -72,7 +72,7 @@ class _WcnpPageState extends State<WcnpPage> {
                     child: Scaffold(
                         appBar: AppBar(
                           title: Text(
-                            '${AppLocalizations.of(context).dateRange}: ${tankProvider.tank.dateRangeType.getStr}',
+                            '${AppLocalizations.of(context)!.dateRange}: ${tankProvider.tank.dateRangeType.getStr}',
                           ),
                           actions: [
                             IconButton(
@@ -91,11 +91,11 @@ class _WcnpPageState extends State<WcnpPage> {
                             tabs: [
                               Tab(
                                 icon: const Icon(Icons.show_chart),
-                                text: AppLocalizations.of(context).waterParameters,
+                                text: AppLocalizations.of(context)!.waterParameters,
                               ),
                               Tab(
                                 icon: const Icon(Icons.water_drop),
-                                text: AppLocalizations.of(context).waterChanges,
+                                text: AppLocalizations.of(context)!.waterChanges,
                               ),
                             ],
                           ),
@@ -118,7 +118,7 @@ class _WcnpPageState extends State<WcnpPage> {
                           children: [
                             SpeedDialChild(
                               child: const Icon(Icons.show_chart_outlined),
-                              label: AppLocalizations.of(context).addParameterValue,
+                              label: AppLocalizations.of(context)!.addParameterValue,
                               backgroundColor: MyTheme.paramColor,
                               onTap: () => showDialog(
                                 context: context,
@@ -129,7 +129,7 @@ class _WcnpPageState extends State<WcnpPage> {
                             ),
                             SpeedDialChild(
                               child: const Icon(Icons.water_drop),
-                              label: AppLocalizations.of(context).addWaterChange,
+                              label: AppLocalizations.of(context)!.addWaterChange,
                               backgroundColor: MyTheme.wcColor,
                               onTap: () => showDialog(
                                 context: context,

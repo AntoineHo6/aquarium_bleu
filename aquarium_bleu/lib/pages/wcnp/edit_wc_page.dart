@@ -39,8 +39,8 @@ class _EditWcPageState extends State<EditWcPage> {
             onPressed: () => showDialog(
               context: context,
               builder: (BuildContext context) => ConfirmAlertDialog(
-                title: Text(AppLocalizations.of(context).confirm),
-                content: Text(AppLocalizations.of(context).confirmDeleteX('')),
+                title: Text(AppLocalizations.of(context)!.confirm),
+                content: Text(AppLocalizations.of(context)!.confirmDeleteX('')),
                 onConfirm: () async {
                   await FirestoreStuff.deleteWc(tankId, widget.wc.docId).then((value) {
                     Navigator.pop(context);
@@ -81,14 +81,14 @@ class _EditWcPageState extends State<EditWcPage> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: Text(AppLocalizations.of(context).cancel),
+                    child: Text(AppLocalizations.of(context)!.cancel),
                   ),
                 ),
                 Expanded(
                   flex: 70,
                   child: ElevatedButton(
                     onPressed: () => _handleUpdate(tankId),
-                    child: Text(AppLocalizations.of(context).update),
+                    child: Text(AppLocalizations.of(context)!.update),
                   ),
                 ),
               ],

@@ -20,13 +20,13 @@ class _SettingsPageState extends State<SettingsPage> {
 
     Widget btn = FirebaseAuth.instance.currentUser!.isAnonymous
         ? ElevatedButton(
-            child: Text(AppLocalizations.of(context).signIn),
+            child: Text(AppLocalizations.of(context)!.signIn),
             onPressed: () {
               Navigator.pushNamed(context, '/sign-in');
             },
           )
         : ElevatedButton(
-            child: Text(AppLocalizations.of(context).signOut),
+            child: Text(AppLocalizations.of(context)!.signOut),
             onPressed: () {
               FirebaseAuth.instance
                   .signOut()
@@ -39,16 +39,16 @@ class _SettingsPageState extends State<SettingsPage> {
     String themeStr;
 
     if (settingsProvider.themeMode == ThemeMode.dark) {
-      themeStr = AppLocalizations.of(context).dark;
+      themeStr = AppLocalizations.of(context)!.dark;
     } else if (settingsProvider.themeMode == ThemeMode.light) {
-      themeStr = AppLocalizations.of(context).light;
+      themeStr = AppLocalizations.of(context)!.light;
     } else {
-      themeStr = AppLocalizations.of(context).system;
+      themeStr = AppLocalizations.of(context)!.system;
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).settings),
+        title: Text(AppLocalizations.of(context)!.settings),
       ),
       body: Padding(
         padding: const EdgeInsets.all(Spacing.screenEdgePadding),
@@ -58,14 +58,14 @@ class _SettingsPageState extends State<SettingsPage> {
               alignment: Alignment.center,
               child: Text(
                   FirebaseAuth.instance.currentUser!.email ??
-                      AppLocalizations.of(context).noAccountConnected,
+                      AppLocalizations.of(context)!.noAccountConnected,
                   style: Theme.of(context).textTheme.headlineSmall),
             ),
             const SizedBox(
               height: Spacing.betweenSections,
             ),
             ListTile(
-              title: Text(AppLocalizations.of(context).theme),
+              title: Text(AppLocalizations.of(context)!.theme),
               subtitle: Text(themeStr),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {

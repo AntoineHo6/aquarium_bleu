@@ -55,7 +55,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
     _setParamBtnText();
 
     return AlertDialog(
-      title: Text(AppLocalizations.of(context).addParameterValue),
+      title: Text(AppLocalizations.of(context)!.addParameterValue),
       content: SingleChildScrollView(
         child: ListBody(
           children: [
@@ -64,7 +64,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
               controller: _valueFieldController,
               decoration: InputDecoration(
                 hintText:
-                    "${AppLocalizations.of(context).value} (${AppLocalizations.of(context).required})",
+                    "${AppLocalizations.of(context)!.value} (${AppLocalizations.of(context)!.required})",
                 errorText: _isValueValid ? null : _errorText,
               ),
               maxLength: 10,
@@ -93,11 +93,11 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(AppLocalizations.of(context).cancel),
+          child: Text(AppLocalizations.of(context)!.cancel),
           onPressed: () => Navigator.pop(context),
         ),
         TextButton(
-          child: Text(AppLocalizations.of(context).add),
+          child: Text(AppLocalizations.of(context)!.add),
           onPressed: () => _handleAdd(),
         ),
       ],
@@ -178,12 +178,12 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
     if (value.isEmpty) {
       setState(() {
         _isValueValid = false;
-        _errorText = AppLocalizations.of(context).theValueIsEmpty;
+        _errorText = AppLocalizations.of(context)!.theValueIsEmpty;
       });
     } else if (!StringUtil.isNumeric(value)) {
       setState(() {
         _isValueValid = false;
-        _errorText = AppLocalizations.of(context).theValueIsNotAValidNumber;
+        _errorText = AppLocalizations.of(context)!.theValueIsNotAValidNumber;
       });
     }
 
@@ -197,7 +197,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
 
   void _setParamBtnText() {
     if (_param == null) {
-      _paramBtnText = AppLocalizations.of(context).selectParameter;
+      _paramBtnText = AppLocalizations.of(context)!.selectParameter;
     } else {
       _paramBtnText = StringUtil.paramTypeToString(context, _param!);
     }
