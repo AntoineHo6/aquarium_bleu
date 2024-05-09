@@ -453,8 +453,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
   }
 
   Future<bool> _handleAdd() async {
-    bool success = false;
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
+    bool success = false;
     bool isValid = true;
 
     // check if title is empty
@@ -521,33 +521,23 @@ class _AddTaskPageState extends State<AddTaskPage> {
       if (isValid) {
         DateTime? until;
         int? count;
+        Set<ByWeekDayEntry> byWeekDayEntries = {};
 
         if (_repeatEndType == RepeatEndType.on) {
-          until = _endOnDate;
+          until = _endOnDate.toUtc();
         } else if (_repeatEndType == RepeatEndType.after) {
           count = int.parse(_numOfOccurrencesFieldController.text.trim());
         }
 
         late RecurrenceRule rRule;
 
-        if (_repeatEndType == RepeatEndType.never) {
-          rRule = RecurrenceRule(
-            frequency: _frequency,
-            interval: int.parse(_repeatEveryFieldController.text.trim()),
-          );
-        } else if (_repeatEndType == RepeatEndType.on) {
-          rRule = RecurrenceRule(
-            frequency: _frequency,
-            until: until!.toUtc(),
-            interval: int.parse(_repeatEveryFieldController.text.trim()),
-          );
-        } else {
-          rRule = RecurrenceRule(
-            frequency: _frequency,
-            count: count,
-            interval: int.parse(_repeatEveryFieldController.text.trim()),
-          );
-        }
+        rRule = RecurrenceRule(
+          frequency: _frequency,
+          byWeekDays: byWeekDayEntries,
+          until: until,
+          count: count,
+          interval: int.parse(_repeatEveryFieldController.text.trim()),
+        );
 
         DateTime taskStartDate = DateTime(
           _startDate.year,
