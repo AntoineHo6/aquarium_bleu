@@ -15,7 +15,7 @@ class Dimensions {
 
   static Dimensions fromJson(Map<String, dynamic> json) {
     return Dimensions(
-      unit: UnitOfLength.values.firstWhere((e) => e.toString() == 'UnitOfLength.${json['unit']}'),
+      unit: UnitOfLength.values[json['unit']],
       width: json['width']?.toDouble(),
       length: json['length']?.toDouble(),
       height: json['height']?.toDouble(),

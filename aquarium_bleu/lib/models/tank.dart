@@ -33,7 +33,7 @@ class Tank {
         'isFreshwater': isFreshwater,
         'imgName': imgName,
         'dimensions': {
-          'unit': dimensions.unit.unitStr,
+          'unit': dimensions.unit.index,
           'width': dimensions.width,
           'length': dimensions.length,
           'height': dimensions.height,
