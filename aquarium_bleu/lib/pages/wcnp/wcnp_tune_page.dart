@@ -80,8 +80,8 @@ class _WcnpTunePageState extends State<WcnpTunePage> {
     }
 
     return PopScope(
-      onPopInvoked: (b) {
-        FirestoreStuff.updateTank(tankProvider.tank);
+      onPopInvoked: (b) async {
+        await FirestoreStuff.updateTank(tankProvider.tank);
       },
       child: Scaffold(
         appBar: AppBar(),

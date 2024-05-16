@@ -41,6 +41,7 @@
     "viewAll": "Voir tout",
     "loading": "Chargement",
 
+    "yourTanks": "Vos aquariums",
     "addANewTank": "Ajouter un nouvel aquarium",
     "tankName": "Nom de l'aquarium",
     "tankType": "Type d'aquarium",

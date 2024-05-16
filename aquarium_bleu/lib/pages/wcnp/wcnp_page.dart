@@ -82,7 +82,7 @@ class _WcnpPageState extends State<WcnpPage> {
                                   MaterialPageRoute(
                                     builder: (context) => const WcnpTunePage(),
                                   ),
-                                );
+                                ).then((value) => setState(() {}));
                               },
                               icon: const Icon(Icons.tune_rounded),
                             )

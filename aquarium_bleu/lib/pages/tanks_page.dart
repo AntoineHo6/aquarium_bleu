@@ -34,10 +34,11 @@ class _TanksPageState extends State<TanksPage> {
                 SliverAppBar(
                   expandedHeight: MediaQuery.of(context).size.height * 0.2,
                   flexibleSpace: FlexibleSpaceBar(
-                    centerTitle: true,
-                    title: Text(
-                      AppLocalizations.of(context)!.tanks,
-                      style: Theme.of(context).textTheme.displayMedium,
+                    title: FittedBox(
+                      child: Text(
+                        AppLocalizations.of(context)!.yourTanks,
+                        style: Theme.of(context).textTheme.displaySmall,
+                      ),
                     ),
                   ),
                   actions: [
