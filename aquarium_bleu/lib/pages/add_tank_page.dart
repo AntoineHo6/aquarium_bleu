@@ -248,7 +248,7 @@ class _AddTankPageState extends State<AddTankPage> {
                           child: Text(AppLocalizations.of(context)!.cm),
                         ),
                         DropdownMenuItem(
-                          value: UnitOfLength.inches,
+                          value: UnitOfLength.inch,
                           child: Text(AppLocalizations.of(context)!.inches),
                         ),
                       ],

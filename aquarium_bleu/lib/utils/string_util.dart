@@ -67,8 +67,6 @@ class StringUtil {
         return AppLocalizations.of(context)!.gh;
       case WaterParamType.temp:
         return AppLocalizations.of(context)!.temp;
-      case WaterParamType.alkalinity:
-        return AppLocalizations.of(context)!.alkalinity;
       case WaterParamType.calcium:
         return AppLocalizations.of(context)!.calcium;
       case WaterParamType.copper:

@@ -9,7 +9,6 @@ enum WaterParamType {
   kh,
   gh,
   temp,
-  alkalinity,
   calcium,
   copper,
   co2,
@@ -46,8 +45,6 @@ extension WaterParamTypeStr on WaterParamType {
         return Strings.gh;
       case WaterParamType.temp:
         return Strings.temp;
-      case WaterParamType.alkalinity:
-        return Strings.alkalinity;
       case WaterParamType.calcium:
         return Strings.calcium;
       case WaterParamType.copper:

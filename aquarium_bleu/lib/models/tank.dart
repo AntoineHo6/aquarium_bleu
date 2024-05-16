@@ -23,7 +23,7 @@ class Tank {
     this.imgName,
     required this.dimensions,
   }) {
-    for (var paramType in WaterParamType.values) {
+    for (WaterParamType paramType in WaterParamType.values) {
       visibleParams[paramType.getStr] = true;
     }
   }
