@@ -111,6 +111,18 @@ class FirestoreStuff {
     await paramDoc.delete();
   }
 
+  static Stream<List<WaterChange>> readAllWaterChanges(String tankId) {
+    return FirebaseFirestore.instance
+        .collection(usersCollection)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection(tanksCollection)
+        .doc(tankId)
+        .collection(wcCollection)
+        .orderBy("date", descending: true)
+        .snapshots()
+        .map((event) => event.docs.map((doc) => WaterChange.fromJson(doc.id, doc.data())).toList());
+  }
+
   static Stream<List<WaterChange>> readWcWithRange(String tankId, DateTime start, DateTime end) {
     return FirebaseFirestore.instance
         .collection(usersCollection)

@@ -1,5 +1,6 @@
 import 'package:aquarium_bleu/pages/edit_tank_page.dart';
 import 'package:aquarium_bleu/pages/schedule/schedule_page.dart';
+import 'package:aquarium_bleu/pages/waterChange/water_change_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_page.dart';
 import 'package:aquarium_bleu/providers/schedule_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
@@ -62,12 +63,12 @@ class _TankPageState extends State<TankPage> {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.5,
+                        height: MediaQuery.of(context).size.height * 0.8,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Expanded(
-                              flex: 50,
+                              flex: 33,
                               child: SizedBox(
                                 width: double.infinity,
                                 child: Container(
@@ -97,8 +98,8 @@ class _TankPageState extends State<TankPage> {
                                               child: Opacity(
                                                 opacity: 0.6,
                                                 child: Icon(
-                                                  Icons.water_drop,
-                                                  color: MyTheme.wcColor,
+                                                  Icons.bar_chart,
+                                                  color: MyTheme.paramColor,
                                                   size: MediaQuery.of(context).size.width * 0.3,
                                                 ),
                                               ),
@@ -106,8 +107,7 @@ class _TankPageState extends State<TankPage> {
                                             Align(
                                               alignment: Alignment.topLeft,
                                               child: Text(
-                                                AppLocalizations.of(context)!
-                                                    .waterChangesAndParameters,
+                                                AppLocalizations.of(context)!.waterParameters,
                                                 style: Theme.of(context).textTheme.headlineLarge,
                                               ),
                                             ),
@@ -120,7 +120,59 @@ class _TankPageState extends State<TankPage> {
                               ),
                             ),
                             Expanded(
-                              flex: 50,
+                              flex: 33,
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                    right: _marginBetweenBigButtons,
+                                    bottom: _marginBetweenBigButtons,
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const WaterChangePage(),
+                                        ),
+                                      );
+                                    },
+                                    child: Card(
+                                      clipBehavior: Clip.hardEdge,
+                                      elevation: 15,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(Spacing.cardPadding),
+                                        child: Stack(
+                                          children: [
+                                            Positioned(
+                                              top: MediaQuery.of(context).size.height * 0.08,
+                                              left: MediaQuery.of(context).size.width * 0.6,
+                                              child: Opacity(
+                                                opacity: 0.6,
+                                                child: Icon(
+                                                  Icons.water_drop,
+                                                  color: MyTheme.wcColor,
+                                                  size: MediaQuery.of(context).size.width * 0.3,
+                                                ),
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                AppLocalizations.of(context)!.waterChanges,
+                                                style: Theme.of(context).textTheme.headlineLarge,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              flex: 33,
                               child: SizedBox(
                                 width: double.infinity,
                                 child: Container(
