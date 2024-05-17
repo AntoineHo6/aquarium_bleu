@@ -1,7 +1,6 @@
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
-import 'package:aquarium_bleu/models/task/task.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -217,57 +216,5 @@ class FirestoreStuff {
         .doc(tank.docId);
 
     await tankDoc.delete();
-  }
-
-  static Future addTask(String tankId, Task task) async {
-    final taskDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(tasksCollection)
-        .doc(task.id);
-
-    await taskDoc.set(task.toJson());
-  }
-
-  static Future deleteTask(String tankId, Task task) async {
-    final taskDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(tasksCollection)
-        .doc(task.id);
-
-    await taskDoc.delete();
-
-    // if task was generated from a rrule, we prevent generation
-    if (task.rRuleId != null) {
-      final exTaskDoc = FirebaseFirestore.instance
-          .collection(usersCollection)
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection(tanksCollection)
-          .doc(tankId)
-          .collection(exTasksCollection)
-          .doc(task.id);
-
-      await exTaskDoc.set({
-        'rRuleId': task.rRuleId,
-        'date': task.date,
-      });
-    }
-  }
-
-  static Future<void> updateTask(String tankId, Task task) async {
-    final taskDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection('tasks')
-        .doc(task.id);
-
-    await taskDoc.update(task.toJson());
   }
 }

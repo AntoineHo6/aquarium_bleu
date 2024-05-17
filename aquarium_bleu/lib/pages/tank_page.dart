@@ -63,12 +63,12 @@ class _TankPageState extends State<TankPage> {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.8,
+                        height: MediaQuery.of(context).size.height * 0.5,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Expanded(
-                              flex: 33,
+                              flex: 50,
                               child: SizedBox(
                                 width: double.infinity,
                                 child: Container(
@@ -95,13 +95,10 @@ class _TankPageState extends State<TankPage> {
                                             Positioned(
                                               top: MediaQuery.of(context).size.height * 0.08,
                                               left: MediaQuery.of(context).size.width * 0.6,
-                                              child: Opacity(
-                                                opacity: 0.6,
-                                                child: Icon(
-                                                  Icons.bar_chart,
-                                                  color: MyTheme.paramColor,
-                                                  size: MediaQuery.of(context).size.width * 0.3,
-                                                ),
+                                              child: Icon(
+                                                Icons.bar_chart,
+                                                color: MyTheme.paramColor,
+                                                size: MediaQuery.of(context).size.width * 0.3,
                                               ),
                                             ),
                                             Align(
@@ -120,7 +117,7 @@ class _TankPageState extends State<TankPage> {
                               ),
                             ),
                             Expanded(
-                              flex: 33,
+                              flex: 50,
                               child: SizedBox(
                                 width: double.infinity,
                                 child: Container(
@@ -133,7 +130,7 @@ class _TankPageState extends State<TankPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => const WaterChangePage(),
+                                          builder: (context) => WaterChangePage(),
                                         ),
                                       );
                                     },
@@ -147,13 +144,10 @@ class _TankPageState extends State<TankPage> {
                                             Positioned(
                                               top: MediaQuery.of(context).size.height * 0.08,
                                               left: MediaQuery.of(context).size.width * 0.6,
-                                              child: Opacity(
-                                                opacity: 0.6,
-                                                child: Icon(
-                                                  Icons.water_drop,
-                                                  color: MyTheme.wcColor,
-                                                  size: MediaQuery.of(context).size.width * 0.3,
-                                                ),
+                                              child: Icon(
+                                                Icons.water_drop,
+                                                color: MyTheme.wcColor,
+                                                size: MediaQuery.of(context).size.width * 0.3,
                                               ),
                                             ),
                                             Align(
@@ -171,59 +165,59 @@ class _TankPageState extends State<TankPage> {
                                 ),
                               ),
                             ),
-                            Expanded(
-                              flex: 33,
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: Container(
-                                  margin: const EdgeInsets.only(
-                                    left: _marginBetweenBigButtons,
-                                    bottom: _marginBetweenBigButtons,
-                                  ),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ChangeNotifierProvider(
-                                            create: (context) =>
-                                                ScheduleProvider(tankProvider.tank.docId),
-                                            child: const SchedulePage(),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Card(
-                                      clipBehavior: Clip.hardEdge,
-                                      elevation: 15,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(Spacing.cardPadding),
-                                        child: Stack(
-                                          children: [
-                                            Positioned(
-                                              top: MediaQuery.of(context).size.height * 0.08,
-                                              left: MediaQuery.of(context).size.width * 0.6,
-                                              child: Opacity(
-                                                opacity: 0.6,
-                                                child: Icon(
-                                                  Icons.task,
-                                                  size: MediaQuery.of(context).size.width * 0.3,
-                                                  color: Colors.yellow[700],
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              "Scedule",
-                                              style: Theme.of(context).textTheme.headlineLarge,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            // Expanded(
+                            //   flex: 33,
+                            //   child: SizedBox(
+                            //     width: double.infinity,
+                            //     child: Container(
+                            //       margin: const EdgeInsets.only(
+                            //         left: _marginBetweenBigButtons,
+                            //         bottom: _marginBetweenBigButtons,
+                            //       ),
+                            //       child: GestureDetector(
+                            //         onTap: () {
+                            //           Navigator.push(
+                            //             context,
+                            //             MaterialPageRoute(
+                            //               builder: (context) => ChangeNotifierProvider(
+                            //                 create: (context) =>
+                            //                     ScheduleProvider(tankProvider.tank.docId),
+                            //                 child: const SchedulePage(),
+                            //               ),
+                            //             ),
+                            //           );
+                            //         },
+                            //         child: Card(
+                            //           clipBehavior: Clip.hardEdge,
+                            //           elevation: 15,
+                            //           child: Padding(
+                            //             padding: const EdgeInsets.all(Spacing.cardPadding),
+                            //             child: Stack(
+                            //               children: [
+                            //                 Positioned(
+                            //                   top: MediaQuery.of(context).size.height * 0.08,
+                            //                   left: MediaQuery.of(context).size.width * 0.6,
+                            //                   child: Opacity(
+                            //                     opacity: 0.6,
+                            //                     child: Icon(
+                            //                       Icons.task,
+                            //                       size: MediaQuery.of(context).size.width * 0.3,
+                            //                       color: Colors.yellow[700],
+                            //                     ),
+                            //                   ),
+                            //                 ),
+                            //                 Text(
+                            //                   "Scedule",
+                            //                   style: Theme.of(context).textTheme.headlineLarge,
+                            //                 ),
+                            //               ],
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

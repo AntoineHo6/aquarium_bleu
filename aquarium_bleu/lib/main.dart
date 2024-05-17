@@ -35,9 +35,7 @@ Future main() async {
         clientId: '36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com'),
   ]);
 
-  print(FirebaseAuth.instance.currentUser);
   if (FirebaseAuth.instance.currentUser == null) {
-    print('wololo');
     await FirebaseAuth.instance.signInAnonymously();
   }
 
