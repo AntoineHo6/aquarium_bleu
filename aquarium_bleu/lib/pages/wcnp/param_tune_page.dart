@@ -9,14 +9,14 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-class WcnpTunePage extends StatefulWidget {
-  const WcnpTunePage({super.key});
+class ParamTunePage extends StatefulWidget {
+  const ParamTunePage({super.key});
 
   @override
-  State<WcnpTunePage> createState() => _WcnpTunePageState();
+  State<ParamTunePage> createState() => _ParamTunePageState();
 }
 
-class _WcnpTunePageState extends State<WcnpTunePage> {
+class _ParamTunePageState extends State<ParamTunePage> {
   late int numOfVisibleParams;
 
   @override

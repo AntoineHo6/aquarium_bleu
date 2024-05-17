@@ -1,7 +1,7 @@
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
-import 'package:aquarium_bleu/pages/wcnp/edit_wc_page.dart';
+import 'package:aquarium_bleu/pages/waterChange/edit_water_change_page.dart';
 import 'package:aquarium_bleu/pages/wcnp/wcnp_tune_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
@@ -70,7 +70,7 @@ class _WaterChangePageState extends State<WaterChangePage> {
                 onPressed: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => EditWcPage(wc),
+                    builder: (context) => EditWaterChangePage(wc),
                   ),
                 ),
                 child: ListTile(

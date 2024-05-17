@@ -11,19 +11,19 @@ import 'package:aquarium_bleu/widgets/wcnp_page/param_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class WcnpChartPage extends StatefulWidget {
+class ParamChartPage extends StatefulWidget {
   final WaterParamType paramType;
   final DateTime start;
   final DateTime end;
   final List<WaterChange> waterChanges;
 
-  const WcnpChartPage(this.paramType, this.start, this.end, this.waterChanges, {super.key});
+  const ParamChartPage(this.paramType, this.start, this.end, this.waterChanges, {super.key});
 
   @override
-  State<WcnpChartPage> createState() => _WcnpChartPageState();
+  State<ParamChartPage> createState() => _ParamChartPageState();
 }
 
-class _WcnpChartPageState extends State<WcnpChartPage> {
+class _ParamChartPageState extends State<ParamChartPage> {
   @override
   Widget build(BuildContext context) {
     TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
