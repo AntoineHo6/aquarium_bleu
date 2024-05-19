@@ -4,7 +4,6 @@ import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/pages/waterChange/edit_water_change_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
-import 'package:aquarium_bleu/providers/wc_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/calendar_util.dart';
@@ -26,7 +25,7 @@ class WaterChangePage extends StatefulWidget {
 }
 
 class WaterChangePageState extends State<WaterChangePage> {
-  late final ValueNotifier<List<Event>> _selectedEvents;
+  late ValueNotifier<List<Event>> _selectedEvents;
   late Map<DateTime, List<Event>> dateToEventsMap = {};
   LinkedHashMap<DateTime, List<Event>> kEvents = LinkedHashMap<DateTime, List<Event>>();
 
@@ -36,10 +35,9 @@ class WaterChangePageState extends State<WaterChangePage> {
   @override
   void initState() {
     TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
-    final wcProvider = Provider.of<WcProvider>(context, listen: false);
 
     FirestoreStuff.readAllWaterChanges(tankProvider.tank.docId).listen((waterChanges) {
-      print("PENITH");
+      dateToEventsMap.clear();
       for (var waterChange in waterChanges) {
         var event = Event(waterChange);
 

@@ -4,7 +4,6 @@ import 'package:aquarium_bleu/pages/waterChange/water_change_page.dart';
 import 'package:aquarium_bleu/pages/param/param_page.dart';
 import 'package:aquarium_bleu/providers/schedule_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
-import 'package:aquarium_bleu/providers/wc_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:flutter/material.dart';
@@ -131,10 +130,7 @@ class _TankPageState extends State<TankPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => ChangeNotifierProvider(
-                                            create: (context) => WcProvider(),
-                                            child: const WaterChangePage(),
-                                          ),
+                                          builder: (context) => const WaterChangePage(),
                                         ),
                                       );
                                     },
