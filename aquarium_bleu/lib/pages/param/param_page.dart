@@ -7,8 +7,8 @@ import 'package:aquarium_bleu/pages/param/param_tune_page.dart';
 import 'package:aquarium_bleu/pages/param/param_chart_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
-import 'package:aquarium_bleu/widgets/wcnp_page/add_param_val_alert_dialog.dart';
-import 'package:aquarium_bleu/widgets/wcnp_page/param_chart.dart';
+import 'package:aquarium_bleu/widgets/param/add_param_val_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/param/param_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -61,38 +61,48 @@ class ParamPageState extends State<ParamPage> {
                   );
 
                   return Scaffold(
-                      appBar: AppBar(
-                        title: Text(
-                          AppLocalizations.of(context)!.waterParameters,
-                        ),
-                        actions: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const ParamTunePage(),
-                                ),
-                              ).then((value) => setState(() {}));
-                            },
-                            icon: const Icon(Icons.tune_rounded),
-                          )
-                        ],
+                    appBar: AppBar(
+                      title: Text(
+                        AppLocalizations.of(context)!.waterParameters,
                       ),
-                      body: ListView(children: [
-                        Column(
-                          children: charts,
-                        ),
-                      ]),
-                      floatingActionButton: FloatingActionButton(
-                        child: const Icon(Icons.add),
-                        onPressed: () => showDialog(
-                          context: context,
-                          builder: (BuildContext context) => AddParamValAlertDialog(
-                            tankProvider.tank.visibleParams,
+                      actions: [
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () => showDialog(
+                            context: context,
+                            builder: (BuildContext context) => AddParamValAlertDialog(
+                              tankProvider.tank.visibleParams,
+                            ),
                           ),
                         ),
-                      ));
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ParamTunePage(),
+                              ),
+                            ).then((value) => setState(() {}));
+                          },
+                          icon: const Icon(Icons.tune_rounded),
+                        ),
+                      ],
+                    ),
+                    body: ListView(children: [
+                      Column(
+                        children: charts,
+                      ),
+                    ]),
+                    // floatingActionButton: FloatingActionButton(
+                    //   child: const Icon(Icons.add),
+                    //   onPressed: () => showDialog(
+                    //     context: context,
+                    //     builder: (BuildContext context) => AddParamValAlertDialog(
+                    //       tankProvider.tank.visibleParams,
+                    //     ),
+                    //   ),
+                    // ),
+                  );
                 } else {
                   return const Center(
                     child: CircularProgressIndicator.adaptive(),

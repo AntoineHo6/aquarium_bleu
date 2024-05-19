@@ -5,7 +5,7 @@ import 'package:aquarium_bleu/pages/add_tank_page.dart';
 import 'package:aquarium_bleu/pages/tank_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
-import 'package:aquarium_bleu/widgets/tanks_page/tank_card.dart';
+import 'package:aquarium_bleu/widgets/tanks/tank_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

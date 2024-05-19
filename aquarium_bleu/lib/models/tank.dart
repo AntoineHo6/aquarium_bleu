@@ -1,5 +1,4 @@
 import 'package:aquarium_bleu/enums/date_range_type.dart';
-import 'package:aquarium_bleu/enums/unit_of_length.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/models/dimensions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

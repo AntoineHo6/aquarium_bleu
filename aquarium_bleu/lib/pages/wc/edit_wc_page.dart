@@ -9,15 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-class EditWaterChangePage extends StatefulWidget {
+class EditWcPage extends StatefulWidget {
   final WaterChange wc;
-  const EditWaterChangePage(this.wc, {super.key});
+  const EditWcPage(this.wc, {super.key});
 
   @override
-  State<EditWaterChangePage> createState() => _EditWaterChangePageState();
+  State<EditWcPage> createState() => _EditWcPageState();
 }
 
-class _EditWaterChangePageState extends State<EditWaterChangePage> {
+class _EditWcPageState extends State<EditWcPage> {
   late DateTime _date;
   late TimeOfDay _time;
 

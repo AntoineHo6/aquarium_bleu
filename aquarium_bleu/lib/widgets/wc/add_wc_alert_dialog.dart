@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:uuid/uuid.dart';
 
-class AddWaterChangeAlertDialog extends StatefulWidget {
+class AddWcAlertDialog extends StatefulWidget {
   final String tankId;
 
-  const AddWaterChangeAlertDialog(this.tankId, {super.key});
+  const AddWcAlertDialog(this.tankId, {super.key});
 
   @override
-  State<AddWaterChangeAlertDialog> createState() => _AddWaterChangeAlertDialogState();
+  State<AddWcAlertDialog> createState() => _AddWcAlertDialogState();
 }
 
-class _AddWaterChangeAlertDialogState extends State<AddWaterChangeAlertDialog> {
+class _AddWcAlertDialogState extends State<AddWcAlertDialog> {
   DateTime _date = DateTime.now();
   TimeOfDay _time = TimeOfDay.now();
   @override

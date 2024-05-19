@@ -7,7 +7,7 @@ import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
-import 'package:aquarium_bleu/widgets/wcnp_page/param_chart.dart';
+import 'package:aquarium_bleu/widgets/param/param_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
