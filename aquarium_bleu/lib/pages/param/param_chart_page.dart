@@ -2,7 +2,7 @@ import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
-import 'package:aquarium_bleu/pages/wcnp/edit_param_page.dart';
+import 'package:aquarium_bleu/pages/param/edit_param_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';

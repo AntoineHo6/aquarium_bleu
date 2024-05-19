@@ -1,7 +1,10 @@
+import 'dart:collection';
+
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/pages/waterChange/edit_water_change_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
+import 'package:aquarium_bleu/providers/wc_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/calendar_util.dart';
@@ -16,21 +19,49 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class WaterChangePage extends StatefulWidget {
+  const WaterChangePage({super.key});
+
   @override
   WaterChangePageState createState() => WaterChangePageState();
 }
 
 class WaterChangePageState extends State<WaterChangePage> {
   late final ValueNotifier<List<Event>> _selectedEvents;
-  DateTime _focusedDay = DateTime.now();
+  late Map<DateTime, List<Event>> dateToEventsMap = {};
+  LinkedHashMap<DateTime, List<Event>> kEvents = LinkedHashMap<DateTime, List<Event>>();
+
+  DateTime _focusedDay = DateUtils.dateOnly(DateTime.now());
   DateTime? _selectedDay;
 
   @override
   void initState() {
-    super.initState();
+    TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
+    final wcProvider = Provider.of<WcProvider>(context, listen: false);
 
-    _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    FirestoreStuff.readAllWaterChanges(tankProvider.tank.docId).listen((waterChanges) {
+      print("PENITH");
+      for (var waterChange in waterChanges) {
+        var event = Event(waterChange);
+
+        DateTime dateNoTime = DateUtils.dateOnly(waterChange.date);
+
+        if (dateToEventsMap.containsKey(dateNoTime)) {
+          dateToEventsMap[dateNoTime]!.add(event);
+        } else {
+          dateToEventsMap[dateNoTime] = [event];
+        }
+      }
+
+      kEvents = LinkedHashMap<DateTime, List<Event>>(
+        equals: isSameDay,
+        hashCode: getHashCode,
+      )..addAll(dateToEventsMap);
+
+      _selectedDay = _focusedDay;
+      _selectedEvents = ValueNotifier(_getEventsForDay(_focusedDay));
+    });
+
+    super.initState();
   }
 
   @override
@@ -40,17 +71,7 @@ class WaterChangePageState extends State<WaterChangePage> {
   }
 
   List<Event> _getEventsForDay(DateTime day) {
-    // Implementation example
     return kEvents[day] ?? [];
-  }
-
-  List<Event> _getEventsForRange(DateTime start, DateTime end) {
-    // Implementation example
-    final days = daysInRange(start, end);
-
-    return [
-      for (final d in days) ..._getEventsForDay(d),
-    ];
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -64,77 +85,108 @@ class WaterChangePageState extends State<WaterChangePage> {
     }
   }
 
-  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
-    setState(() {
-      _selectedDay = null;
-      _focusedDay = focusedDay;
-    });
-
-    // `start` or `end` could be null
-    if (start != null && end != null) {
-      _selectedEvents.value = _getEventsForRange(start, end);
-    } else if (start != null) {
-      _selectedEvents.value = _getEventsForDay(start);
-    } else if (end != null) {
-      _selectedEvents.value = _getEventsForDay(end);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.waterChanges),
-      ),
-      body: Column(
-        children: [
-          TableCalendar<Event>(
-            firstDay: kFirstDay,
-            lastDay: kLastDay,
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            eventLoader: _getEventsForDay,
-            calendarStyle: const CalendarStyle(
-              outsideDaysVisible: false,
-            ),
-            headerStyle: const HeaderStyle(
-              formatButtonVisible: false,
-            ),
-            onDaySelected: _onDaySelected,
-            onRangeSelected: _onRangeSelected,
-            onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
-            },
-          ),
-          const SizedBox(height: 8.0),
-          Expanded(
-            child: ValueListenableBuilder<List<Event>>(
-              valueListenable: _selectedEvents,
-              builder: (context, value, _) {
-                return ListView.builder(
-                  itemCount: value.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 4.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: ListTile(
-                        onTap: () => print('${value[index]}'),
-                        title: Text('${value[index]}'),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
+    TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
+
+    return StreamBuilder<List<WaterChange>>(
+        stream: FirestoreStuff.readAllWaterChanges(tankProvider.tank.docId),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(AppLocalizations.of(context)!.waterChanges),
+              ),
+              body: Column(
+                children: [
+                  TableCalendar<Event>(
+                    firstDay: kFirstDay,
+                    lastDay: kLastDay,
+                    focusedDay: _focusedDay,
+                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                    eventLoader: _getEventsForDay,
+                    calendarStyle: const CalendarStyle(
+                      outsideDaysVisible: false,
+                      markerDecoration:
+                          BoxDecoration(color: MyTheme.wcColor, shape: BoxShape.circle),
+                    ),
+                    headerStyle: const HeaderStyle(
+                      formatButtonVisible: false,
+                    ),
+                    onDaySelected: _onDaySelected,
+                    onPageChanged: (focusedDay) {
+                      _focusedDay = focusedDay;
+                    },
+                  ),
+                  const SizedBox(height: 8.0),
+                  Expanded(
+                    child: ValueListenableBuilder<List<Event>>(
+                      valueListenable: _selectedEvents,
+                      builder: (context, value, _) {
+                        return ListView.builder(
+                          itemCount: value.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  )),
+                                ),
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditWaterChangePage(value[index].wc),
+                                  ),
+                                ),
+                                child: ListTile(
+                                  title: RichText(
+                                    text: TextSpan(
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                          text: StringUtil.formattedDate(
+                                              context, value[index].wc.date),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: MyTheme.wcColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    StringUtil.formattedTime(
+                                      context,
+                                      TimeOfDay.fromDateTime(value[index].wc.date),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (BuildContext context) =>
+                      AddWaterChangeAlertDialog(tankProvider.tank.docId),
+                ).then((value) => setState(() {})),
+                child: const Icon(Icons.add),
+              ),
+            );
+          } else {
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          }
+        });
   }
 }
