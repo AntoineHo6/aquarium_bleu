@@ -90,7 +90,7 @@ class WcPageState extends State<WcPage> {
           if (snapshot.hasData) {
             return Scaffold(
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.waterChanges),
+                // title: Text(AppLocalizations.of(context)!.waterChanges),
                 actions: [
                   IconButton(
                     onPressed: () => showDialog(

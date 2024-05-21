@@ -1,4 +1,5 @@
 import 'package:aquarium_bleu/enums/water_param_type.dart';
+import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ParamChart extends StatefulWidget {
   final WaterParamType paramType;
-  final List<dynamic> dataSource;
+  final List<Parameter> dataSource;
   final List<Widget> actions;
   final List<WaterChange> waterChanges;
 
@@ -52,7 +53,10 @@ class _ParamChartState extends State<ParamChart> {
         ),
         SfCartesianChart(
           tooltipBehavior: TooltipBehavior(
-              enable: true, header: AppLocalizations.of(context)!.date, format: 'point.x'),
+            enable: true,
+            header: AppLocalizations.of(context)!.date,
+            format: 'point.x',
+          ),
           primaryXAxis: DateTimeAxis(
             plotBands: widget.waterChanges
                 .map(

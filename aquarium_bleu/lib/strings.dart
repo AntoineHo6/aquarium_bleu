@@ -33,6 +33,7 @@ class Strings {
   static const dark = 'dark';
   // static const isDarkMode = 'isDarkMode';
   static const lastSelectedParam = 'lastSelectedParam';
+  static const isWelcomeMsgSeen = 'isWelcomeMsgSeen';
 
   // Date range types
   static const months1 = 'months1';
@@ -47,4 +48,8 @@ class Strings {
   static const type = 'type';
   static const customDateStart = 'customDateStart';
   static const customDateEnd = 'customDateEnd';
+
+  // img paths
+  static const darkChartWcLine = 'assets/images/dark_chart_wc_line.png';
+  static const lightChartWcLine = 'assets/images/light_chart_wc_line.png';
 }

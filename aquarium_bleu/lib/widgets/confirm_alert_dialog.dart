@@ -15,7 +15,7 @@ class ConfirmAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: title,
       content: content,
       actions: [

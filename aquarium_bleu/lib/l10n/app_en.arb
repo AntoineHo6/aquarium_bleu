@@ -1,4 +1,9 @@
 {
+    "signInWelcomeMsg": "Please sign in to continue.",
+    "createAccWelcomeMsg": "Welcome to Aquarium Bleu! Please create an account to continue.",
+    "welcomeToAquariumBleu": "Welcome to Aquarium Bleu",
+    "welcomeContent": "You can create an account in the settings page whenever you feel ready to backup your data in case you lose your phone and to sync your data throughout multiple devices. \n\nHappy fish keeping!",
+    
     "settings": "Settings",
     "theme": "Theme",
     "light": "Light",
@@ -48,6 +53,7 @@
     "theValueIsEmpty": "The value is empty",
     "theValueIsNotAValidNumber": "The value is not a valid number",
 
+    "startAddMeasurements": "Start adding your measurements!",
     "parameter": "Parameter",
     "waterParameters": "Water parameters",
     "addParameterValue": "Add parameter value",
@@ -58,6 +64,7 @@
     "waterChanges": "Water changes",
     "addWaterChange": "Add water change",
     "showWaterChangeLines": "Show water change lines",
+    "showWcLineInfo": "If you have any water changes within the date range of two measurements, it will show up as a blue line:",
     "animals": "Animals",
     "plants": "Plants",
     "equipment": "Equipment",
@@ -95,11 +102,11 @@
 
     "date": "Date",
     "dateRange": "Date range",
-    "months1": "1 month",
-    "months2": "2 months",
-    "months3": "3 months",
-    "months6": "6 months",
-    "months9": "9 months",
+    "lastMonths1": "last 1 month",
+    "lastMonths2": "last 2 months",
+    "lastMonths3": "last 3 months",
+    "lastMonths6": "last 6 months",
+    "lastMonths9": "last 9 months",
     "all": "All",
     "custom": "Custom",
     "customDateStart": "Custom date start",

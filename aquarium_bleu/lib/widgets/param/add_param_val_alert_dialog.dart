@@ -54,7 +54,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   Widget build(BuildContext context) {
     _setParamBtnText();
 
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: Text(AppLocalizations.of(context)!.addParameterValue),
       content: SingleChildScrollView(
         child: ListBody(

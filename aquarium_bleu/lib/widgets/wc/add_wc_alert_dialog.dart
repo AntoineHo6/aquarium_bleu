@@ -20,7 +20,7 @@ class _AddWcAlertDialogState extends State<AddWcAlertDialog> {
   TimeOfDay _time = TimeOfDay.now();
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return AlertDialog.adaptive(
       title: Text(AppLocalizations.of(context)!.addWaterChange),
       content: SingleChildScrollView(
         child: ListBody(

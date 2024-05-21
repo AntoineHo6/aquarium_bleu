@@ -32,7 +32,8 @@ Future main() async {
     EmailAuthProvider(),
     emailLinkProviderConfig,
     GoogleProvider(
-        clientId: '36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com'),
+      clientId: '36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com',
+    ),
   ]);
 
   if (FirebaseAuth.instance.currentUser == null) {
@@ -102,9 +103,6 @@ class MyApp extends StatelessWidget {
                   arguments: {'email': email},
                 );
               }),
-              VerifyPhoneAction((context, _) {
-                Navigator.pushNamed(context, '/phone');
-              }),
               AuthStateChangeAction<SignedIn>((context, state) {
                 if (!state.user!.emailVerified) {
                   Navigator.pushNamed(context, '/verify-email');
@@ -140,8 +138,8 @@ class MyApp extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
                   action == AuthAction.signIn
-                      ? 'Welcome to Firebase UI! Please sign in to continue.'
-                      : 'Welcome to Firebase UI! Please create an account to continue',
+                      ? AppLocalizations.of(context)!.signInWelcomeMsg
+                      : AppLocalizations.of(context)!.createAccWelcomeMsg,
                 ),
               );
             },
@@ -158,9 +156,9 @@ class MyApp extends StatelessWidget {
               }),
               AuthCancelledAction((context) {
                 FirebaseUIAuth.signOut(context: context).then((value) {
-                  FirebaseAuth.instance
-                      .signInAnonymously()
-                      .then((value) => Navigator.pushNamed(context, '/sign-in'));
+                  FirebaseAuth.instance.signInAnonymously().then(
+                        (value) => Navigator.pop(context),
+                      );
                 });
               }),
             ],

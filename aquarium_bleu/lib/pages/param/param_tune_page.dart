@@ -1,13 +1,17 @@
 import 'package:aquarium_bleu/enums/date_range_type.dart';
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
+import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
+import 'package:aquarium_bleu/widgets/msg_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ParamTunePage extends StatefulWidget {
   const ParamTunePage({super.key});
@@ -139,9 +143,47 @@ class _ParamTunePageState extends State<ParamTunePage> {
                 const SizedBox(
                   height: Spacing.betweenSections,
                 ),
-                Text(
-                  AppLocalizations.of(context)!.showWaterChangeLines,
-                  style: Theme.of(context).textTheme.titleLarge,
+                Row(
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.showWaterChangeLines,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => MsgAlertDialog(
+                            title: FittedBox(
+                              child: Text(AppLocalizations.of(context)!.showWaterChangeLines),
+                            ),
+                            content: SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.showWcLineInfo,
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  Theme.of(context).brightness == Brightness.dark
+                                      ? Image.asset(
+                                          Strings.darkChartWcLine,
+                                          fit: BoxFit.contain,
+                                        )
+                                      : Image.asset(
+                                          Strings.lightChartWcLine,
+                                          fit: BoxFit.contain,
+                                        ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.info),
+                    ),
+                  ],
                 ),
                 Switch.adaptive(
                   value: tankProvider.tank.showWcInCharts,

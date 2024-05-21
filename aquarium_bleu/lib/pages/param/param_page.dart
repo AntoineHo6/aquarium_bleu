@@ -8,6 +8,7 @@ import 'package:aquarium_bleu/pages/param/param_chart_page.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/param/add_param_val_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/param/empty_chart.dart';
 import 'package:aquarium_bleu/widgets/param/param_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -62,9 +63,6 @@ class ParamPageState extends State<ParamPage> {
 
                   return Scaffold(
                     appBar: AppBar(
-                      title: Text(
-                        AppLocalizations.of(context)!.waterParameters,
-                      ),
                       actions: [
                         IconButton(
                           icon: const Icon(Icons.add),
@@ -88,20 +86,35 @@ class ParamPageState extends State<ParamPage> {
                         ),
                       ],
                     ),
-                    body: ListView(children: [
-                      Column(
-                        children: charts,
-                      ),
-                    ]),
-                    // floatingActionButton: FloatingActionButton(
-                    //   child: const Icon(Icons.add),
-                    //   onPressed: () => showDialog(
-                    //     context: context,
-                    //     builder: (BuildContext context) => AddParamValAlertDialog(
-                    //       tankProvider.tank.visibleParams,
-                    //     ),
-                    //   ),
-                    // ),
+                    body: charts.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.all(Spacing.screenEdgePadding),
+                            child: ListView(children: [
+                              Column(
+                                children: charts,
+                              ),
+                            ]),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(Spacing.screenEdgePadding),
+                            child: ListView(
+                              children: [
+                                Column(
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.startAddMeasurements,
+                                      style: Theme.of(context).textTheme.titleLarge,
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    const EmptyChart(),
+                                    const EmptyChart(),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
                   );
                 } else {
                   return const Center(
@@ -157,31 +170,28 @@ class ParamPageState extends State<ParamPage> {
     for (var i = 0; i < allParamData.length; i++) {
       if (allParamData[i].isNotEmpty) {
         charts.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
-            child: ParamChart(
-              paramType: allParamData[i][0].type,
-              dataSource: allParamData[i],
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ParamChartPage(
-                          allParamData[i][0].type,
-                          dateStart,
-                          dateEnd,
-                          tankProvider.tank.showWcInCharts ? waterChanges : [],
-                        ),
+          ParamChart(
+            paramType: allParamData[i][0].type,
+            dataSource: allParamData[i],
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ParamChartPage(
+                        allParamData[i][0].type,
+                        dateStart,
+                        dateEnd,
+                        tankProvider.tank.showWcInCharts ? waterChanges : [],
                       ),
-                    );
-                  },
-                  icon: const Icon(Icons.open_in_new_rounded),
-                ),
-              ],
-              waterChanges: tankProvider.tank.showWcInCharts ? waterChanges : [],
-            ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.open_in_new_rounded),
+              ),
+            ],
+            waterChanges: tankProvider.tank.showWcInCharts ? waterChanges : [],
           ),
         );
       }

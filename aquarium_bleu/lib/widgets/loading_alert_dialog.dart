@@ -6,7 +6,7 @@ class LoadingAlertDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return AlertDialog.adaptive(
       content: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

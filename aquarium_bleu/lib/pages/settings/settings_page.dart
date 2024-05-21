@@ -18,7 +18,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final settingsProvider = Provider.of<SettingsProvider>(context);
 
-    Widget btn = FirebaseAuth.instance.currentUser!.isAnonymous
+    Widget authBtn = FirebaseAuth.instance.currentUser!.isAnonymous
         ? ElevatedButton(
             child: Text(AppLocalizations.of(context)!.signIn),
             onPressed: () {
@@ -48,8 +48,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings),
-      ),
+          // title: Text(AppLocalizations.of(context)!.settings),
+          ),
       body: Padding(
         padding: const EdgeInsets.all(Spacing.screenEdgePadding),
         child: Column(
@@ -57,9 +57,10 @@ class _SettingsPageState extends State<SettingsPage> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                  FirebaseAuth.instance.currentUser!.email ??
-                      AppLocalizations.of(context)!.noAccountConnected,
-                  style: Theme.of(context).textTheme.headlineSmall),
+                FirebaseAuth.instance.currentUser!.email ??
+                    AppLocalizations.of(context)!.noAccountConnected,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
             ),
             const SizedBox(
               height: Spacing.betweenSections,
@@ -81,8 +82,8 @@ class _SettingsPageState extends State<SettingsPage> {
               height: Spacing.betweenSections,
             ),
             Align(
-              alignment: Alignment.centerLeft,
-              child: btn,
+              alignment: Alignment.center,
+              child: authBtn,
             ),
           ],
         ),

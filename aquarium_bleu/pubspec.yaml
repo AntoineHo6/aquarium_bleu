@@ -74,6 +74,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/koi_pixel.png
+    - assets/images/dark_chart_wc_line.png
+    - assets/images/light_chart_wc_line.png
   generate: true
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

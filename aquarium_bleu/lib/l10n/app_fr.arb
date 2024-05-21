@@ -1,4 +1,9 @@
 {
+    "signInWelcomeMsg": "Connectez-vous pour continuer.",
+    "createAccWelcomeMsg": "Bienvenue à Aquarium Bleu! Créez un compte pour continuer.",
+    "welcomeToAquariumBleu": "Bienvenue à Aquarium Bleu!",
+    "welcomeContent": "Vous pouvez créer un compte dans les paramètres quand vous vous sentez prêt pour sauvegarder vos données au cas où vous perdriez votre téléphone et pour synchroniser vos données sur plusieurs appareils. \n\nBonne chance!",
+
     "settings": "Paramètres",
     "theme": "Thème",
     "light": "Clair",
@@ -55,6 +60,7 @@
     "theValueIsEmpty": "La valeur est vide",
     "theValueIsNotAValidNumber": "La valeur n'est pas un nombre valid",
 
+    "startAddMeasurements": "Commencez à ajouter vos mesures!",
     "parameter": "Paramètre",
     "waterParameters": "Paramètres d'eau",
     "addParameterValue": "Enregistrer un paramètre",
@@ -65,6 +71,7 @@
     "waterChanges": "Changements d'eau",
     "addWaterChange": "Ajouter un changement d'eau",
     "showWaterChangeLines": "Montrer les lignes de changement d'eau",
+    "showWcLineInfo": "Si vous aviez fait un changement d'eau pendant une date entre deux mesures, ce dernier se manifestera en tant que ligne bleu:",
     "animals": "Animaux",
     "plants": "Plantes",
     "equipment": "Équipements",
@@ -101,11 +108,11 @@
 
     "date": "Date",
     "dateRange": "Période",
-    "months1": "1 mois",
-    "months2": "2 mois",
-    "months3": "3 mois",
-    "months6": "6 mois",
-    "months9": "9 mois",
+    "lastMonths1": "Dernier 1 mois",
+    "lastMonths2": "Derniers 2 mois",
+    "lastMonths3": "Derniers 3 mois",
+    "lastMonths6": "Derniers 6 mois",
+    "lastMonths9": "Derniers 9 mois",
     "all": "Tout",
     "custom": "Personnalisé",
     "customDateStart": "Custom date start",

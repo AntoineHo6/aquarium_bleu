@@ -29,9 +29,11 @@ HeaderBuilder headerIcon(IconData icon) {
 
 HeaderBuilder backBtn() {
   return (context, constraints, shrinkOffset) {
-    return const Align(
+    return Align(
       alignment: Alignment.topLeft,
-      child: BackButton(),
+      child: BackButton(
+        onPressed: () => {Navigator.pop(context)},
+      ),
     );
   };
 }

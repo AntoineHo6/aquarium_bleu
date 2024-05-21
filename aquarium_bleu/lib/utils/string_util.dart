@@ -105,15 +105,15 @@ class StringUtil {
   static dateRangeTypeToString(BuildContext context, DateRangeType dateRangeType) {
     switch (dateRangeType) {
       case DateRangeType.months1:
-        return AppLocalizations.of(context)!.months1;
+        return AppLocalizations.of(context)!.lastMonths1;
       case DateRangeType.months2:
-        return AppLocalizations.of(context)!.months2;
+        return AppLocalizations.of(context)!.lastMonths2;
       case DateRangeType.months3:
-        return AppLocalizations.of(context)!.months3;
+        return AppLocalizations.of(context)!.lastMonths3;
       case DateRangeType.months6:
-        return AppLocalizations.of(context)!.months6;
+        return AppLocalizations.of(context)!.lastMonths6;
       case DateRangeType.months9:
-        return AppLocalizations.of(context)!.months9;
+        return AppLocalizations.of(context)!.lastMonths9;
       case DateRangeType.all:
         return AppLocalizations.of(context)!.all;
       case DateRangeType.custom:
