@@ -26,10 +26,7 @@ class _TankPageState extends State<TankPage> {
             pinned: false,
             expandedHeight: MediaQuery.of(context).size.height * 0.2,
             flexibleSpace: FlexibleSpaceBar(
-              background: Opacity(
-                opacity: 0.4,
-                child: tankProvider.image,
-              ),
+              background: tankProvider.image,
               // centerTitle: true,
               title: Text(
                 tankProvider.tank.name,
