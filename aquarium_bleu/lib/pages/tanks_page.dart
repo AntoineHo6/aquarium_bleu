@@ -27,11 +27,12 @@ class _TanksPageState extends State<TanksPage> {
   Widget build(BuildContext context) {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
-    SharedPreferences.getInstance().then((myPrefs) {
+    SharedPreferences.getInstance().then((myPrefs) async {
       bool isWelcomeMsgSeen = myPrefs.getBool(Strings.isWelcomeMsgSeen) ?? false;
 
+      // if (true) {
       if (!isWelcomeMsgSeen) {
-        Future.delayed(
+        await Future.delayed(
             Duration.zero,
             () => showDialog(
                   context: context,
@@ -41,7 +42,7 @@ class _TanksPageState extends State<TanksPage> {
                   ),
                 ));
 
-        myPrefs.setBool(Strings.isWelcomeMsgSeen, true);
+        await myPrefs.setBool(Strings.isWelcomeMsgSeen, true);
       }
     });
 
@@ -149,10 +150,15 @@ class _TanksPageState extends State<TanksPage> {
                           }),
                         );
                       } else {
-                        Widget image = Image.asset(
-                          "assets/images/koi_pixel.png",
-                          fit: BoxFit.cover,
-                        );
+                        Image image = Theme.of(context).brightness == Brightness.dark
+                            ? Image.asset(
+                                "assets/images/dark_drawn_aquarium.png",
+                                fit: BoxFit.cover,
+                              )
+                            : Image.asset(
+                                "assets/images/light_drawn_aquarium.png",
+                                fit: BoxFit.cover,
+                              );
                         return Padding(
                           padding: const EdgeInsets.all(
                             Spacing.screenEdgePadding,
