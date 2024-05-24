@@ -147,9 +147,7 @@ class _EditTankPageState extends State<EditTankPage> {
                   onTap: () async {
                     final ImagePicker picker = ImagePicker();
                     // Pick an image.
-                    await picker
-                        .pickImage(source: ImageSource.gallery, imageQuality: 50)
-                        .then((pickedImage) {
+                    await picker.pickImage(source: ImageSource.gallery).then((pickedImage) {
                       image = pickedImage;
 
                       if (image == null) {
