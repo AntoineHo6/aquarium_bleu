@@ -85,6 +85,14 @@ class MyApp extends StatelessWidget {
       routes: {
         '/sign-in': (context) {
           return SignInScreen(
+            // headerBuilder: (context, constraints, shrinkOffset) {
+            //   return Center(
+            //     child: Text(
+            //       "Aquarium Bleu",
+            //       style: Theme.of(context).textTheme.displayMedium,
+            //     ),
+            //   );
+            // },
             providers: [
               EmailAuthProvider(),
               GoogleProvider(
@@ -124,9 +132,9 @@ class MyApp extends StatelessWidget {
               //   Navigator.pushReplacementNamed(context, '/email-link-sign-in');
               // }),
             ],
-            styles: const {
-              EmailFormStyle(signInButtonVariant: ButtonVariant.filled),
-            },
+            // styles: const {
+            //   EmailFormStyle(signInButtonVariant: ButtonVariant.filled),
+            // },
             subtitleBuilder: (context, action) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),

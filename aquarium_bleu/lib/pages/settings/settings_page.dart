@@ -78,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 onPressed: () async {
                   tankProvider.emptyTankNames();
                   await FirebaseAuth.instance.signOut();
-                  await Navigator.pushNamed(context, '/sign-in');
+                  await Navigator.pushReplacementNamed(context, '/sign-in');
                 },
               ),
             ),

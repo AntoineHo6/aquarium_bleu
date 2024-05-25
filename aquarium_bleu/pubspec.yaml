@@ -87,6 +87,7 @@ flutter:
     - assets/images/light_chart_wc_line.png
     - assets/images/dark_drawn_aquarium.png
     - assets/images/light_drawn_aquarium.png
+    - assets/icons/icon_1024.png
 
   generate: true
   # The following line ensures that the Material Icons font is
