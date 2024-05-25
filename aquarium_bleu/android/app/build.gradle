@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace = "com.example.aquarium_bleu"
+    namespace = "com.aquarium_bleu"
     compileSdkVersion flutter.compileSdkVersion
     // ndkVersion flutter.ndkVersion
     ndkVersion "26.1.10909125"
@@ -44,7 +44,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.aquarium_bleu"
+        applicationId "com.aquarium_bleu"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         // minSdkVersion flutter.minSdkVersion

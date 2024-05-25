@@ -18,9 +18,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 final actionCodeSettings = ActionCodeSettings(
   url: 'https://aquariumbleu.page.link',
   handleCodeInApp: true,
-  androidMinimumVersion: '1',
-  androidPackageName: 'com.example.aquarium_bleu',
-  iOSBundleId: 'io.flutter.plugins.fireabaseUiExample',
+  androidMinimumVersion: '21',
+  androidPackageName: 'com.aquarium_bleu',
+  iOSBundleId: 'com.aquariumbleu',
 );
 final emailLinkProviderConfig = EmailLinkAuthProvider(actionCodeSettings: actionCodeSettings);
 
@@ -32,7 +32,7 @@ Future main() async {
     EmailAuthProvider(),
     emailLinkProviderConfig,
     GoogleProvider(
-      clientId: '36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com',
+      clientId: '36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi.apps.googleusercontent.com',
     ),
   ]);
 
@@ -96,7 +96,7 @@ class MyApp extends StatelessWidget {
             providers: [
               EmailAuthProvider(),
               GoogleProvider(
-                clientId: '36684847155-jddi2pcpndjg36lg8kd9i4msjsi4ol5i.apps.googleusercontent.com',
+                clientId: '36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi.apps.googleusercontent.com',
               ),
             ],
             actions: [

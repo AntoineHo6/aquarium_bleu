@@ -1,4 +1,4 @@
-package com.example.aquarium_bleu
+package com.aquarium_bleu
 
 import io.flutter.embedding.android.FlutterActivity
 

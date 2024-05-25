@@ -7,6 +7,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:36684847155:android:c37dea17277e9262dbeb46",
+        "android_client_info": {
+          "package_name": "com.aquarium_bleu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUK9Creis-08pAJVdETjaCV19-7whC1_0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "36684847155-ljau3rf4gqpv9pq71ld1hp1p9ak7o0ir.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "36684847155-jddi2pcpndjg36lg8kd9i4msjsi4ol5i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.aquariumBleu"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:36684847155:android:795f08a5ec246b2fdbeb46",
         "android_client_info": {
           "package_name": "com.example.aquarium_bleu"
