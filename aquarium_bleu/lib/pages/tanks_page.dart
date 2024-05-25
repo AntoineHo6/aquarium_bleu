@@ -73,10 +73,6 @@ class _TanksPageState extends State<TanksPage> {
                       ),
                       icon: const Icon(Icons.add),
                     ),
-                    // IconButton(
-                    //   onPressed: () {},
-                    //   icon: const Icon(Icons.sort_rounded),
-                    // )
                   ],
                 ),
                 SliverList(

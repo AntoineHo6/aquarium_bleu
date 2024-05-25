@@ -1,5 +1,6 @@
 import 'package:aquarium_bleu/pages/settings/theme_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
+import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
+    final tankProvider = Provider.of<TankProvider>(context, listen: false);
     final settingsProvider = Provider.of<SettingsProvider>(context);
 
     Widget authBtn = FirebaseAuth.instance.currentUser!.isAnonymous
@@ -28,6 +30,7 @@ class _SettingsPageState extends State<SettingsPage> {
         : ElevatedButton(
             child: Text(AppLocalizations.of(context)!.signOut),
             onPressed: () {
+              tankProvider.emptyTankNames();
               FirebaseAuth.instance
                   .signOut()
                   .then((value) => FirebaseAuth.instance.signInAnonymously().then(

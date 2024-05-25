@@ -104,9 +104,7 @@ class _AddTankPageState extends State<AddTankPage> {
                   onTap: () async {
                     final ImagePicker picker = ImagePicker();
                     // Pick an image.
-                    await picker
-                        .pickImage(source: ImageSource.gallery, imageQuality: 50)
-                        .then((pickedImage) {
+                    await picker.pickImage(source: ImageSource.gallery).then((pickedImage) {
                       image = pickedImage;
 
                       if (image == null) {
@@ -364,8 +362,8 @@ class _AddTankPageState extends State<AddTankPage> {
       showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
 
       if (image != null) {
-        tank.imgName = image!.name;
-        await FirebaseStorageStuff().uploadImg(image!.name, image!.path);
+        tank.imgName = const Uuid().v4();
+        await FirebaseStorageStuff().uploadImg(tank.imgName!, image!.path);
       }
 
       FirestoreStuff.addTank(tank).then((docId) {

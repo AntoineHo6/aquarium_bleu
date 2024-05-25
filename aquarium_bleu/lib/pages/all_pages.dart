@@ -13,7 +13,7 @@ class AllPages extends StatefulWidget {
 class _AllPagesState extends State<AllPages> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
+  static const List<Widget> _screens = <Widget>[
     TanksPage(),
     SettingsPage(),
   ];
@@ -41,8 +41,12 @@ class _AllPagesState extends State<AllPages> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      // body: Center(
+      //   child: _screens.elementAt(_selectedIndex),
+      // ),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _screens,
       ),
     );
   }
