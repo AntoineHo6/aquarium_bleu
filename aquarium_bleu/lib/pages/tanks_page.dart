@@ -1,3 +1,4 @@
+import 'package:aquarium_bleu/enums/sort.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/my_cache_manager.dart';
@@ -23,6 +24,8 @@ class TanksPage extends StatefulWidget {
 }
 
 class _TanksPageState extends State<TanksPage> {
+  Sort _selectedSort = Sort.alphabetically;
+
   @override
   Widget build(BuildContext context) {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
@@ -51,6 +54,13 @@ class _TanksPageState extends State<TanksPage> {
         stream: FirestoreStuff.readTanks(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            switch (_selectedSort) {
+              case Sort.alphabetically:
+                snapshot.data!
+                    .sort(((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase())));
+                break;
+            }
+
             return CustomScrollView(
               slivers: <Widget>[
                 SliverAppBar(
@@ -64,14 +74,17 @@ class _TanksPageState extends State<TanksPage> {
                     ),
                   ),
                   actions: [
-                    IconButton(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AddTankPage(),
+                    PopupMenuButton(
+                      onSelected: (value) {
+                        _selectedSort = value;
+                      },
+                      icon: Icon(Icons.sort),
+                      itemBuilder: (BuildContext context) => <PopupMenuEntry<Sort>>[
+                        const PopupMenuItem<Sort>(
+                          value: Sort.alphabetically,
+                          child: Text('Alphabetically'),
                         ),
-                      ),
-                      icon: const Icon(Icons.add),
+                      ],
                     ),
                   ],
                 ),
