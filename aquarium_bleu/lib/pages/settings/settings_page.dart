@@ -20,25 +20,6 @@ class _SettingsPageState extends State<SettingsPage> {
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
     final settingsProvider = Provider.of<SettingsProvider>(context);
 
-    Widget authBtn = FirebaseAuth.instance.currentUser!.isAnonymous
-        ? ElevatedButton(
-            child: Text(AppLocalizations.of(context)!.signIn),
-            onPressed: () {
-              Navigator.pushNamed(context, '/sign-in');
-            },
-          )
-        : ElevatedButton(
-            child: Text(AppLocalizations.of(context)!.signOut),
-            onPressed: () {
-              tankProvider.emptyTankNames();
-              FirebaseAuth.instance
-                  .signOut()
-                  .then((value) => FirebaseAuth.instance.signInAnonymously().then(
-                        (value) => setState(() {}),
-                      ));
-            },
-          );
-
     String themeStr;
 
     if (settingsProvider.themeMode == ThemeMode.dark) {
@@ -48,11 +29,6 @@ class _SettingsPageState extends State<SettingsPage> {
     } else {
       themeStr = AppLocalizations.of(context)!.system;
     }
-
-    String accEmail = FirebaseAuth.instance.currentUser!.email == null ||
-            FirebaseAuth.instance.currentUser!.email!.isEmpty
-        ? AppLocalizations.of(context)!.noAccountConnected
-        : FirebaseAuth.instance.currentUser!.email!;
 
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                accEmail,
+                FirebaseAuth.instance.currentUser!.email!,
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
@@ -97,7 +73,14 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             Align(
               alignment: Alignment.center,
-              child: authBtn,
+              child: ElevatedButton(
+                child: Text(AppLocalizations.of(context)!.signOut),
+                onPressed: () async {
+                  tankProvider.emptyTankNames();
+                  await FirebaseAuth.instance.signOut();
+                  await Navigator.pushNamed(context, '/sign-in');
+                },
+              ),
             ),
           ],
         ),

@@ -36,10 +36,6 @@ Future main() async {
     ),
   ]);
 
-  if (FirebaseAuth.instance.currentUser == null) {
-    await FirebaseAuth.instance.signInAnonymously();
-  }
-
   SharedPreferences.getInstance().then((myPrefs) {
     String themeStr = myPrefs.getString(Strings.theme) ?? Strings.system;
     String? lastSelectedParam = myPrefs.getString(Strings.lastSelectedParam);
@@ -85,7 +81,7 @@ class MyApp extends StatelessWidget {
       theme: MyTheme.lightTheme,
       darkTheme: MyTheme.darkTheme,
       themeMode: settingsProvider.themeMode,
-      initialRoute: '/all-pages',
+      initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/all-pages',
       routes: {
         '/sign-in': (context) {
           return SignInScreen(
@@ -107,7 +103,7 @@ class MyApp extends StatelessWidget {
                 if (!state.user!.emailVerified) {
                   Navigator.pushNamed(context, '/verify-email');
                 } else {
-                  Navigator.pop(context);
+                  // Navigator.pop(context);
                   Navigator.pushReplacementNamed(context, '/all-pages');
                 }
               }),
@@ -132,7 +128,6 @@ class MyApp extends StatelessWidget {
             styles: const {
               EmailFormStyle(signInButtonVariant: ButtonVariant.filled),
             },
-            headerBuilder: backBtn(),
             subtitleBuilder: (context, action) {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
@@ -156,9 +151,7 @@ class MyApp extends StatelessWidget {
               }),
               AuthCancelledAction((context) {
                 FirebaseUIAuth.signOut(context: context).then((value) {
-                  FirebaseAuth.instance.signInAnonymously().then(
-                        (value) => Navigator.pop(context),
-                      );
+                  Navigator.pop(context);
                 });
               }),
             ],
@@ -174,9 +167,7 @@ class MyApp extends StatelessWidget {
             sideBuilder: sideIcon(Icons.lock),
           );
         },
-        '/all-pages': (context) {
-          return const AllPages();
-        },
+        '/all-pages': (context) => const AllPages(),
       },
     );
   }
