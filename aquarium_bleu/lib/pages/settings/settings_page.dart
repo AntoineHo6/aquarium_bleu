@@ -32,8 +32,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
     return Scaffold(
       appBar: AppBar(
-          // title: Text(AppLocalizations.of(context)!.settings),
-          ),
+        automaticallyImplyLeading: false,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(Spacing.screenEdgePadding),
         child: Column(

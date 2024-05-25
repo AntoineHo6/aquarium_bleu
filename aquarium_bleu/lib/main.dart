@@ -103,7 +103,6 @@ class MyApp extends StatelessWidget {
                 if (!state.user!.emailVerified) {
                   Navigator.pushNamed(context, '/verify-email');
                 } else {
-                  // Navigator.pop(context);
                   Navigator.pushReplacementNamed(context, '/all-pages');
                 }
               }),

@@ -64,6 +64,7 @@ class _TanksPageState extends State<TanksPage> {
             return CustomScrollView(
               slivers: <Widget>[
                 SliverAppBar(
+                  automaticallyImplyLeading: false,
                   expandedHeight: MediaQuery.of(context).size.height * 0.175,
                   flexibleSpace: FlexibleSpaceBar(
                     title: FittedBox(
