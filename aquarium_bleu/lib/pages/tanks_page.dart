@@ -35,7 +35,7 @@ class _TanksPageState extends State<TanksPage> {
 
       // if (true) {
       if (!isWelcomeMsgSeen) {
-        await Future.delayed(
+        Future.delayed(
             Duration.zero,
             () => showDialog(
                   context: context,
@@ -45,7 +45,7 @@ class _TanksPageState extends State<TanksPage> {
                   ),
                 ));
 
-        await myPrefs.setBool(Strings.isWelcomeMsgSeen, true);
+        myPrefs.setBool(Strings.isWelcomeMsgSeen, true);
       }
     });
 

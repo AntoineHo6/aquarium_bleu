@@ -185,7 +185,7 @@ class _AddTankPageState extends State<AddTankPage> {
                       '${AppLocalizations.of(context)!.dimensions}:',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    IconButton(onPressed: () {}, icon: const Icon(Icons.info)),
+                    // IconButton(onPressed: () {}, icon: const Icon(Icons.info)),
                   ],
                 ),
                 Row(
@@ -194,10 +194,10 @@ class _AddTankPageState extends State<AddTankPage> {
                     Expanded(
                       child: TextField(
                         keyboardType: TextInputType.number,
-                        controller: _widthFieldController,
+                        controller: _lengthFieldController,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.width,
-                          errorText: _isWidthValid ? null : '',
+                          labelText: AppLocalizations.of(context)!.length,
+                          errorText: _isLengthValid ? null : '',
                         ),
                       ),
                     ),
@@ -211,10 +211,10 @@ class _AddTankPageState extends State<AddTankPage> {
                     Expanded(
                       child: TextField(
                         keyboardType: TextInputType.number,
-                        controller: _lengthFieldController,
+                        controller: _widthFieldController,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.length,
-                          errorText: _isLengthValid ? null : '',
+                          labelText: AppLocalizations.of(context)!.width,
+                          errorText: _isWidthValid ? null : '',
                         ),
                       ),
                     ),
