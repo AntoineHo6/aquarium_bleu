@@ -49,6 +49,11 @@ class _SettingsPageState extends State<SettingsPage> {
       themeStr = AppLocalizations.of(context)!.system;
     }
 
+    String accEmail = FirebaseAuth.instance.currentUser!.email == null ||
+            FirebaseAuth.instance.currentUser!.email!.isEmpty
+        ? AppLocalizations.of(context)!.noAccountConnected
+        : FirebaseAuth.instance.currentUser!.email!;
+
     return Scaffold(
       appBar: AppBar(
           // title: Text(AppLocalizations.of(context)!.settings),
@@ -60,9 +65,15 @@ class _SettingsPageState extends State<SettingsPage> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                FirebaseAuth.instance.currentUser!.email ??
-                    AppLocalizations.of(context)!.noAccountConnected,
-                style: Theme.of(context).textTheme.headlineSmall,
+                AppLocalizations.of(context)!.settings,
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                accEmail,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
             const SizedBox(

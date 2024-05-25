@@ -54,12 +54,12 @@ class _TanksPageState extends State<TanksPage> {
             return CustomScrollView(
               slivers: <Widget>[
                 SliverAppBar(
-                  expandedHeight: MediaQuery.of(context).size.height * 0.2,
+                  expandedHeight: MediaQuery.of(context).size.height * 0.175,
                   flexibleSpace: FlexibleSpaceBar(
                     title: FittedBox(
                       child: Text(
                         AppLocalizations.of(context)!.yourTanks,
-                        style: Theme.of(context).textTheme.displaySmall,
+                        style: Theme.of(context).textTheme.headlineLarge,
                       ),
                     ),
                   ),
