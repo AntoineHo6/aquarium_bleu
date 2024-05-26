@@ -1,3 +1,5 @@
+import 'package:aquarium_bleu/pages/settings/about_page.dart';
+import 'package:aquarium_bleu/pages/settings/contact_page.dart';
 import 'package:aquarium_bleu/pages/settings/theme_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
@@ -55,6 +57,16 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(
               height: Spacing.betweenSections,
             ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  AppLocalizations.of(context)!.general,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+            ),
             ListTile(
               title: Text(AppLocalizations.of(context)!.theme),
               subtitle: Text(themeStr),
@@ -71,16 +83,51 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(
               height: Spacing.betweenSections,
             ),
-            Align(
-              alignment: Alignment.center,
-              child: ElevatedButton(
-                child: Text(AppLocalizations.of(context)!.signOut),
-                onPressed: () async {
-                  tankProvider.emptyTankNames();
-                  await FirebaseAuth.instance.signOut();
-                  await Navigator.pushReplacementNamed(context, '/sign-in');
-                },
+            Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  AppLocalizations.of(context)!.info,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
               ),
+            ),
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.contact),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ContactPage(),
+                  ),
+                );
+              },
+            ),
+            // ListTile(
+            //   title: Text(AppLocalizations.of(context)!.about),
+            //   trailing: const Icon(Icons.chevron_right),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => const AboutPage(),
+            //       ),
+            //     );
+            //   },
+            // ),
+            const SizedBox(
+              height: Spacing.betweenSections,
+            ),
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.signOut),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () async {
+                tankProvider.emptyTankNames();
+                await FirebaseAuth.instance.signOut();
+                await Navigator.pushReplacementNamed(context, '/sign-in');
+              },
             ),
           ],
         ),

@@ -8,7 +8,7 @@ class TankProvider with ChangeNotifier {
   // used to avoid duplicate tank names when adding tanks
   List<String> tankNames = [];
 
-  emptyTankNames() {
+  void emptyTankNames() {
     tankNames.clear();
   }
 }

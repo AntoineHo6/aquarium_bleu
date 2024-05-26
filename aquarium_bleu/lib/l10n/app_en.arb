@@ -11,7 +11,12 @@
     "system": "System",
     "signIn": "Sign In",
     "signOut": "Sign Out",
-    "noAccountConnected": "No account connected",
+    "contact": "Contact",
+    "about": "About",
+    "general": "General",
+    "info": "Info",
+    
+    "contactMsg": "If you encounter any issues or have any requests, do not hesitate to contact me at:\n\naquarium.bleu.app@gmail.com",
 
     "freshwater": "Freshwater",
     "saltwater": "Saltwater",

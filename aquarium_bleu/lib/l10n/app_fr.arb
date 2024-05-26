@@ -11,7 +11,12 @@
     "system": "Système",
     "signIn": "Connexion",
     "signOut": "Déconnexion",
-    "noAccountConnected": "Aucun compte connecté",
+    "contact": "Contacter",
+    "about": "À propos",
+    "general": "Général",
+    "info": "Info",
+
+    "contactMsg": "Si vous rencontrez un problème dans l'application ou si vous avez une demande, n'hésitez pas à me contacter:\n\naquarium.bleu.app@gmail.com",
     
     "freshwater": "Eau douce",
     "saltwater": "Eau salée",

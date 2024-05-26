@@ -16,7 +16,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final actionCodeSettings = ActionCodeSettings(
-  url: 'https://aquariumbleu.page.link',
+  url: 'https://aquarium-bleu.web.app/',
   handleCodeInApp: true,
   androidMinimumVersion: '21',
   androidPackageName: 'com.aquarium_bleu',

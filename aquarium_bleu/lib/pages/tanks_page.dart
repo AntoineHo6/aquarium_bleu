@@ -24,7 +24,7 @@ class TanksPage extends StatefulWidget {
 }
 
 class _TanksPageState extends State<TanksPage> {
-  Sort _selectedSort = Sort.alphabetically;
+  Sort _selectedSort = Sort.name;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class _TanksPageState extends State<TanksPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             switch (_selectedSort) {
-              case Sort.alphabetically:
+              case Sort.name:
                 snapshot.data!
                     .sort(((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase())));
                 break;
@@ -81,9 +81,9 @@ class _TanksPageState extends State<TanksPage> {
                       },
                       icon: Icon(Icons.sort),
                       itemBuilder: (BuildContext context) => <PopupMenuEntry<Sort>>[
-                        const PopupMenuItem<Sort>(
-                          value: Sort.alphabetically,
-                          child: Text('Alphabetically'),
+                        PopupMenuItem<Sort>(
+                          value: Sort.name,
+                          child: Text(AppLocalizations.of(context)!.name),
                         ),
                       ],
                     ),
