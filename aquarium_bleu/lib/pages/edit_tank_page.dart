@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class EditTankPage extends StatefulWidget {
   const EditTankPage({super.key});
@@ -417,10 +418,16 @@ class _EditTankPageState extends State<EditTankPage> {
       // 4. Overwrite image
       showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
 
+      // 5. Overwrite image
       if (image != null) {
-        tankProvider.tank.imgName = image!.name;
+        // delete old image
+        if (tankProvider.tank.imgName != null) {
+          await FirebaseStorageStuff.deleteImg(tankProvider.tank.imgName!);
+        }
+
+        tankProvider.tank.imgName = const Uuid().v4();
         tankProvider.image = picture;
-        await FirebaseStorageStuff.uploadImg(image!.name, image!.path);
+        await FirebaseStorageStuff.uploadImg(tankProvider.tank.imgName!, image!.path);
       }
 
       await FirestoreStuff.updateTank(tankProvider.tank).then((value) {
