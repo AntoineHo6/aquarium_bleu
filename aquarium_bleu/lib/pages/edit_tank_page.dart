@@ -92,11 +92,15 @@ class _EditTankPageState extends State<EditTankPage> {
                 content: Text(AppLocalizations.of(context)!.confirmDeleteX(tankProvider.tank.name)),
                 onConfirm: () async {
                   tankProvider.tankNames.remove(tankProvider.tank.name);
-                  await FirestoreStuff.deleteTank(tankProvider.tank).then((value) {
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  });
+                  await FirestoreStuff.deleteTank(tankProvider.tank);
+
+                  if (tankProvider.tank.imgName != null) {
+                    await FirebaseStorageStuff.deleteImg(tankProvider.tank.imgName!);
+                  }
+
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                 },
               ),
             ),
@@ -416,7 +420,7 @@ class _EditTankPageState extends State<EditTankPage> {
       if (image != null) {
         tankProvider.tank.imgName = image!.name;
         tankProvider.image = picture;
-        await FirebaseStorageStuff().uploadImg(image!.name, image!.path);
+        await FirebaseStorageStuff.uploadImg(image!.name, image!.path);
       }
 
       await FirestoreStuff.updateTank(tankProvider.tank).then((value) {

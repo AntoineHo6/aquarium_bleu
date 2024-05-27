@@ -363,7 +363,7 @@ class _AddTankPageState extends State<AddTankPage> {
 
       if (image != null) {
         tank.imgName = const Uuid().v4();
-        await FirebaseStorageStuff().uploadImg(tank.imgName!, image!.path);
+        await FirebaseStorageStuff.uploadImg(tank.imgName!, image!.path);
       }
 
       FirestoreStuff.addTank(tank).then((docId) {
