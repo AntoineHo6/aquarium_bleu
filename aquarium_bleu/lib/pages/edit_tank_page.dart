@@ -2,17 +2,15 @@ import 'dart:io';
 import 'package:aquarium_bleu/enums/unit_of_length.dart';
 import 'package:aquarium_bleu/firebase_storage_stuff.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/providers/edit_add_tank_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
-import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/confirm_alert_dialog.dart';
-import 'package:aquarium_bleu/widgets/loading_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class EditTankPage extends StatefulWidget {
   const EditTankPage({super.key});
@@ -23,17 +21,10 @@ class EditTankPage extends StatefulWidget {
 
 class _EditTankPageState extends State<EditTankPage> {
   late TextEditingController _nameFieldController;
-  bool _isNameValid = true;
-  late bool? _isFreshwater;
-  String? _errorText;
   late Widget picture;
   late TextEditingController _widthFieldController;
   late TextEditingController _lengthFieldController;
   late TextEditingController _heightFieldController;
-  bool _isWidthValid = true;
-  bool _isLengthValid = true;
-  bool _isHeightValid = true;
-  late UnitOfLength dropdownValue;
 
   @override
   void initState() {
@@ -44,8 +35,6 @@ class _EditTankPageState extends State<EditTankPage> {
     _nameFieldController.value = TextEditingValue(text: tankProvider.tank.name);
 
     picture = tankProvider.image;
-
-    _isFreshwater = tankProvider.tank.isFreshwater;
 
     _widthFieldController = TextEditingController();
     if (tankProvider.tank.dimensions.width != null) {
@@ -65,7 +54,7 @@ class _EditTankPageState extends State<EditTankPage> {
           TextEditingValue(text: tankProvider.tank.dimensions.height.toString());
     }
 
-    dropdownValue = tankProvider.tank.dimensions.unit;
+    // dropdownValue = tankProvider.tank.dimensions.unit;
   }
 
   @override
@@ -139,7 +128,7 @@ class _EditTankPageState extends State<EditTankPage> {
                             ],
                           ),
                         ),
-                        errorText: _isNameValid ? null : _errorText,
+                        errorText: editProv.isNameValid ? null : editProv.nameErrorText,
                       ),
                     ),
                     const SizedBox(
@@ -191,11 +180,9 @@ class _EditTankPageState extends State<EditTankPage> {
                           title: Text(AppLocalizations.of(context)!.freshwater),
                           leading: Radio<bool>(
                             value: true,
-                            groupValue: _isFreshwater,
+                            groupValue: editProv.isFreshWater,
                             onChanged: (bool? value) {
-                              setState(() {
-                                _isFreshwater = value;
-                              });
+                              editProv.updateIsFreshWater(value!);
                             },
                           ),
                         ),
@@ -203,11 +190,9 @@ class _EditTankPageState extends State<EditTankPage> {
                           title: Text(AppLocalizations.of(context)!.saltwater),
                           leading: Radio<bool>(
                             value: false,
-                            groupValue: _isFreshwater,
+                            groupValue: editProv.isFreshWater,
                             onChanged: (bool? value) {
-                              setState(() {
-                                _isFreshwater = value;
-                              });
+                              editProv.updateIsFreshWater(value!);
                             },
                           ),
                         ),
@@ -234,7 +219,7 @@ class _EditTankPageState extends State<EditTankPage> {
                             controller: _lengthFieldController,
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context)!.length,
-                              errorText: _isLengthValid ? null : '',
+                              errorText: editProv.isLengthValid ? null : '',
                             ),
                           ),
                         ),
@@ -251,7 +236,7 @@ class _EditTankPageState extends State<EditTankPage> {
                             controller: _widthFieldController,
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context)!.width,
-                              errorText: _isWidthValid ? null : '',
+                              errorText: editProv.isWidthValid ? null : '',
                             ),
                           ),
                         ),
@@ -268,7 +253,7 @@ class _EditTankPageState extends State<EditTankPage> {
                             controller: _heightFieldController,
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context)!.height,
-                              errorText: _isHeightValid ? null : '',
+                              errorText: editProv.isHeightValid ? null : '',
                             ),
                           ),
                         ),
@@ -276,7 +261,7 @@ class _EditTankPageState extends State<EditTankPage> {
                           width: 10,
                         ),
                         DropdownButton<UnitOfLength>(
-                          value: dropdownValue,
+                          value: editProv.dimDropdownValue,
                           items: [
                             DropdownMenuItem(
                               value: UnitOfLength.cm,
@@ -288,9 +273,7 @@ class _EditTankPageState extends State<EditTankPage> {
                             ),
                           ],
                           onChanged: (UnitOfLength? value) {
-                            setState(() {
-                              dropdownValue = value!;
-                            });
+                            editProv.updateDimDropdownValue(value!);
                           },
                         ),
                       ],
@@ -322,7 +305,10 @@ class _EditTankPageState extends State<EditTankPage> {
                               bool isFormValid = editProv.checkIsFormValid(context);
 
                               if (isFormValid) {
-                                await editProv.handleEdit(context, tankProvider.tank.docId);
+                                Tank tank =
+                                    await editProv.handleEdit(context, tankProvider.tank.docId);
+
+                                tankProvider.tank = tank;
                               }
                             },
                             child: Text(AppLocalizations.of(context)!.update),

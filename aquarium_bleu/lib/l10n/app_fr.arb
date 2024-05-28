@@ -31,6 +31,7 @@
     "nameAlreadyExists": "Le nom existe déjà",
 
     "emptyField": "Champ vide",
+    "noImageSelected": "Aucune image selectionnée",
 
     "add": "Ajouter",
     "cancel": "Annuler",

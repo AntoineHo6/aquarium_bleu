@@ -33,6 +33,7 @@ class _TankPageState extends State<TankPage> {
                     create: (context) => EditAddTankProvider(
                       isFreshWater: tankProvider.tank.isFreshwater,
                       oldImageName: tankProvider.tank.imgName,
+                      dimDropdownValue: tankProvider.tank.dimensions.unit,
                     ),
                     child: const EditTankPage(),
                   ),

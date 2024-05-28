@@ -31,6 +31,7 @@
     "nameAlreadyExists": "Name already exists",
 
     "emptyField": "Empty field",
+    "noImageSelected": "No image selected",
     
     "add": "Add",
     "cancel": "Cancel",

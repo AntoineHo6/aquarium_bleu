@@ -62,9 +62,8 @@ class EditAddTankProvider with ChangeNotifier {
     if (pickedImage != null) {
       image = pickedImage;
     } else {
-      const SnackBar snackBar = SnackBar(
-        // TODO: internationalize this
-        content: Text('no image selected'),
+      SnackBar snackBar = SnackBar(
+        content: Text(AppLocalizations.of(context)!.noImageSelected),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
@@ -108,7 +107,7 @@ class EditAddTankProvider with ChangeNotifier {
     return isFormValid;
   }
 
-  Future<void> handleAdd(BuildContext context) async {
+  Future<Tank> handleAdd(BuildContext context) async {
     Tank tank = Tank(
       Uuid().v4(),
       name: nameField,
@@ -132,9 +131,11 @@ class EditAddTankProvider with ChangeNotifier {
 
     Navigator.pop(context);
     Navigator.pop(context);
+
+    return tank;
   }
 
-  Future<void> handleEdit(BuildContext context, String docId) async {
+  Future<Tank> handleEdit(BuildContext context, String docId) async {
     Tank tank = Tank(
       docId,
       name: nameField,
@@ -163,5 +164,7 @@ class EditAddTankProvider with ChangeNotifier {
 
     Navigator.pop(context);
     Navigator.pop(context);
+
+    return tank;
   }
 }
