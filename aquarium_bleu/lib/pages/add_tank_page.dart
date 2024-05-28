@@ -1,19 +1,12 @@
 import 'dart:io';
 
 import 'package:aquarium_bleu/enums/unit_of_length.dart';
-import 'package:aquarium_bleu/firebase_storage_stuff.dart';
-import 'package:aquarium_bleu/firestore_stuff.dart';
-import 'package:aquarium_bleu/models/dimensions.dart';
-import 'package:aquarium_bleu/models/tank.dart';
-import 'package:aquarium_bleu/providers/tank_provider.dart';
+import 'package:aquarium_bleu/providers/edit_add_tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
-import 'package:aquarium_bleu/utils/string_util.dart';
-import 'package:aquarium_bleu/widgets/loading_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:uuid/uuid.dart';
 
 class AddTankPage extends StatefulWidget {
   const AddTankPage({super.key});
@@ -24,18 +17,9 @@ class AddTankPage extends StatefulWidget {
 
 class _AddTankPageState extends State<AddTankPage> {
   late TextEditingController _nameFieldController;
-  bool? _isFreshwater = true;
-  bool _isNameValid = true;
-  String? _errorText;
-  XFile? image;
-  Widget? picture;
   late TextEditingController _widthFieldController;
   late TextEditingController _lengthFieldController;
   late TextEditingController _heightFieldController;
-  bool _isWidthValid = true;
-  bool _isLengthValid = true;
-  bool _isHeightValid = true;
-  UnitOfLength dropdownValue = UnitOfLength.cm;
 
   @override
   void initState() {
@@ -61,315 +45,236 @@ class _AddTankPageState extends State<AddTankPage> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.addANewTank),
       ),
-      body: Scrollbar(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(Spacing.screenEdgePadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                TextField(
-                  maxLength: 50,
-                  controller: _nameFieldController,
-                  decoration: InputDecoration(
-                    label: RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.titleMedium,
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: '${AppLocalizations.of(context)!.name}: ',
-                          ),
-                          const TextSpan(
-                            text: '*',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    errorText: _isNameValid ? null : _errorText,
-                  ),
-                ),
-                const SizedBox(
-                  height: Spacing.betweenSections,
-                ),
-                Text(
-                  '${AppLocalizations.of(context)!.displayPicture}:',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    final ImagePicker picker = ImagePicker();
-                    // Pick an image.
-                    await picker.pickImage(source: ImageSource.gallery).then((pickedImage) {
-                      image = pickedImage;
-
-                      if (image == null) {
-                        const SnackBar snackBar = SnackBar(
-                          content: Text('no image selected'),
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      } else {
-                        setState(() {
-                          picture = Image.file(
-                            File(image!.path),
-                            fit: BoxFit.cover,
-                          );
-                        });
-                      }
-                    });
-                  },
-                  child: picture == null
-                      ? SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.15,
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          child: Card(
-                            child: Icon(
-                              Icons.add_circle,
-                              size: MediaQuery.of(context).size.height * 0.05,
-                            ),
-                          ),
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.15,
-                            child: picture,
-                          ),
-                        ),
-                ),
-                const SizedBox(
-                  height: Spacing.betweenSections,
-                ),
-                Text(
-                  '${AppLocalizations.of(context)!.tankType}:',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                Wrap(
+      body: Consumer<EditAddTankProvider>(
+        builder: (context, addProv, child) {
+          return Scrollbar(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(Spacing.screenEdgePadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
-                    ListTile(
-                      title: Text(AppLocalizations.of(context)!.freshwater),
-                      leading: Radio<bool>(
-                        value: true,
-                        groupValue: _isFreshwater,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _isFreshwater = value;
-                          });
-                        },
-                      ),
-                    ),
-                    ListTile(
-                      title: Text(AppLocalizations.of(context)!.saltwater),
-                      leading: Radio<bool>(
-                        value: false,
-                        groupValue: _isFreshwater,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _isFreshwater = value;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: Spacing.betweenSections,
-                ),
-                Row(
-                  children: [
-                    Text(
-                      '${AppLocalizations.of(context)!.dimensions}:',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    // IconButton(onPressed: () {}, icon: const Icon(Icons.info)),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        controller: _lengthFieldController,
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.length,
-                          errorText: _isLengthValid ? null : '',
+                    TextField(
+                      maxLength: 50,
+                      controller: _nameFieldController,
+                      decoration: InputDecoration(
+                        label: RichText(
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.titleMedium,
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: '${AppLocalizations.of(context)!.name}: ',
+                              ),
+                              const TextSpan(
+                                text: '*',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Icon(
-                        Icons.close,
-                        size: 15,
-                      ),
-                    ),
-                    Expanded(
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        controller: _widthFieldController,
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.width,
-                          errorText: _isWidthValid ? null : '',
-                        ),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Icon(
-                        Icons.close,
-                        size: 15,
-                      ),
-                    ),
-                    Expanded(
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        controller: _heightFieldController,
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.height,
-                          errorText: _isHeightValid ? null : '',
-                        ),
+                        errorText: addProv.isNameValid ? null : addProv.nameErrorText,
                       ),
                     ),
                     const SizedBox(
-                      width: 10,
+                      height: Spacing.betweenSections,
                     ),
-                    DropdownButton<UnitOfLength>(
-                      value: dropdownValue,
-                      items: [
-                        DropdownMenuItem(
-                          value: UnitOfLength.cm,
-                          child: Text(AppLocalizations.of(context)!.cm),
-                        ),
-                        DropdownMenuItem(
-                          value: UnitOfLength.inch,
-                          child: Text(AppLocalizations.of(context)!.inches),
-                        ),
-                      ],
-                      onChanged: (UnitOfLength? value) {
-                        setState(() {
-                          dropdownValue = value!;
+                    Text(
+                      '${AppLocalizations.of(context)!.displayPicture}:',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        final ImagePicker picker = ImagePicker();
+                        // Pick an image.
+                        await picker.pickImage(source: ImageSource.gallery).then((pickedImage) {
+                          addProv.updateImage(pickedImage);
+
+                          if (addProv.image == null) {
+                            const SnackBar snackBar = SnackBar(
+                              // TODO: internationalize this
+                              content: Text('no image selected'),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          }
                         });
                       },
+                      child: addProv.image == null
+                          ? SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.15,
+                              width: MediaQuery.of(context).size.width * 0.5,
+                              child: Card(
+                                child: Icon(
+                                  Icons.add_circle,
+                                  size: MediaQuery.of(context).size.height * 0.05,
+                                ),
+                              ),
+                            )
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.15,
+                                child: Image.file(
+                                  File(addProv.image!.path),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                    ),
+                    const SizedBox(
+                      height: Spacing.betweenSections,
+                    ),
+                    Text(
+                      '${AppLocalizations.of(context)!.tankType}:',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    Wrap(
+                      children: [
+                        ListTile(
+                          title: Text(AppLocalizations.of(context)!.freshwater),
+                          leading: Radio<bool>(
+                            value: true,
+                            groupValue: addProv.isFreshWater,
+                            onChanged: (bool? value) {
+                              addProv.updateIsFreshWater(value!);
+                            },
+                          ),
+                        ),
+                        ListTile(
+                          title: Text(AppLocalizations.of(context)!.saltwater),
+                          leading: Radio<bool>(
+                            value: false,
+                            groupValue: addProv.isFreshWater,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                addProv.updateIsFreshWater(value!);
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: Spacing.betweenSections,
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '${AppLocalizations.of(context)!.dimensions}:',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        // IconButton(onPressed: () {}, icon: const Icon(Icons.info)),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            controller: _lengthFieldController,
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.length,
+                              errorText: addProv.isLengthValid ? null : '',
+                            ),
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Icon(
+                            Icons.close,
+                            size: 15,
+                          ),
+                        ),
+                        Expanded(
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            controller: _widthFieldController,
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.width,
+                              errorText: addProv.isWidthValid ? null : '',
+                            ),
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: Icon(
+                            Icons.close,
+                            size: 15,
+                          ),
+                        ),
+                        Expanded(
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            controller: _heightFieldController,
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.height,
+                              errorText: addProv.isHeightValid ? null : '',
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        DropdownButton<UnitOfLength>(
+                          value: addProv.dimDropdownValue,
+                          items: [
+                            DropdownMenuItem(
+                              value: UnitOfLength.cm,
+                              child: Text(AppLocalizations.of(context)!.cm),
+                            ),
+                            DropdownMenuItem(
+                              value: UnitOfLength.inch,
+                              child: Text(AppLocalizations.of(context)!.inches),
+                            ),
+                          ],
+                          onChanged: (UnitOfLength? value) {
+                            addProv.updateDimDropdownValue(value!);
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: Spacing.betweenSections,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 30,
+                          child: OutlinedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(AppLocalizations.of(context)!.cancel),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 70,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              addProv.handleEditAdd(
+                                context,
+                                _nameFieldController.text,
+                                _lengthFieldController.text,
+                                _widthFieldController.text,
+                                _heightFieldController.text,
+                              );
+                            },
+                            child: Text(AppLocalizations.of(context)!.add),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: Spacing.betweenSections,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 30,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(AppLocalizations.of(context)!.cancel),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 70,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          _handleAdd();
-                        },
-                        child: Text(AppLocalizations.of(context)!.add),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
-  }
-
-  void _handleAdd() async {
-    final tankProvider = Provider.of<TankProvider>(context, listen: false);
-    String nameModified = _nameFieldController.text.trim().toLowerCase();
-    bool hasError = false;
-    // Determine the right error message to show for the name.
-    // Otherwise, create the tank.
-    if (nameModified.isEmpty) {
-      hasError = true;
-      setState(() {
-        _isNameValid = false;
-        _errorText = AppLocalizations.of(context)!.emptyField;
-      });
-    } else if (tankProvider.tankNames.contains(nameModified)) {
-      hasError = true;
-      setState(() {
-        _isNameValid = false;
-        _errorText = AppLocalizations.of(context)!.nameAlreadyExists;
-      });
-    }
-
-    String widthStr = _widthFieldController.text.trim();
-    String lengthStr = _lengthFieldController.text.trim();
-    String heightStr = _heightFieldController.text.trim();
-
-    if (!StringUtil.isNumeric(widthStr) && widthStr.isNotEmpty) {
-      hasError = true;
-      setState(() {
-        _isWidthValid = false;
-      });
-    } else {
-      setState(() {
-        _isWidthValid = true;
-      });
-    }
-    if (!StringUtil.isNumeric(lengthStr) && lengthStr.isNotEmpty) {
-      hasError = true;
-      setState(() {
-        _isLengthValid = false;
-      });
-    } else {
-      setState(() {
-        _isLengthValid = true;
-      });
-    }
-    if (!StringUtil.isNumeric(heightStr) && heightStr.isNotEmpty) {
-      hasError = true;
-      setState(() {
-        _isHeightValid = false;
-      });
-    } else {
-      setState(() {
-        _isHeightValid = true;
-      });
-    }
-
-    if (!hasError) {
-      Tank tank = Tank(
-        const Uuid().v4(),
-        name: _nameFieldController.text,
-        isFreshwater: _isFreshwater!,
-        dimensions: Dimensions(
-          unit: dropdownValue,
-          width: widthStr.isEmpty ? null : double.parse(_widthFieldController.text.trim()),
-          length: lengthStr.isEmpty ? null : double.parse(_lengthFieldController.text.trim()),
-          height: heightStr.isEmpty ? null : double.parse(_heightFieldController.text.trim()),
-        ),
-      );
-
-      showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
-
-      if (image != null) {
-        tank.imgName = const Uuid().v4();
-        await FirebaseStorageStuff.uploadImg(tank.imgName!, image!.path);
-      }
-
-      FirestoreStuff.addTank(tank).then((docId) {
-        Navigator.pop(context);
-        Navigator.pop(context);
-      });
-    }
   }
 }

@@ -4,6 +4,7 @@ import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/my_cache_manager.dart';
 import 'package:aquarium_bleu/pages/add_tank_page.dart';
 import 'package:aquarium_bleu/pages/tank_page.dart';
+import 'package:aquarium_bleu/providers/edit_add_tank_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
@@ -28,7 +29,7 @@ class _TanksPageState extends State<TanksPage> {
 
   @override
   Widget build(BuildContext context) {
-    final tankProvider = Provider.of<TankProvider>(context, listen: false);
+    final tankProvider = Provider.of<TankProvider>(context);
 
     SharedPreferences.getInstance().then((myPrefs) async {
       bool isWelcomeMsgSeen = myPrefs.getBool(Strings.isWelcomeMsgSeen) ?? false;
@@ -101,7 +102,10 @@ class _TanksPageState extends State<TanksPage> {
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const AddTankPage(),
+                                builder: (context) => ChangeNotifierProvider(
+                                  create: (context) => EditAddTankProvider(),
+                                  child: const AddTankPage(),
+                                ),
                               ),
                             ),
                             child: Card(
