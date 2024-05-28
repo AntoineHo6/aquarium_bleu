@@ -87,21 +87,7 @@ class _AddTankPageState extends State<AddTankPage> {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     GestureDetector(
-                      onTap: () async {
-                        final ImagePicker picker = ImagePicker();
-                        // Pick an image.
-                        await picker.pickImage(source: ImageSource.gallery).then((pickedImage) {
-                          addProv.updateImage(pickedImage);
-
-                          if (addProv.image == null) {
-                            const SnackBar snackBar = SnackBar(
-                              // TODO: internationalize this
-                              content: Text('no image selected'),
-                            );
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          }
-                        });
-                      },
+                      onTap: () async => await addProv.handleImagePicker(context),
                       child: addProv.image == null
                           ? SizedBox(
                               height: MediaQuery.of(context).size.height * 0.15,
@@ -254,14 +240,17 @@ class _AddTankPageState extends State<AddTankPage> {
                         Expanded(
                           flex: 70,
                           child: ElevatedButton(
-                            onPressed: () {
-                              addProv.handleEditAdd(
-                                context,
-                                _nameFieldController.text,
-                                _lengthFieldController.text,
-                                _widthFieldController.text,
-                                _heightFieldController.text,
-                              );
+                            onPressed: () async {
+                              addProv.nameField = _nameFieldController.text;
+                              addProv.length = _lengthFieldController.text.trim();
+                              addProv.width = _widthFieldController.text.trim();
+                              addProv.height = _heightFieldController.text.trim();
+
+                              bool isFormValid = addProv.checkIsFormValid(context);
+
+                              if (isFormValid) {
+                                await addProv.handleAdd(context);
+                              }
                             },
                             child: Text(AppLocalizations.of(context)!.add),
                           ),

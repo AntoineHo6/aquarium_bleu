@@ -1,6 +1,7 @@
 import 'package:aquarium_bleu/pages/edit_tank_page.dart';
 import 'package:aquarium_bleu/pages/wc/wc_page.dart';
 import 'package:aquarium_bleu/pages/param/param_page.dart';
+import 'package:aquarium_bleu/providers/edit_add_tank_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
@@ -28,7 +29,13 @@ class _TankPageState extends State<TankPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const EditTankPage(),
+                  builder: (context) => ChangeNotifierProvider(
+                    create: (context) => EditAddTankProvider(
+                      isFreshWater: tankProvider.tank.isFreshwater,
+                      oldImageName: tankProvider.tank.imgName,
+                    ),
+                    child: const EditTankPage(),
+                  ),
                 ),
               ).then((value) {
                 setState(() {});

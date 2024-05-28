@@ -13,10 +13,17 @@ import 'package:uuid/uuid.dart';
 class EditAddTankProvider with ChangeNotifier {
   bool isFreshWater;
 
+  String nameField;
   bool isNameValid;
   String? nameErrorText;
 
+  String? oldImageName;
   XFile? image;
+  Widget? picture;
+
+  String length;
+  String width;
+  String height;
 
   bool isWidthValid;
   bool isLengthValid;
@@ -24,10 +31,15 @@ class EditAddTankProvider with ChangeNotifier {
   UnitOfLength dimDropdownValue;
 
   EditAddTankProvider({
+    this.nameField = '',
+    this.oldImageName,
     this.isFreshWater = true,
+    this.length = '',
+    this.width = '',
+    this.height = '',
     this.isNameValid = true,
-    this.isWidthValid = true,
     this.isLengthValid = true,
+    this.isWidthValid = true,
     this.isHeightValid = true,
     this.dimDropdownValue = UnitOfLength.cm,
   }) {}
@@ -37,23 +49,33 @@ class EditAddTankProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateImage(XFile? pickedImage) {
-    image = pickedImage;
+  void updateDimDropdownValue(UnitOfLength value) {
+    dimDropdownValue = value;
     notifyListeners();
   }
 
-  void updateDimDropdownValue(UnitOfLength value) {
-    dimDropdownValue = value;
+  Future<XFile?> handleImagePicker(BuildContext context) async {
+    final ImagePicker picker = ImagePicker();
+
+    XFile? pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      image = pickedImage;
+    } else {
+      const SnackBar snackBar = SnackBar(
+        // TODO: internationalize this
+        content: Text('no image selected'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
+    notifyListeners();
+    return pickedImage;
   }
 
-  Future<void> handleEditAdd(BuildContext context, String nameField, String lengthField,
-      String widthField, String heightField,
-      {String? docId}) async {
+  bool checkIsFormValid(BuildContext context) {
     bool isFormValid = true;
     String name = nameField.trim().toLowerCase();
-    String length = lengthField.trim();
-    String width = widthField.trim();
-    String height = heightField.trim();
 
     if (name.isEmpty) {
       isFormValid = false;
@@ -83,31 +105,63 @@ class EditAddTankProvider with ChangeNotifier {
     }
 
     notifyListeners();
+    return isFormValid;
+  }
 
-    if (isFormValid) {
-      Tank tank = Tank(
-        docId ?? Uuid().v4(),
-        name: nameField,
-        isFreshwater: isFreshWater,
-        dimensions: Dimensions(
-          unit: dimDropdownValue,
-          width: width.isEmpty ? null : double.parse(width),
-          length: length.isEmpty ? null : double.parse(length),
-          height: height.isEmpty ? null : double.parse(height),
-        ),
-      );
+  Future<void> handleAdd(BuildContext context) async {
+    Tank tank = Tank(
+      Uuid().v4(),
+      name: nameField,
+      isFreshwater: isFreshWater,
+      dimensions: Dimensions(
+        unit: dimDropdownValue,
+        width: width.isEmpty ? null : double.parse(width),
+        length: length.isEmpty ? null : double.parse(length),
+        height: height.isEmpty ? null : double.parse(height),
+      ),
+    );
 
-      showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
+    showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
 
-      if (image != null) {
-        tank.imgName = const Uuid().v4();
-        await FirebaseStorageStuff.uploadImg(tank.imgName!, image!.path);
+    if (image != null) {
+      tank.imgName = const Uuid().v4();
+      await FirebaseStorageStuff.uploadImg(tank.imgName!, image!.path);
+    }
+
+    await FirestoreStuff.addTank(tank);
+
+    Navigator.pop(context);
+    Navigator.pop(context);
+  }
+
+  Future<void> handleEdit(BuildContext context, String docId) async {
+    Tank tank = Tank(
+      docId,
+      name: nameField,
+      isFreshwater: isFreshWater,
+      dimensions: Dimensions(
+        unit: dimDropdownValue,
+        width: width.isEmpty ? null : double.parse(width),
+        length: length.isEmpty ? null : double.parse(length),
+        height: height.isEmpty ? null : double.parse(height),
+      ),
+    );
+
+    showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
+
+    if (image != null) {
+      // delete old image
+      if (oldImageName != null) {
+        await FirebaseStorageStuff.deleteImg(oldImageName!);
       }
 
-      await FirestoreStuff.addTank(tank);
-
-      Navigator.pop(context);
-      Navigator.pop(context);
+      tank.imgName = const Uuid().v4();
+      await FirebaseStorageStuff.uploadImg(tank.imgName!, image!.path);
     }
+
+    await FirestoreStuff.updateTank(tank);
+
+    Navigator.pop(context);
+    Navigator.pop(context);
   }
 }

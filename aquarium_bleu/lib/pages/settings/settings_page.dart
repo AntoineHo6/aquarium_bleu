@@ -124,7 +124,6 @@ class _SettingsPageState extends State<SettingsPage> {
               title: Text(AppLocalizations.of(context)!.signOut),
               trailing: const Icon(Icons.chevron_right),
               onTap: () async {
-                tankProvider.emptyTankNames();
                 await FirebaseAuth.instance.signOut();
                 await Navigator.pushReplacementNamed(context, '/sign-in');
               },

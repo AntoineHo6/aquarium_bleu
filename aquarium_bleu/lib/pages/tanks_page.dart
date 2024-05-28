@@ -123,7 +123,6 @@ class _TanksPageState extends State<TanksPage> {
                       }
 
                       Tank tank = snapshot.data!.elementAt(index);
-                      tankProvider.tankNames.add(tank.name.toLowerCase());
 
                       if (tank.imgName != null) {
                         return FutureBuilder(
@@ -132,7 +131,7 @@ class _TanksPageState extends State<TanksPage> {
                           ),
                           builder: ((context, snapshot) {
                             if (snapshot.hasData) {
-                              Widget image = CachedNetworkImage(
+                              CachedNetworkImage image = CachedNetworkImage(
                                 imageUrl: snapshot.data!,
                                 placeholder: (context, url) =>
                                     const Center(child: CircularProgressIndicator.adaptive()),
