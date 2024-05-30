@@ -4,7 +4,6 @@ import 'package:aquarium_bleu/enums/unit_of_length.dart';
 import 'package:aquarium_bleu/providers/edit_add_tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -229,17 +228,7 @@ class _AddTankPageState extends State<AddTankPage> {
                     Row(
                       children: [
                         Expanded(
-                          flex: 30,
-                          child: OutlinedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(AppLocalizations.of(context)!.cancel),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 70,
-                          child: ElevatedButton(
+                          child: FilledButton(
                             onPressed: () async {
                               addProv.nameField = _nameFieldController.text;
                               addProv.length = _lengthFieldController.text.trim();

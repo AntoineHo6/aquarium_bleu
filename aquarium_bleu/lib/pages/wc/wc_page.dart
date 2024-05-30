@@ -123,7 +123,9 @@ class WcPageState extends State<WcPage> {
                         _focusedDay = focusedDay;
                       },
                     ),
-                    const SizedBox(height: 8.0),
+                    const SizedBox(
+                      height: Spacing.betweenSections,
+                    ),
                     Expanded(
                       child: ValueListenableBuilder<List<Event>>(
                         valueListenable: _selectedEvents,
@@ -133,7 +135,7 @@ class WcPageState extends State<WcPage> {
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 10),
-                                child: ElevatedButton(
+                                child: FilledButton.tonal(
                                   style: ButtonStyle(
                                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                         RoundedRectangleBorder(

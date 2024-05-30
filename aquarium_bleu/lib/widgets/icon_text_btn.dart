@@ -19,20 +19,22 @@ class IconTextBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      child: ElevatedButton(
+      child: FilledButton.tonal(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           side: BorderSide(
             color: (isError ? Theme.of(context).colorScheme.error : Colors.transparent),
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(iconData),
-            SizedBox(width: spaceBetweenSize),
-            Text(text),
-          ],
+        child: FittedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(iconData),
+              SizedBox(width: spaceBetweenSize),
+              Text(text),
+            ],
+          ),
         ),
       ),
     );

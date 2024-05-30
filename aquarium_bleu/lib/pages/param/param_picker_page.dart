@@ -68,7 +68,7 @@ class _ParamPickerPageState extends State<ParamPickerPage> {
               right: Spacing.screenEdgePadding,
               top: Spacing.betweenSections,
             ),
-            child: ElevatedButton(
+            child: FilledButton(
               child: Text(AppLocalizations.of(context)!.select),
               onPressed: () {
                 Navigator.pop(context, currentParam);

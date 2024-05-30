@@ -45,6 +45,9 @@ class _ParamChartPageState extends State<ParamChartPage> {
                         dataSource: snapshot.data!,
                         waterChanges: widget.waterChanges,
                       ),
+                      const SizedBox(
+                        height: Spacing.betweenSections,
+                      ),
                       Column(
                         children: _dataPointsTiles(snapshot.data!),
                       ),
@@ -68,7 +71,7 @@ class _ParamChartPageState extends State<ParamChartPage> {
       dataPointsTiles.add(
         Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: ElevatedButton(
+          child: FilledButton.tonal(
             style: ButtonStyle(
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),

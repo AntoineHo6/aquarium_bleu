@@ -7,7 +7,9 @@ import 'package:aquarium_bleu/providers/edit_add_tank_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/confirm_alert_dialog.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -284,17 +286,7 @@ class _EditTankPageState extends State<EditTankPage> {
                     Row(
                       children: [
                         Expanded(
-                          flex: 30,
-                          child: OutlinedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(AppLocalizations.of(context)!.cancel),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 70,
-                          child: ElevatedButton(
+                          child: FilledButton(
                             onPressed: () async {
                               editProv.nameField = _nameFieldController.text;
                               editProv.length = _lengthFieldController.text.trim();

@@ -14,5 +14,5 @@ class MyTheme {
   );
 
   static const wcColor = Colors.lightBlue;
-  static const paramColor = Colors.orange;
+  static const paramColor = Color.fromRGBO(255, 152, 0, 1);
 }

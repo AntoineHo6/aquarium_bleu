@@ -97,7 +97,8 @@ class _TanksPageState extends State<TanksPage> {
                       // if rendering the last item
                       if (index == snapshot.data!.length) {
                         return Padding(
-                          padding: const EdgeInsets.all(Spacing.screenEdgePadding),
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
                           child: GestureDetector(
                             onTap: () => Navigator.push(
                               context,
@@ -139,8 +140,10 @@ class _TanksPageState extends State<TanksPage> {
                                 fit: BoxFit.cover,
                               );
                               return Padding(
-                                padding: const EdgeInsets.all(
-                                  Spacing.screenEdgePadding,
+                                padding: const EdgeInsets.only(
+                                  left: Spacing.screenEdgePadding,
+                                  right: Spacing.screenEdgePadding,
+                                  bottom: 10,
                                 ),
                                 child: TankCard(
                                   tank: tank,
@@ -173,8 +176,10 @@ class _TanksPageState extends State<TanksPage> {
                                 fit: BoxFit.cover,
                               );
                         return Padding(
-                          padding: const EdgeInsets.all(
-                            Spacing.screenEdgePadding,
+                          padding: const EdgeInsets.only(
+                            left: Spacing.screenEdgePadding,
+                            right: Spacing.screenEdgePadding,
+                            bottom: 10,
                           ),
                           child: TankCard(
                             tank: tank,

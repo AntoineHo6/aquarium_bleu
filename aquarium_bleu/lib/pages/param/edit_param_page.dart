@@ -80,36 +80,51 @@ class _EditParamPageState extends State<EditParamPage> {
             const SizedBox(
               height: 10,
             ),
-            IconTextBtn(
-              iconData: Icons.edit_calendar,
-              text: StringUtil.formattedDate(context, _date),
-              onPressed: _handleDatePicker,
+            Row(
+              children: [
+                Expanded(
+                  child: IconTextBtn(
+                    iconData: Icons.edit_calendar,
+                    text: StringUtil.formattedDate(context, _date),
+                    onPressed: _handleDatePicker,
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: IconTextBtn(
+                    iconData: Icons.schedule,
+                    text: StringUtil.formattedTime(context, _time),
+                    onPressed: () => _handleTimeBtn(),
+                  ),
+                ),
+              ],
             ),
+            // IconTextBtn(
+            //   iconData: Icons.edit_calendar,
+            //   text: StringUtil.formattedDate(context, _date),
+            //   onPressed: _handleDatePicker,
+            // ),
+            // const SizedBox(
+            //   height: 10,
+            // ),
+            // IconTextBtn(
+            //   iconData: Icons.schedule,
+            //   text: StringUtil.formattedTime(context, _time),
+            //   onPressed: () => _handleTimeBtn(),
+            // ),
+            // const SizedBox(
+            //   height: 10,
+            // ),
             const SizedBox(
-              height: 10,
-            ),
-            IconTextBtn(
-              iconData: Icons.schedule,
-              text: StringUtil.formattedTime(context, _time),
-              onPressed: () => _handleTimeBtn(),
-            ),
-            const SizedBox(
-              height: 10,
+              height: Spacing.betweenSections,
             ),
             Row(
               children: [
                 Expanded(
-                  flex: 30,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(AppLocalizations.of(context)!.cancel),
-                  ),
-                ),
-                Expanded(
                   flex: 70,
-                  child: ElevatedButton(
+                  child: FilledButton(
                     onPressed: () => _handleUpdate(tankId),
                     child: Text(AppLocalizations.of(context)!.update),
                   ),

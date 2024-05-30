@@ -74,15 +74,16 @@ class _TankPageState extends State<TankPage> {
                             );
                           },
                           child: Card(
+                            surfaceTintColor: MyTheme.paramColor,
                             clipBehavior: Clip.hardEdge,
-                            elevation: 15,
+                            elevation: 10,
                             child: Padding(
                               padding: const EdgeInsets.all(Spacing.cardPadding),
                               child: Stack(
                                 children: [
                                   Positioned(
                                     top: MediaQuery.of(context).size.height * 0.08,
-                                    left: MediaQuery.of(context).size.width * 0.6,
+                                    left: MediaQuery.of(context).size.width * 0.5,
                                     child: Icon(
                                       Icons.bar_chart,
                                       color: MyTheme.paramColor,
@@ -123,15 +124,16 @@ class _TankPageState extends State<TankPage> {
                             );
                           },
                           child: Card(
+                            surfaceTintColor: MyTheme.wcColor,
                             clipBehavior: Clip.hardEdge,
-                            elevation: 15,
+                            elevation: 10,
                             child: Padding(
                               padding: const EdgeInsets.all(Spacing.cardPadding),
                               child: Stack(
                                 children: [
                                   Positioned(
                                     top: MediaQuery.of(context).size.height * 0.08,
-                                    left: MediaQuery.of(context).size.width * 0.6,
+                                    left: MediaQuery.of(context).size.width * 0.5,
                                     child: Icon(
                                       Icons.water_drop,
                                       color: MyTheme.wcColor,

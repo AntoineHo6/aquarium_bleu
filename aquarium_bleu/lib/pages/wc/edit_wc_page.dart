@@ -86,7 +86,7 @@ class _EditWcPageState extends State<EditWcPage> {
                 ),
                 Expanded(
                   flex: 70,
-                  child: ElevatedButton(
+                  child: FilledButton(
                     onPressed: () => _handleUpdate(tankId),
                     child: Text(AppLocalizations.of(context)!.update),
                   ),
