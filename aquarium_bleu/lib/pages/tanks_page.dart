@@ -1,5 +1,6 @@
 import 'package:aquarium_bleu/enums/sort.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/main.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/my_cache_manager.dart';
 import 'package:aquarium_bleu/pages/add_tank_page.dart';
@@ -7,12 +8,14 @@ import 'package:aquarium_bleu/pages/tank_page.dart';
 import 'package:aquarium_bleu/providers/edit_add_tank_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
+import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/msg_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/tanks/tank_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +28,15 @@ class TanksPage extends StatefulWidget {
 }
 
 class _TanksPageState extends State<TanksPage> {
+  late FToast fToast;
   Sort _selectedSort = Sort.name;
+
+  @override
+  void initState() {
+    super.initState();
+    fToast = FToast();
+    fToast.init(navigatorKey.currentContext!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,24 +110,33 @@ class _TanksPageState extends State<TanksPage> {
                         return Padding(
                           padding:
                               const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
-                          child: GestureDetector(
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ChangeNotifierProvider(
-                                  create: (context) => EditAddTankProvider(),
-                                  child: const AddTankPage(),
-                                ),
-                              ),
+                          child: OutlinedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              )),
                             ),
-                            child: Card(
-                              child: SizedBox(
-                                width: double.infinity,
-                                height: MediaQuery.of(context).size.height * 0.25,
-                                child: Icon(
-                                  Icons.add,
-                                  size: MediaQuery.of(context).size.width * 0.10,
-                                ),
+                            onPressed: _showToast,
+                            // onPressed: () => Navigator.push<bool?>(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => ChangeNotifierProvider(
+                            //       create: (context) => EditAddTankProvider(),
+                            //       child: const AddTankPage(),
+                            //     ),
+                            //   ),
+                            // ).then((bool? isAdded) {
+                            //   if (isAdded != null && isAdded) {
+                            //     _showToast();
+                            //   }
+                            // }),
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: MediaQuery.of(context).size.height * 0.25,
+                              child: Icon(
+                                Icons.add,
+                                size: MediaQuery.of(context).size.width * 0.10,
                               ),
                             ),
                           ),
@@ -209,6 +229,30 @@ class _TanksPageState extends State<TanksPage> {
           }
         },
       ),
+    );
+  }
+
+  _showToast() {
+    fToast.showToast(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(25.0),
+          color: MyTheme.seedColor,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.check),
+            SizedBox(
+              width: 12.0,
+            ),
+            Text(AppLocalizations.of(context)!.added),
+          ],
+        ),
+      ),
+      gravity: ToastGravity.BOTTOM,
+      toastDuration: Duration(seconds: 2),
     );
   }
 }

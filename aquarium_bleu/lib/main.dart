@@ -7,6 +7,7 @@ import 'package:aquarium_bleu/styles/sign_in_decorations.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -23,6 +24,8 @@ final actionCodeSettings = ActionCodeSettings(
   iOSBundleId: 'com.aquariumbleu',
 );
 final emailLinkProviderConfig = EmailLinkAuthProvider(actionCodeSettings: actionCodeSettings);
+
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,8 +69,10 @@ class MyApp extends StatelessWidget {
     final settingsProvider = Provider.of<SettingsProvider>(context);
 
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'Aquarium Bleu',
+      builder: FToastBuilder(),
+      navigatorKey: navigatorKey,
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

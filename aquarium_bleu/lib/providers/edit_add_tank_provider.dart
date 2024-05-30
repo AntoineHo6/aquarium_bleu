@@ -130,7 +130,7 @@ class EditAddTankProvider with ChangeNotifier {
     await FirestoreStuff.addTank(tank);
 
     Navigator.pop(context);
-    Navigator.pop(context);
+    Navigator.pop(context, true);
 
     return tank;
   }
@@ -163,7 +163,7 @@ class EditAddTankProvider with ChangeNotifier {
     await FirestoreStuff.updateTank(tank);
 
     Navigator.pop(context);
-    Navigator.pop(context);
+    Navigator.pop(context, true);
 
     return tank;
   }
