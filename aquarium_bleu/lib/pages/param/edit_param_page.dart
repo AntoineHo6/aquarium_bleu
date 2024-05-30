@@ -1,12 +1,15 @@
 import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/main.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:aquarium_bleu/widgets/confirm_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/toasts/removed_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class EditParamPage extends StatefulWidget {
@@ -18,6 +21,7 @@ class EditParamPage extends StatefulWidget {
 }
 
 class _EditParamPageState extends State<EditParamPage> {
+  late FToast fToast;
   late TextEditingController _valueFieldController;
   bool _isValueValid = true;
   String? _errorText;
@@ -27,6 +31,9 @@ class _EditParamPageState extends State<EditParamPage> {
   @override
   void initState() {
     super.initState();
+    fToast = FToast();
+    fToast.init(navigatorKey.currentContext!);
+
     _valueFieldController = TextEditingController();
     _valueFieldController.value = TextEditingValue(text: widget.dataPoint.value.toString());
     _date = widget.dataPoint.date;
@@ -54,6 +61,7 @@ class _EditParamPageState extends State<EditParamPage> {
                 content: Text(AppLocalizations.of(context)!.confirmDeleteX('')),
                 onConfirm: () async {
                   await FirestoreStuff.deleteParam(tankId, widget.dataPoint).then((value) {
+                    _showToast(RemovedToast());
                     Navigator.pop(context);
                     Navigator.pop(context);
                   });
@@ -186,5 +194,11 @@ class _EditParamPageState extends State<EditParamPage> {
             value != null ? _time = value : null;
           })
         });
+  }
+
+  _showToast(Widget toast) {
+    fToast.showToast(
+      child: toast,
+    );
   }
 }

@@ -45,6 +45,8 @@
     "delete": "Delete",
     "viewAll": "View all",
     "loading": "Loading",
+    "removed": "Removed",
+    "updated": "Updated",
 
     "yourTanks": "Your tanks",
     "addANewTank": "Add a new tank",
@@ -70,6 +72,7 @@
     "waterChangesAndParameters": "Water changes & parameters",
     "waterChanges": "Water changes",
     "addWaterChange": "Add water change",
+    "confirmDeleteWc": "Are you sure you want to delete this water change?",
     "showWaterChangeLines": "Show water change lines",
     "showWcLineInfo": "If you have any water changes within the date range of two measurements, it will show up as a blue line:",
     "animals": "Animals",

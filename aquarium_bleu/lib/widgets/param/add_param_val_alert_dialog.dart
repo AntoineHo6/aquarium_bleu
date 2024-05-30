@@ -1,5 +1,6 @@
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/main.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/pages/param/param_picker_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
@@ -7,8 +8,10 @@ import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
+import 'package:aquarium_bleu/widgets/toasts/added_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -22,6 +25,7 @@ class AddParamValAlertDialog extends StatefulWidget {
 }
 
 class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
+  late FToast fToast;
   DateTime _date = DateTime.now();
   TimeOfDay _time = TimeOfDay.now();
   late TextEditingController _valueFieldController;
@@ -34,6 +38,9 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
   @override
   void initState() {
     super.initState();
+    fToast = FToast();
+    fToast.init(navigatorKey.currentContext!);
+
     _valueFieldController = TextEditingController();
 
     String? lastSelectedParam =
@@ -171,6 +178,8 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
       // 4. Set selected parameter as the last used
       Provider.of<SettingsProvider>(context, listen: false).setLastSelectedParam(_param!.getStr);
 
+      _showToast(AddedToast());
+
       Navigator.pop(context);
     }
 
@@ -201,6 +210,12 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
     } else {
       _paramBtnText = StringUtil.paramTypeToString(context, _param!);
     }
+  }
+
+  _showToast(Widget toast) {
+    fToast.showToast(
+      child: toast,
+    );
   }
 }
 

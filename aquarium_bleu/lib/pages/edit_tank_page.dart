@@ -2,15 +2,17 @@ import 'dart:io';
 import 'package:aquarium_bleu/enums/unit_of_length.dart';
 import 'package:aquarium_bleu/firebase_storage_stuff.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/main.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/providers/edit_add_tank_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/confirm_alert_dialog.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:aquarium_bleu/widgets/toasts/updated_toast.dart';
+import 'package:aquarium_bleu/widgets/toasts/removed_toast.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +24,7 @@ class EditTankPage extends StatefulWidget {
 }
 
 class _EditTankPageState extends State<EditTankPage> {
+  late FToast fToast;
   late TextEditingController _nameFieldController;
   late Widget picture;
   late TextEditingController _widthFieldController;
@@ -31,6 +34,9 @@ class _EditTankPageState extends State<EditTankPage> {
   @override
   void initState() {
     super.initState();
+    fToast = FToast();
+    fToast.init(navigatorKey.currentContext!);
+
     final tankProvider = Provider.of<TankProvider>(context, listen: false);
 
     _nameFieldController = TextEditingController();
@@ -92,6 +98,8 @@ class _EditTankPageState extends State<EditTankPage> {
                   Navigator.pop(context);
                   Navigator.pop(context);
                   Navigator.pop(context);
+
+                  _showToast(RemovedToast());
                 },
               ),
             ),
@@ -301,6 +309,8 @@ class _EditTankPageState extends State<EditTankPage> {
                                     await editProv.handleEdit(context, tankProvider.tank.docId);
 
                                 tankProvider.tank = tank;
+
+                                _showToast(UpdatedToast());
                               }
                             },
                             child: Text(AppLocalizations.of(context)!.update),
@@ -315,6 +325,12 @@ class _EditTankPageState extends State<EditTankPage> {
           );
         }),
       ),
+    );
+  }
+
+  _showToast(Widget toast) {
+    fToast.showToast(
+      child: toast,
     );
   }
 }

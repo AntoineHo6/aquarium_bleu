@@ -67,7 +67,7 @@ class _AddWcAlertDialogState extends State<AddWcAlertDialog> {
       waterChange,
     );
 
-    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 
   _handleDateBtn(BuildContext context) {

@@ -148,17 +148,17 @@ class FirestoreStuff {
     await wcDoc.delete();
   }
 
-  static Future updateWc(String tankId, WaterChange wc) async {
-    final wcDoc = FirebaseFirestore.instance
-        .collection(usersCollection)
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection(tanksCollection)
-        .doc(tankId)
-        .collection(wcCollection)
-        .doc(wc.docId);
+  // static Future updateWc(String tankId, WaterChange wc) async {
+  //   final wcDoc = FirebaseFirestore.instance
+  //       .collection(usersCollection)
+  //       .doc(FirebaseAuth.instance.currentUser!.uid)
+  //       .collection(tanksCollection)
+  //       .doc(tankId)
+  //       .collection(wcCollection)
+  //       .doc(wc.docId);
 
-    await wcDoc.update(wc.toJson());
-  }
+  //   await wcDoc.update(wc.toJson());
+  // }
 
   static Stream<WaterChange> readLatestWc(String tankId) {
     return FirebaseFirestore.instance

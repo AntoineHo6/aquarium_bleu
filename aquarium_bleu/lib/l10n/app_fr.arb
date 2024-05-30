@@ -52,6 +52,8 @@
     "delete": "Supprimer",
     "viewAll": "Voir tout",
     "loading": "Chargement",
+    "removed": "Supprimé",
+    "updated": "Mis à jour",
 
     "yourTanks": "Vos aquariums",
     "addANewTank": "Ajouter un nouvel aquarium",
@@ -77,6 +79,7 @@
     "waterChangesAndParameters": "Changements d'eau et paramètres",
     "waterChanges": "Changements d'eau",
     "addWaterChange": "Ajouter un changement d'eau",
+    "confirmDeleteWc": "Êtes-vous sûr de vouloir supprimer ce changement d'eau?",
     "showWaterChangeLines": "Montrer les lignes de changement d'eau",
     "showWcLineInfo": "Si vous aviez fait un changement d'eau pendant une date entre deux mesures, ce dernier se manifestera en tant que ligne bleu:",
     "animals": "Animaux",

@@ -1,15 +1,20 @@
 import 'dart:collection';
 
 import 'package:aquarium_bleu/firestore_stuff.dart';
+import 'package:aquarium_bleu/main.dart';
 import 'package:aquarium_bleu/models/event.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
-import 'package:aquarium_bleu/pages/wc/edit_wc_page.dart';
+import 'package:aquarium_bleu/widgets/confirm_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/toasts/added_toast.dart';
+import 'package:aquarium_bleu/widgets/toasts/removed_toast.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/wc/add_wc_alert_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -21,6 +26,7 @@ class WcPage extends StatefulWidget {
 }
 
 class WcPageState extends State<WcPage> {
+  late FToast fToast;
   late ValueNotifier<List<Event>> _selectedEvents;
   late Map<DateTime, List<Event>> dateToEventsMap = {};
   LinkedHashMap<DateTime, List<Event>> kEvents = LinkedHashMap<DateTime, List<Event>>();
@@ -30,6 +36,11 @@ class WcPageState extends State<WcPage> {
 
   @override
   void initState() {
+    super.initState();
+
+    fToast = FToast();
+    fToast.init(navigatorKey.currentContext!);
+
     TankProvider tankProvider = Provider.of<TankProvider>(context, listen: false);
 
     FirestoreStuff.readAllWaterChanges(tankProvider.tank.docId).listen((waterChanges) {
@@ -54,8 +65,6 @@ class WcPageState extends State<WcPage> {
       _selectedDay = _focusedDay;
       _selectedEvents = ValueNotifier(_getEventsForDay(_focusedDay));
     });
-
-    super.initState();
   }
 
   @override
@@ -92,10 +101,14 @@ class WcPageState extends State<WcPage> {
                 // title: Text(AppLocalizations.of(context)!.waterChanges),
                 actions: [
                   IconButton(
-                    onPressed: () => showDialog(
+                    onPressed: () => showDialog<bool?>(
                       context: context,
                       builder: (BuildContext context) => AddWcAlertDialog(tankProvider.tank.docId),
-                    ).then((value) => setState(() {})),
+                    ).then((bool? isAdded) {
+                      if (isAdded != null && isAdded) {
+                        _showToast(AddedToast());
+                      }
+                    }),
                     icon: const Icon(Icons.add),
                   ),
                 ],
@@ -129,9 +142,9 @@ class WcPageState extends State<WcPage> {
                     Expanded(
                       child: ValueListenableBuilder<List<Event>>(
                         valueListenable: _selectedEvents,
-                        builder: (context, value, _) {
+                        builder: (context, events, _) {
                           return ListView.builder(
-                            itemCount: value.length,
+                            itemCount: events.length,
                             itemBuilder: (context, index) {
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 10),
@@ -142,34 +155,32 @@ class WcPageState extends State<WcPage> {
                                       borderRadius: BorderRadius.circular(20),
                                     )),
                                   ),
-                                  onPressed: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EditWcPage(value[index].wc),
+                                  onPressed: () => showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) => ConfirmAlertDialog(
+                                      title: Text('${AppLocalizations.of(context)!.delete}'),
+                                      content: Text(AppLocalizations.of(context)!.confirmDeleteWc),
+                                      onConfirm: () async {
+                                        await FirestoreStuff.deleteWc(
+                                                tankProvider.tank.docId, events[index].wc.docId)
+                                            .then((value) {
+                                          Navigator.pop(context);
+                                          _showToast(RemovedToast());
+                                        });
+                                      },
                                     ),
                                   ),
                                   child: ListTile(
-                                    title: RichText(
-                                      text: TextSpan(
-                                        style: Theme.of(context).textTheme.titleMedium,
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: StringUtil.formattedDate(
-                                              context,
-                                              value[index].wc.date,
-                                            ),
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: MyTheme.wcColor,
-                                            ),
-                                          ),
-                                        ],
+                                    title: Text(
+                                      StringUtil.formattedDate(
+                                        context,
+                                        events[index].wc.date,
                                       ),
                                     ),
                                     subtitle: Text(
                                       StringUtil.formattedTime(
                                         context,
-                                        TimeOfDay.fromDateTime(value[index].wc.date),
+                                        TimeOfDay.fromDateTime(events[index].wc.date),
                                       ),
                                     ),
                                   ),
@@ -190,5 +201,11 @@ class WcPageState extends State<WcPage> {
             );
           }
         });
+  }
+
+  _showToast(Widget toast) {
+    fToast.showToast(
+      child: toast,
+    );
   }
 }
