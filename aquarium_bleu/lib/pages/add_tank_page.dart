@@ -4,7 +4,6 @@ import 'package:aquarium_bleu/enums/unit_of_length.dart';
 import 'package:aquarium_bleu/providers/edit_add_tank_provider.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

@@ -90,14 +90,18 @@ class MyApp extends StatelessWidget {
       routes: {
         '/sign-in': (context) {
           return SignInScreen(
-            // headerBuilder: (context, constraints, shrinkOffset) {
-            //   return Center(
-            //     child: Text(
-            //       "Aquarium Bleu",
-            //       style: Theme.of(context).textTheme.displayMedium,
-            //     ),
-            //   );
-            // },
+            headerBuilder: (context, constraints, shrinkOffset) {
+              return Center(
+                child: Text(
+                  "Aquarium Bleu",
+                  style: Theme.of(context).textTheme.displayMedium,
+                ),
+                // child: Image.asset(
+                //   "assets/images/dark_drawn_aquarium.png",
+                //   fit: BoxFit.cover,
+                // ),
+              );
+            },
             providers: [
               EmailAuthProvider(),
               GoogleProvider(

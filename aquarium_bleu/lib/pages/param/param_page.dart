@@ -11,7 +11,6 @@ import 'package:aquarium_bleu/widgets/param/add_param_val_alert_dialog.dart';
 import 'package:aquarium_bleu/widgets/param/empty_chart.dart';
 import 'package:aquarium_bleu/widgets/param/param_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
