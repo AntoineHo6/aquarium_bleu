@@ -4,6 +4,12 @@
     "welcomeToAquariumBleu": "Welcome to Aquarium Bleu",
     "welcomeContent": "You can start by adding one of your fish tanks in the current page. \n\nHappy fish keeping!",
     
+    "email": "Email",
+    "password": "Password",
+    "login": "Log in",
+    "or": "Or",
+    "forgotPassword": "Forgot password?",
+
     "settings": "Settings",
     "theme": "Theme",
     "light": "Light",

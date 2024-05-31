@@ -1,4 +1,5 @@
 import 'package:aquarium_bleu/pages/all_pages.dart';
+import 'package:aquarium_bleu/pages/login_page.dart';
 import 'package:aquarium_bleu/providers/settings_provider.dart';
 import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/strings.dart';
@@ -89,72 +90,56 @@ class MyApp extends StatelessWidget {
       initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/all-pages',
       routes: {
         '/sign-in': (context) {
-          return SignInScreen(
-            headerBuilder: (context, constraints, shrinkOffset) {
-              return Center(
-                child: Text(
-                  "Aquarium Bleu",
-                  style: Theme.of(context).textTheme.displayMedium,
-                ),
-                // child: Image.asset(
-                //   "assets/images/dark_drawn_aquarium.png",
-                //   fit: BoxFit.cover,
-                // ),
-              );
-            },
-            providers: [
-              EmailAuthProvider(),
-              GoogleProvider(
-                clientId: '36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi.apps.googleusercontent.com',
-              ),
-            ],
-            actions: [
-              ForgotPasswordAction((context, email) {
-                Navigator.pushNamed(
-                  context,
-                  '/forgot-password',
-                  arguments: {'email': email},
-                );
-              }),
-              AuthStateChangeAction<SignedIn>((context, state) {
-                if (!state.user!.emailVerified) {
-                  Navigator.pushNamed(context, '/verify-email');
-                } else {
-                  Navigator.pushReplacementNamed(context, '/all-pages');
-                }
-              }),
-              AuthStateChangeAction<UserCreated>((context, state) {
-                if (!state.credential.user!.emailVerified) {
-                  Navigator.pushNamed(context, '/verify-email');
-                } else {
-                  Navigator.pushReplacementNamed(context, '/all-pages');
-                }
-              }),
-              AuthStateChangeAction<CredentialLinked>((context, state) {
-                if (!state.user.emailVerified) {
-                  Navigator.pushNamed(context, '/verify-email');
-                } else {
-                  Navigator.pushReplacementNamed(context, '/all-pages');
-                }
-              }),
-              // EmailLinkSignInAction((context) {
-              //   Navigator.pushReplacementNamed(context, '/email-link-sign-in');
-              // }),
-            ],
-            // styles: const {
-            //   EmailFormStyle(signInButtonVariant: ButtonVariant.filled),
-            // },
-            subtitleBuilder: (context, action) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  action == AuthAction.signIn
-                      ? AppLocalizations.of(context)!.signInWelcomeMsg
-                      : AppLocalizations.of(context)!.createAccWelcomeMsg,
-                ),
-              );
-            },
-          );
+          return LoginPage();
+          // return SignInScreen(
+          //   showPasswordVisibilityToggle: true,
+          //   providers: [
+          //     EmailAuthProvider(),
+          //     GoogleProvider(
+          //       clientId: '36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi.apps.googleusercontent.com',
+          //     ),
+          //   ],
+          //   actions: [
+          //     ForgotPasswordAction((context, email) {
+          //       Navigator.pushNamed(
+          //         context,
+          //         '/forgot-password',
+          //         arguments: {'email': email},
+          //       );
+          //     }),
+          //     AuthStateChangeAction<SignedIn>((context, state) {
+          //       if (!state.user!.emailVerified) {
+          //         Navigator.pushNamed(context, '/verify-email');
+          //       } else {
+          //         Navigator.pushReplacementNamed(context, '/all-pages');
+          //       }
+          //     }),
+          //     AuthStateChangeAction<UserCreated>((context, state) {
+          //       if (!state.credential.user!.emailVerified) {
+          //         Navigator.pushNamed(context, '/verify-email');
+          //       } else {
+          //         Navigator.pushReplacementNamed(context, '/all-pages');
+          //       }
+          //     }),
+          //     AuthStateChangeAction<CredentialLinked>((context, state) {
+          //       if (!state.user.emailVerified) {
+          //         Navigator.pushNamed(context, '/verify-email');
+          //       } else {
+          //         Navigator.pushReplacementNamed(context, '/all-pages');
+          //       }
+          //     }),
+          //   ],
+          //   subtitleBuilder: (context, action) {
+          //     return Padding(
+          //       padding: const EdgeInsets.only(bottom: 8),
+          //       child: Text(
+          //         action == AuthAction.signIn
+          //             ? AppLocalizations.of(context)!.signInWelcomeMsg
+          //             : AppLocalizations.of(context)!.createAccWelcomeMsg,
+          //       ),
+          //     );
+          //   },
+          // );
         },
         '/verify-email': (context) {
           return EmailVerificationScreen(

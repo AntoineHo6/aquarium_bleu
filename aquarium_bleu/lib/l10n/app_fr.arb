@@ -4,6 +4,12 @@
     "welcomeToAquariumBleu": "Bienvenue à Aquarium Bleu!",
     "welcomeContent": "Vous pouvez commencer par ajouter un de vos aquariums dans cette page. \n\nBonne chance!",
 
+    "email": "Courriel",
+    "password": "Mot de passe",
+    "login": "Se connecter",
+    "or": "ou",
+    "forgotPassword": "Mot de passe oublié?",
+
     "settings": "Paramètres",
     "theme": "Thème",
     "light": "Clair",

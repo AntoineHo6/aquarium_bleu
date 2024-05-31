@@ -84,11 +84,13 @@ flutter_launcher_icons:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/images/koi_pixel.png
     - assets/images/dark_chart_wc_line.png
     - assets/images/light_chart_wc_line.png
     - assets/images/dark_drawn_aquarium.png
     - assets/images/light_drawn_aquarium.png
+    - assets/images/dark_login_bg.png
+    - assets/images/dark_login_bg_2.png
+    - assets/images/light_login_bg.png
     - assets/icons/icon_1024.png
 
   generate: true
