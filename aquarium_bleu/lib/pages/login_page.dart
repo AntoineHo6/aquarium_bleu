@@ -43,16 +43,16 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/dark_login_bg_2.png"),
-                fit: BoxFit.cover,
-                opacity: 0.05,
-              ),
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/dark_login_bg.png"),
+            fit: BoxFit.cover,
+            opacity: 0.05,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(Spacing.screenEdgePadding),
               child: Column(
@@ -130,7 +130,16 @@ class _LoginPageState extends State<LoginPage> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: TextButton(
-                      onPressed: () {},
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/forgot-password',
+                          arguments: {'email': _emailController.text},
+                        );
+                      },
                       child: Text(AppLocalizations.of(context)!.forgotPassword),
                     ),
                   ),
@@ -144,9 +153,6 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: isLogin ? _handleLogin : createUserWithEmailAndPassword,
                     child: Text(AppLocalizations.of(context)!.login),
                   ),
-                  // const SizedBox(
-                  //   height: Spacing.betweenSections,
-                  // ),
                   Center(
                     child: Text(
                       errMsg!,
@@ -182,6 +188,20 @@ class _LoginPageState extends State<LoginPage> {
                   //     Navigator.pushReplacementNamed(context, '/all-pages');
                   //   },
                   // ),
+                  const SizedBox(
+                    height: Spacing.betweenSections,
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(AppLocalizations.of(context)!.dontHaveAnAccount),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(AppLocalizations.of(context)!.signUp),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

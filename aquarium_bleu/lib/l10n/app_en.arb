@@ -9,6 +9,8 @@
     "login": "Log in",
     "or": "Or",
     "forgotPassword": "Forgot password?",
+    "dontHaveAnAccount": "Don't have an account?",
+    "signUp": "Sign Up",
 
     "settings": "Settings",
     "theme": "Theme",
