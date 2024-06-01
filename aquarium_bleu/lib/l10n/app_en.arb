@@ -6,9 +6,11 @@
     
     "email": "Email",
     "password": "Password",
-    "login": "Log in",
+    "confirmPassword": "Confirm password",
+    "signIn": "Sign in",
     "or": "Or",
     "forgotPassword": "Forgot password?",
+    "alreadyHaveAnAccount": "Already have an account?",
     "dontHaveAnAccount": "Don't have an account?",
     "signUp": "Sign Up",
 

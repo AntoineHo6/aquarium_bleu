@@ -6,9 +6,11 @@
 
     "email": "Courriel",
     "password": "Mot de passe",
-    "login": "Se connecter",
+    "confirmPassword": "Confirmez le mot de passe",
+    "signIn": "Se connecter",
     "or": "ou",
     "forgotPassword": "Mot de passe oublié?",
+    "alreadyHaveAnAccount": "Vous avez déjà un compte?",
     "dontHaveAnAccount": "Pas de compte?",
     "signUp": "S'inscrire",
 

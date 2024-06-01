@@ -3,7 +3,9 @@ import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -20,23 +22,29 @@ class _LoginPageState extends State<LoginPage> {
 
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
+  late TextEditingController _confirmPasswordController;
   late bool _isPasswordVisible;
+  late bool _isConfirmPasswordVisible;
 
   bool isEmailValid = true;
   bool isPasswordValid = true;
+  bool isConfirmPasswordValid = true;
 
   @override
   void initState() {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
     _isPasswordVisible = false;
+    _isConfirmPasswordVisible = false;
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -56,7 +64,6 @@ class _LoginPageState extends State<LoginPage> {
             child: Padding(
               padding: const EdgeInsets.all(Spacing.screenEdgePadding),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Center(
                     child: Text(
@@ -94,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: Spacing.betweenSections,
                   ),
                   TextField(
-                    decoration: new InputDecoration(
+                    decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(6),
                         borderSide: BorderSide(color: MyTheme.seedColor),
@@ -127,31 +134,87 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
+                  Visibility(
+                    visible: !isLogin,
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: Spacing.betweenSections,
+                        ),
+                        TextField(
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6),
+                              borderSide: BorderSide(color: MyTheme.seedColor),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6),
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6),
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(6),
+                              borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                            ),
+                            hintText: AppLocalizations.of(context)!.confirmPassword,
+                            errorText: isConfirmPasswordValid
+                                ? null
+                                : AppLocalizations.of(context)!.emptyField,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+                                });
+                              },
+                            ),
+                          ),
+                          controller: _confirmPasswordController,
+                          obscureText: !_isConfirmPasswordVisible,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Visibility(
+                    visible: isLogin,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/forgot-password',
+                            arguments: {'email': _emailController.text},
+                          );
+                        },
+                        child: Text(AppLocalizations.of(context)!.forgotPassword),
                       ),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/forgot-password',
-                          arguments: {'email': _emailController.text},
-                        );
-                      },
-                      child: Text(AppLocalizations.of(context)!.forgotPassword),
                     ),
                   ),
                   const SizedBox(
                     height: Spacing.betweenSections,
                   ),
-                  FilledButton(
-                    style: FilledButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                  Container(
+                    width: double.infinity,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                      ),
+                      onPressed: isLogin ? _handleLogin : createUserWithEmailAndPassword,
+                      child: Text(
+                        isLogin
+                            ? AppLocalizations.of(context)!.signIn
+                            : AppLocalizations.of(context)!.signUp,
+                      ),
                     ),
-                    onPressed: isLogin ? _handleLogin : createUserWithEmailAndPassword,
-                    child: Text(AppLocalizations.of(context)!.login),
                   ),
                   Center(
                     child: Text(
@@ -173,32 +236,36 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(
                     height: Spacing.betweenSections,
                   ),
-                  GoogleSignInButton(
+                  GoogleSignInIconButton(
                     clientId:
                         '36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi.apps.googleusercontent.com',
                     loadingIndicator: CircularProgressIndicator.adaptive(),
-                    onSignedIn: (credential) async {
-                      await Navigator.pushReplacementNamed(context, '/all-pages');
+                    onSignedIn: (credential) {
+                      Navigator.pushReplacementNamed(context, '/all-pages');
                     },
                   ),
-                  // GoogleSignInIconButton(
-                  //   clientId: '36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi.apps.googleusercontent.com',
-                  //   loadingIndicator: CircularProgressIndicator.adaptive(),
-                  //   onSignedIn: (credential) {
-                  //     Navigator.pushReplacementNamed(context, '/all-pages');
-                  //   },
-                  // ),
                   const SizedBox(
                     height: Spacing.betweenSections,
                   ),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(AppLocalizations.of(context)!.dontHaveAnAccount),
+                      Text(
+                        isLogin
+                            ? AppLocalizations.of(context)!.dontHaveAnAccount
+                            : AppLocalizations.of(context)!.alreadyHaveAnAccount,
+                      ),
                       TextButton(
-                        onPressed: () {},
-                        child: Text(AppLocalizations.of(context)!.signUp),
+                        onPressed: () {
+                          setState(() {
+                            isLogin = !isLogin;
+                          });
+                        },
+                        child: Text(
+                          isLogin
+                              ? AppLocalizations.of(context)!.signUp
+                              : AppLocalizations.of(context)!.signIn,
+                        ),
                       ),
                     ],
                   ),
@@ -258,4 +325,6 @@ class _LoginPageState extends State<LoginPage> {
 
     await signInWithEmailAndPassword();
   }
+
+  Future<void> handleSignUp() async {}
 }
