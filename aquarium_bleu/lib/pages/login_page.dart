@@ -3,9 +3,7 @@ import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -25,10 +23,6 @@ class _LoginPageState extends State<LoginPage> {
   late TextEditingController _confirmPasswordController;
   late bool _isPasswordVisible;
   late bool _isConfirmPasswordVisible;
-
-  bool isEmailValid = true;
-  bool isPasswordValid = true;
-  bool isConfirmPasswordValid = true;
 
   @override
   void initState() {
@@ -84,16 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(6),
                         borderSide: BorderSide(color: Colors.grey),
                       ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-                      ),
                       hintText: AppLocalizations.of(context)!.email,
-                      errorText: isEmailValid ? null : AppLocalizations.of(context)!.emptyField,
                     ),
                     controller: _emailController,
                   ),
@@ -110,16 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(6),
                         borderSide: BorderSide(color: Colors.grey),
                       ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6),
-                        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-                      ),
                       hintText: AppLocalizations.of(context)!.password,
-                      errorText: isPasswordValid ? null : AppLocalizations.of(context)!.emptyField,
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -151,18 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius: BorderRadius.circular(6),
                               borderSide: BorderSide(color: Colors.grey),
                             ),
-                            errorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(6),
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(6),
-                              borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-                            ),
                             hintText: AppLocalizations.of(context)!.confirmPassword,
-                            errorText: isConfirmPasswordValid
-                                ? null
-                                : AppLocalizations.of(context)!.emptyField,
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
@@ -208,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: FilledButton.styleFrom(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                       ),
-                      onPressed: isLogin ? _handleLogin : createUserWithEmailAndPassword,
+                      onPressed: isLogin ? signInWithEmailAndPassword : _handleSignUp,
                       child: Text(
                         isLogin
                             ? AppLocalizations.of(context)!.signIn
@@ -280,11 +245,16 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> signInWithEmailAndPassword() async {
     try {
-      await Auth().signInWithEmailAndPassword(
+      UserCredential userCredential = await Auth().signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
-      await Navigator.pushReplacementNamed(context, '/all-pages');
+
+      if (userCredential.user!.emailVerified) {
+        await Navigator.pushReplacementNamed(context, '/all-pages');
+      } else {
+        await Navigator.pushNamed(context, '/verify-email');
+      }
     } on FirebaseAuthException catch (e) {
       setState(() {
         errMsg = e.message;
@@ -292,39 +262,32 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<void> createUserWithEmailAndPassword() async {
-    try {
-      await Auth().createUserWithEmailAndPassword(
-          email: _emailController.text, password: _passwordController.text);
-    } on FirebaseAuthException catch (e) {
+  Future<void> _handleSignUp() async {
+    String password = _passwordController.text;
+    String confirmPassword = _confirmPasswordController.text;
+
+    if (password == confirmPassword) {
+      try {
+        await Auth().registerUser(email: _emailController.text, password: _passwordController.text);
+
+        _passwordController.text = '';
+        _confirmPasswordController.text = '';
+
+        setState(() {
+          errMsg = '';
+          isLogin = true;
+        });
+
+        await Navigator.pushNamed(context, '/verify-email');
+      } on FirebaseAuthException catch (e) {
+        setState(() {
+          errMsg = e.message;
+        });
+      }
+    } else {
       setState(() {
-        errMsg = e.message;
+        errMsg = "Passwords don't match";
       });
     }
   }
-
-  Future<void> _handleLogin() async {
-    String email = _emailController.text.trim();
-    String password = _passwordController.text.trim();
-
-    if (email.isEmpty) {
-      setState(() {
-        isEmailValid = false;
-      });
-    } else {
-      isEmailValid = true;
-    }
-
-    if (password.isEmpty) {
-      setState(() {
-        isPasswordValid = false;
-      });
-    } else {
-      isPasswordValid = true;
-    }
-
-    await signInWithEmailAndPassword();
-  }
-
-  Future<void> handleSignUp() async {}
 }

@@ -91,55 +91,6 @@ class MyApp extends StatelessWidget {
       routes: {
         '/sign-in': (context) {
           return LoginPage();
-          // return SignInScreen(
-          //   showPasswordVisibilityToggle: true,
-          //   providers: [
-          //     EmailAuthProvider(),
-          //     GoogleProvider(
-          //       clientId: '36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi.apps.googleusercontent.com',
-          //     ),
-          //   ],
-          //   actions: [
-          //     ForgotPasswordAction((context, email) {
-          //       Navigator.pushNamed(
-          //         context,
-          //         '/forgot-password',
-          //         arguments: {'email': email},
-          //       );
-          //     }),
-          //     AuthStateChangeAction<SignedIn>((context, state) {
-          //       if (!state.user!.emailVerified) {
-          //         Navigator.pushNamed(context, '/verify-email');
-          //       } else {
-          //         Navigator.pushReplacementNamed(context, '/all-pages');
-          //       }
-          //     }),
-          //     AuthStateChangeAction<UserCreated>((context, state) {
-          //       if (!state.credential.user!.emailVerified) {
-          //         Navigator.pushNamed(context, '/verify-email');
-          //       } else {
-          //         Navigator.pushReplacementNamed(context, '/all-pages');
-          //       }
-          //     }),
-          //     AuthStateChangeAction<CredentialLinked>((context, state) {
-          //       if (!state.user.emailVerified) {
-          //         Navigator.pushNamed(context, '/verify-email');
-          //       } else {
-          //         Navigator.pushReplacementNamed(context, '/all-pages');
-          //       }
-          //     }),
-          //   ],
-          //   subtitleBuilder: (context, action) {
-          //     return Padding(
-          //       padding: const EdgeInsets.only(bottom: 8),
-          //       child: Text(
-          //         action == AuthAction.signIn
-          //             ? AppLocalizations.of(context)!.signInWelcomeMsg
-          //             : AppLocalizations.of(context)!.createAccWelcomeMsg,
-          //       ),
-          //     );
-          //   },
-          // );
         },
         '/verify-email': (context) {
           return EmailVerificationScreen(
@@ -173,5 +124,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// TODO fix: when first creating an account, it will show the mesg acc doesnt exist.
