@@ -30,9 +30,16 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.googleusercontent.apps.36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi</string>
+				<string>fb1201095037938453</string>
 			</array>
 		</dict>
 	</array>
+
+	<key>FacebookAppID</key>
+	<string>1201095037938453</string>
+	<key>FacebookDisplayName</key>
+	<string>Aquarium Bleu</string>
+
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>

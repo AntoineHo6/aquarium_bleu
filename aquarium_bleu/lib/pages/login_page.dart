@@ -6,6 +6,8 @@ import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -148,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                   Visibility(
                     visible: isLogin,
                     child: Align(
-                      alignment: Alignment.centerLeft,
+                      alignment: Alignment.centerRight,
                       child: TextButton(
                         style: TextButton.styleFrom(
                           padding: EdgeInsets.zero,
@@ -201,16 +203,34 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(
                     height: Spacing.betweenSections,
                   ),
-                  GoogleSignInIconButton(
-                    clientId:
-                        '36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi.apps.googleusercontent.com',
-                    loadingIndicator: CircularProgressIndicator.adaptive(),
-                    onSignedIn: (credential) {
-                      Navigator.pushReplacementNamed(context, '/all-pages');
-                    },
-                  ),
-                  const SizedBox(
-                    height: Spacing.betweenSections,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GoogleSignInIconButton(
+                        clientId:
+                            '36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi.apps.googleusercontent.com',
+                        loadingIndicator: CircularProgressIndicator.adaptive(),
+                        onSignedIn: (credential) {
+                          Navigator.pushReplacementNamed(context, '/all-pages');
+                        },
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      IconButton(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onPressed: _handleFbLogin,
+                        icon: Icon(
+                          FontAwesomeIcons.squareFacebook,
+                          color: Color(0xFF316FF6),
+                          size: 51,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: Spacing.betweenSections,
+                      ),
+                    ],
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -287,6 +307,26 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       setState(() {
         errMsg = "Passwords don't match";
+      });
+    }
+  }
+
+  Future<void> _handleFbLogin() async {
+    try {
+      // Trigger the sign-in flow
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+
+      // Create a credential from the access token
+      final OAuthCredential facebookAuthCredential =
+          FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
+
+      // Once signed in, return the UserCredential
+      await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+
+      Navigator.pushReplacementNamed(context, '/all-pages');
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        errMsg = e.message;
       });
     }
   }
