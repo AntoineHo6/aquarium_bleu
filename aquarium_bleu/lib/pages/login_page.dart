@@ -227,10 +227,10 @@ class _LoginPageState extends State<LoginPage> {
                           size: 51,
                         ),
                       ),
-                      const SizedBox(
-                        height: Spacing.betweenSections,
-                      ),
                     ],
+                  ),
+                  const SizedBox(
+                    height: Spacing.betweenSections,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
