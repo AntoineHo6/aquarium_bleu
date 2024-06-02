@@ -67,7 +67,7 @@ class DefaultFirebaseOptions {
     projectId: 'aquarium-bleu',
     storageBucket: 'aquarium-bleu.appspot.com',
     iosClientId: '36684847155-jddi2pcpndjg36lg8kd9i4msjsi4ol5i.apps.googleusercontent.com',
-    iosBundleId: 'com.aquariumBleu',
+    iosBundleId: 'com.aquariumbleu',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -77,6 +77,6 @@ class DefaultFirebaseOptions {
     projectId: 'aquarium-bleu',
     storageBucket: 'aquarium-bleu.appspot.com',
     iosClientId: '36684847155-jddi2pcpndjg36lg8kd9i4msjsi4ol5i.apps.googleusercontent.com',
-    iosBundleId: 'com.aquariumBleu',
+    iosBundleId: 'com.aquariumbleu',
   );
 }

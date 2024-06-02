@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aquarium_bleu/auth.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
@@ -314,7 +316,12 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _handleFbLogin() async {
     try {
       // Trigger the sign-in flow
-      final LoginResult loginResult = await FacebookAuth.instance.login();
+      final LoginResult loginResult =
+          await FacebookAuth.instance.login(loginTracking: LoginTracking.enabled);
+
+      if (loginResult.accessToken == null) {
+        return;
+      }
 
       // Create a credential from the access token
       final OAuthCredential facebookAuthCredential =
