@@ -3,14 +3,18 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:aquarium_bleu/auth.dart';
+import 'package:aquarium_bleu/main.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
+import 'package:aquarium_bleu/widgets/loading_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/toasts/signed_in_as_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
@@ -22,6 +26,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  late FToast fToast;
   String? errMsg = '';
   bool isLogin = true;
 
@@ -39,6 +44,8 @@ class _LoginPageState extends State<LoginPage> {
     _confirmPasswordController = TextEditingController();
     _isPasswordVisible = false;
     _isConfirmPasswordVisible = false;
+    fToast = FToast();
+    fToast.init(navigatorKey.currentContext!);
   }
 
   @override
@@ -216,21 +223,35 @@ class _LoginPageState extends State<LoginPage> {
                             '36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi.apps.googleusercontent.com',
                         loadingIndicator: CircularProgressIndicator.adaptive(),
                         onSignedIn: (credential) {
+                          _showToast(SignedInAsToast(FirebaseAuth.instance.currentUser!.email!));
                           Navigator.pushReplacementNamed(context, '/all-pages');
                         },
                       ),
                       const SizedBox(
                         width: 10,
                       ),
-                      IconButton(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onPressed: _handleFbLogin,
-                        icon: Icon(
-                          FontAwesomeIcons.squareFacebook,
-                          color: Color(0xFF316FF6),
-                          size: 51,
-                        ),
+                      Stack(
+                        children: [
+                          Positioned(
+                            bottom: 11,
+                            left: 17,
+                            child: Container(
+                              color: Colors.white,
+                              width: 30,
+                              height: 40,
+                            ),
+                          ),
+                          IconButton(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onPressed: _handleFbLogin,
+                            icon: Icon(
+                              FontAwesomeIcons.squareFacebook,
+                              color: Color(0xFF316FF6),
+                              size: 51,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -276,6 +297,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (userCredential.user!.emailVerified) {
+        _showToast(SignedInAsToast(FirebaseAuth.instance.currentUser!.email!));
         await Navigator.pushReplacementNamed(context, '/all-pages');
       } else {
         await Navigator.pushNamed(context, '/verify-email');
@@ -311,7 +333,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } else {
       setState(() {
-        errMsg = "Passwords don't match";
+        errMsg = AppLocalizations.of(context)!.passwordsDontMatch;
       });
     }
   }
@@ -335,6 +357,8 @@ class _LoginPageState extends State<LoginPage> {
       if (loginResult.accessToken == null) {
         throw Exception(loginResult.message);
       }
+
+      showDialog(context: context, builder: (BuildContext context) => const LoadingAlertDialog());
 
       OAuthCredential facebookAuthCredential;
 
@@ -364,7 +388,8 @@ class _LoginPageState extends State<LoginPage> {
 
       // Once signed in, return the UserCredential
       await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-
+      Navigator.pop(context);
+      _showToast(SignedInAsToast(FirebaseAuth.instance.currentUser!.email!));
       Navigator.pushReplacementNamed(context, '/all-pages');
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -384,5 +409,11 @@ class _LoginPageState extends State<LoginPage> {
     final bytes = utf8.encode(input);
     final digest = sha256.convert(bytes);
     return digest.toString();
+  }
+
+  _showToast(Widget toast) {
+    fToast.showToast(
+      child: toast,
+    );
   }
 }

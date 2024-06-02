@@ -79,10 +79,11 @@ class _TanksPageState extends State<TanksPage> {
                   automaticallyImplyLeading: false,
                   expandedHeight: MediaQuery.of(context).size.height * 0.175,
                   flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
                     title: FittedBox(
                       child: Text(
                         AppLocalizations.of(context)!.yourTanks,
-                        style: Theme.of(context).textTheme.headlineLarge,
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
                     ),
                   ),

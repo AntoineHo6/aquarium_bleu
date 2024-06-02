@@ -41,9 +41,6 @@ class _AllPagesState extends State<AllPages> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
-      // body: Center(
-      //   child: _screens.elementAt(_selectedIndex),
-      // ),
       body: IndexedStack(
         index: _selectedIndex,
         children: _screens,
