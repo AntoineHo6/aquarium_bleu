@@ -73,7 +73,7 @@ class _ParamChartPageState extends State<ParamChartPage> {
           padding: const EdgeInsets.only(bottom: 10),
           child: FilledButton.tonal(
             style: ButtonStyle(
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               )),
             ),

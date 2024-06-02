@@ -112,7 +112,7 @@ class _TanksPageState extends State<TanksPage> {
                               const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
                           child: OutlinedButton(
                             style: ButtonStyle(
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               )),

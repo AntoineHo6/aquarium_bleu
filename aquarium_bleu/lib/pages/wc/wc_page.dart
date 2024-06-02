@@ -150,7 +150,7 @@ class WcPageState extends State<WcPage> {
                                 padding: const EdgeInsets.only(bottom: 10),
                                 child: FilledButton.tonal(
                                   style: ButtonStyle(
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(20),
                                     )),
