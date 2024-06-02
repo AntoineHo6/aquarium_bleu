@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:aquarium_bleu/auth.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
@@ -314,18 +317,50 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _handleFbLogin() async {
+    final rawNonce = generateNonce();
+    final nonce = sha256ofString(rawNonce);
+
     try {
       // Trigger the sign-in flow
-      final LoginResult loginResult =
-          await FacebookAuth.instance.login(loginTracking: LoginTracking.enabled);
+      final LoginResult loginResult = await FacebookAuth.instance
+          .login(
+        loginTracking: LoginTracking.limited,
+        nonce: nonce,
+      )
+          .catchError((onError) {
+        print(onError);
+        throw Exception(onError.message);
+      });
 
       if (loginResult.accessToken == null) {
-        return;
+        throw Exception(loginResult.message);
       }
 
-      // Create a credential from the access token
-      final OAuthCredential facebookAuthCredential =
-          FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
+      OAuthCredential facebookAuthCredential;
+
+      if (Platform.isIOS) {
+        switch (loginResult.accessToken!.type) {
+          case AccessTokenType.classic:
+            final token = loginResult.accessToken as ClassicToken;
+            facebookAuthCredential = FacebookAuthProvider.credential(
+              token.authenticationToken!,
+            );
+            break;
+          case AccessTokenType.limited:
+            final token = loginResult.accessToken as LimitedToken;
+            facebookAuthCredential = OAuthCredential(
+              providerId: 'facebook.com',
+              signInMethod: 'oauth',
+              idToken: token.tokenString,
+              rawNonce: rawNonce,
+            );
+            break;
+        }
+      } else {
+        facebookAuthCredential = FacebookAuthProvider.credential(
+          loginResult.accessToken!.tokenString,
+        );
+      }
 
       // Once signed in, return the UserCredential
       await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
@@ -336,5 +371,18 @@ class _LoginPageState extends State<LoginPage> {
         errMsg = e.message;
       });
     }
+  }
+
+  String generateNonce([int length = 32]) {
+    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)]).join();
+  }
+
+  /// Returns the sha256 hash of [input] in hex notation.
+  String sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 }
