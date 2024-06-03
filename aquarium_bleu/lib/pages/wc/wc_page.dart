@@ -103,7 +103,8 @@ class WcPageState extends State<WcPage> {
                   IconButton(
                     onPressed: () => showDialog<bool?>(
                       context: context,
-                      builder: (BuildContext context) => AddWcAlertDialog(tankProvider.tank.docId),
+                      builder: (BuildContext context) => AddWcAlertDialog(
+                          tankId: tankProvider.tank.docId, focusedDate: _focusedDay),
                     ).then((bool? isAdded) {
                       if (isAdded != null && isAdded) {
                         _showToast(AddedToast());

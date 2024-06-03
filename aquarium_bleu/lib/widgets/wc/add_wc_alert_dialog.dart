@@ -8,16 +8,25 @@ import 'package:uuid/uuid.dart';
 
 class AddWcAlertDialog extends StatefulWidget {
   final String tankId;
+  final DateTime focusedDate;
 
-  const AddWcAlertDialog(this.tankId, {super.key});
+  const AddWcAlertDialog({required this.tankId, required this.focusedDate, super.key});
 
   @override
   State<AddWcAlertDialog> createState() => _AddWcAlertDialogState();
 }
 
 class _AddWcAlertDialogState extends State<AddWcAlertDialog> {
-  DateTime _date = DateTime.now();
-  TimeOfDay _time = TimeOfDay.now();
+  late DateTime _date;
+  late TimeOfDay _time;
+
+  @override
+  void initState() {
+    super.initState();
+    _date = widget.focusedDate;
+    _time = TimeOfDay.now();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog.adaptive(

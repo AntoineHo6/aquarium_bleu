@@ -62,7 +62,7 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
     _setParamBtnText();
 
     return AlertDialog.adaptive(
-      title: Text(AppLocalizations.of(context)!.addParameterValue),
+      title: Text(AppLocalizations.of(context)!.addMeasurement),
       content: SingleChildScrollView(
         child: ListBody(
           children: [

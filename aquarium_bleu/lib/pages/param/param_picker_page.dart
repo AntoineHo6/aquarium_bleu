@@ -34,8 +34,8 @@ class _ParamPickerPageState extends State<ParamPickerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.addParameterValue),
-      ),
+          // title: Text(AppLocalizations.of(context)!.selectParameter),
+          ),
       body: ListView(
         children: [
           GridView.count(
