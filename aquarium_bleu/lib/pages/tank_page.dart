@@ -60,44 +60,42 @@ class _TankPageState extends State<TankPage> {
                     flex: 50,
                     child: SizedBox(
                       width: double.infinity,
-                      child: Card(
-                        color: MyTheme.paramColor,
-                        elevation: 1,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ParamPage(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: Theme.of(context).brightness == Brightness.dark
-                                    ? AssetImage("assets/images/dark_vivid_betta.png")
-                                    : AssetImage("assets/images/light_vivid_betta.png"),
-                                fit: BoxFit.cover,
-                                alignment: Alignment.topCenter,
-                                opacity: 0.75,
-                              ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ParamPage(),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(Spacing.cardPadding),
-                              child: Align(
-                                alignment: Alignment.topLeft,
-                                child: Row(
-                                  children: [
-                                    Icon(FontAwesomeIcons.chartLine),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      AppLocalizations.of(context)!.waterParameters,
-                                      style: Theme.of(context).textTheme.headlineLarge,
-                                    ),
-                                  ],
-                                ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                              image: Theme.of(context).brightness == Brightness.dark
+                                  ? AssetImage("assets/images/dark_vivid_angelfish.png")
+                                  : AssetImage("assets/images/light_vivid_angelfish.png"),
+                              fit: BoxFit.cover,
+                              alignment: Alignment.topCenter,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(Spacing.cardPadding),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    FontAwesomeIcons.chartLine,
+                                    color: MyTheme.paramColor,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    AppLocalizations.of(context)!.waterParameters,
+                                    style: Theme.of(context).textTheme.headlineLarge,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -105,48 +103,49 @@ class _TankPageState extends State<TankPage> {
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    height: Spacing.betweenSections,
+                  ),
                   Expanded(
                     flex: 50,
                     child: SizedBox(
                       width: double.infinity,
-                      child: Card(
-                        color: MyTheme.wcColor,
-                        elevation: 1,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const WcPage(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: Theme.of(context).brightness == Brightness.dark
-                                    ? AssetImage("assets/images/dark_vivid_angelfish.png")
-                                    : AssetImage("assets/images/light_vivid_angelfish.png"),
-                                fit: BoxFit.cover,
-                                alignment: Alignment.topCenter,
-                                opacity: 0.75,
-                              ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const WcPage(),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(Spacing.cardPadding),
-                              child: Align(
-                                alignment: Alignment.topLeft,
-                                child: Row(
-                                  children: [
-                                    Icon(FontAwesomeIcons.droplet),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      AppLocalizations.of(context)!.waterChanges,
-                                      style: Theme.of(context).textTheme.headlineLarge,
-                                    ),
-                                  ],
-                                ),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(11),
+                            image: DecorationImage(
+                              image: Theme.of(context).brightness == Brightness.dark
+                                  ? AssetImage("assets/images/dark_vivid_betta.png")
+                                  : AssetImage("assets/images/light_vivid_betta.png"),
+                              fit: BoxFit.cover,
+                              alignment: Alignment.topCenter,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(Spacing.cardPadding),
+                            child: Align(
+                              alignment: Alignment.topLeft,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    FontAwesomeIcons.droplet,
+                                    color: MyTheme.wcColor,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    AppLocalizations.of(context)!.waterChanges,
+                                    style: Theme.of(context).textTheme.headlineLarge,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
