@@ -222,37 +222,37 @@ class _LoginPageState extends State<LoginPage> {
                         clientId:
                             '36684847155-fv4cjr066likbl4cbqkrllpa0nq9mnvi.apps.googleusercontent.com',
                         loadingIndicator: CircularProgressIndicator.adaptive(),
-                        onSignedIn: (credential) {
+                        onSignedIn: (credential) async {
                           _showToast(SignedInAsToast(FirebaseAuth.instance.currentUser!.email!));
-                          Navigator.pushReplacementNamed(context, '/all-pages');
+                          await Navigator.pushReplacementNamed(context, '/all-pages');
                         },
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Stack(
-                        children: [
-                          Positioned(
-                            bottom: 11,
-                            left: 17,
-                            child: Container(
-                              color: Colors.white,
-                              width: 30,
-                              height: 40,
-                            ),
-                          ),
-                          IconButton(
-                            splashColor: Colors.transparent,
-                            highlightColor: Colors.transparent,
-                            onPressed: _handleFbLogin,
-                            icon: Icon(
-                              FontAwesomeIcons.squareFacebook,
-                              color: Color(0xFF316FF6),
-                              size: 51,
-                            ),
-                          ),
-                        ],
-                      ),
+                      // const SizedBox(
+                      //   width: 10,
+                      // ),
+                      // Stack(
+                      //   children: [
+                      //     Positioned(
+                      //       bottom: 11,
+                      //       left: 17,
+                      //       child: Container(
+                      //         color: Colors.white,
+                      //         width: 30,
+                      //         height: 40,
+                      //       ),
+                      //     ),
+                      //     IconButton(
+                      //       splashColor: Colors.transparent,
+                      //       highlightColor: Colors.transparent,
+                      //       onPressed: _handleFbLogin,
+                      //       icon: Icon(
+                      //         FontAwesomeIcons.squareFacebook,
+                      //         color: Color(0xFF316FF6),
+                      //         size: 51,
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                     ],
                   ),
                   const SizedBox(
