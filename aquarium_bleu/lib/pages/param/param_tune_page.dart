@@ -89,7 +89,7 @@ class _ParamTunePageState extends State<ParamTunePage> {
         appBar: AppBar(),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.screenEdgePadding),
+            padding: const EdgeInsets.all(Spacing.screenEdgePadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
