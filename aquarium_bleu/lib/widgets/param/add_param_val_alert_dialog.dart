@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:aquarium_bleu/enums/water_param_type.dart';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/main.dart';
@@ -9,6 +11,7 @@ import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:aquarium_bleu/widgets/toasts/added_toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -62,20 +65,47 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
     _setParamBtnText();
 
     return AlertDialog.adaptive(
-      title: Text(AppLocalizations.of(context)!.addMeasurement),
+      title: Padding(
+        padding: const EdgeInsets.only(bottom: Spacing.betweenSections),
+        child: Text(AppLocalizations.of(context)!.addMeasurement),
+      ),
       content: SingleChildScrollView(
         child: ListBody(
           children: [
-            TextField(
-              keyboardType: TextInputType.number,
-              controller: _valueFieldController,
-              decoration: InputDecoration(
-                hintText:
-                    "${AppLocalizations.of(context)!.value} (${AppLocalizations.of(context)!.required})",
-                errorText: _isValueValid ? null : _errorText,
-              ),
-              maxLength: 10,
-            ),
+            Platform.isIOS
+                ? Column(
+                    children: [
+                      CupertinoTextField(
+                        keyboardType: TextInputType.number,
+                        controller: _valueFieldController,
+                        maxLength: 10,
+                        placeholder:
+                            '${AppLocalizations.of(context)!.value} (${AppLocalizations.of(context)!.required})',
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: _isValueValid
+                                ? Colors.grey[800]!
+                                : Theme.of(context).colorScheme.error,
+                          ),
+                        ),
+                      ),
+                      // Visibility(
+                      //   visible: !_isValueValid,
+                      //   child: Text(_errorText ?? ''),
+                      // ),
+                    ],
+                  )
+                : TextField(
+                    keyboardType: TextInputType.number,
+                    controller: _valueFieldController,
+                    decoration: InputDecoration(
+                      hintText:
+                          "${AppLocalizations.of(context)!.value} (${AppLocalizations.of(context)!.required})",
+                      errorText: _isValueValid ? null : _errorText,
+                    ),
+                    maxLength: 10,
+                  ),
             const SizedBox(
               height: Spacing.betweenSections,
             ),
