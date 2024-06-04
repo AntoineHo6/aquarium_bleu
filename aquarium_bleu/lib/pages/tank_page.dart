@@ -6,6 +6,7 @@ import 'package:aquarium_bleu/providers/tank_provider.dart';
 import 'package:aquarium_bleu/styles/my_theme.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -59,11 +60,9 @@ class _TankPageState extends State<TankPage> {
                     flex: 50,
                     child: SizedBox(
                       width: double.infinity,
-                      child: Container(
-                        margin: const EdgeInsets.only(
-                          right: _marginBetweenBigButtons,
-                          bottom: _marginBetweenBigButtons,
-                        ),
+                      child: Card(
+                        color: MyTheme.paramColor,
+                        elevation: 1,
                         child: GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -73,31 +72,32 @@ class _TankPageState extends State<TankPage> {
                               ),
                             );
                           },
-                          child: Card(
-                            surfaceTintColor: MyTheme.paramColor,
-                            clipBehavior: Clip.hardEdge,
-                            elevation: 10,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: Theme.of(context).brightness == Brightness.dark
+                                    ? AssetImage("assets/images/dark_vivid_betta.png")
+                                    : AssetImage("assets/images/light_vivid_betta.png"),
+                                fit: BoxFit.cover,
+                                alignment: Alignment.topCenter,
+                                opacity: 0.75,
+                              ),
+                            ),
                             child: Padding(
                               padding: const EdgeInsets.all(Spacing.cardPadding),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    top: MediaQuery.of(context).size.height * 0.08,
-                                    left: MediaQuery.of(context).size.width * 0.5,
-                                    child: Icon(
-                                      Icons.bar_chart,
-                                      color: MyTheme.paramColor,
-                                      size: MediaQuery.of(context).size.width * 0.3,
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text(
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Row(
+                                  children: [
+                                    Icon(FontAwesomeIcons.chartLine),
+                                    const SizedBox(width: 10),
+                                    Text(
                                       AppLocalizations.of(context)!.waterParameters,
                                       style: Theme.of(context).textTheme.headlineLarge,
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -109,11 +109,9 @@ class _TankPageState extends State<TankPage> {
                     flex: 50,
                     child: SizedBox(
                       width: double.infinity,
-                      child: Container(
-                        margin: const EdgeInsets.only(
-                          right: _marginBetweenBigButtons,
-                          bottom: _marginBetweenBigButtons,
-                        ),
+                      child: Card(
+                        color: MyTheme.wcColor,
+                        elevation: 1,
                         child: GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -123,31 +121,32 @@ class _TankPageState extends State<TankPage> {
                               ),
                             );
                           },
-                          child: Card(
-                            surfaceTintColor: MyTheme.wcColor,
-                            clipBehavior: Clip.hardEdge,
-                            elevation: 10,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image: Theme.of(context).brightness == Brightness.dark
+                                    ? AssetImage("assets/images/dark_vivid_angelfish.png")
+                                    : AssetImage("assets/images/light_vivid_angelfish.png"),
+                                fit: BoxFit.cover,
+                                alignment: Alignment.topCenter,
+                                opacity: 0.75,
+                              ),
+                            ),
                             child: Padding(
                               padding: const EdgeInsets.all(Spacing.cardPadding),
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    top: MediaQuery.of(context).size.height * 0.08,
-                                    left: MediaQuery.of(context).size.width * 0.5,
-                                    child: Icon(
-                                      Icons.water_drop,
-                                      color: MyTheme.wcColor,
-                                      size: MediaQuery.of(context).size.width * 0.3,
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text(
+                              child: Align(
+                                alignment: Alignment.topLeft,
+                                child: Row(
+                                  children: [
+                                    Icon(FontAwesomeIcons.droplet),
+                                    const SizedBox(width: 10),
+                                    Text(
                                       AppLocalizations.of(context)!.waterChanges,
                                       style: Theme.of(context).textTheme.headlineLarge,
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),

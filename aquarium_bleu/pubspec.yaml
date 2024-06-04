@@ -72,6 +72,7 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/icons/icon_1024.png"
+  remove_alpha_ios: true
   # adaptive_icon_background: "assets/icons/icon_background.png"
   # adaptive_icon_foreground: "assets/icons/adaptive_icon_foreground.png"
 
@@ -93,8 +94,10 @@ flutter:
     - assets/images/dark_drawn_aquarium.png
     - assets/images/light_drawn_aquarium.png
     - assets/images/dark_login_bg.png
-    - assets/images/dark_login_bg_2.png
-    - assets/images/light_login_bg.png
+    - assets/images/dark_vivid_betta.png
+    - assets/images/light_vivid_betta.png
+    - assets/images/dark_vivid_angelfish.png
+    - assets/images/light_vivid_angelfish.png
     - assets/icons/icon_1024.png
 
   generate: true
