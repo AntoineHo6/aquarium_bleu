@@ -1,5 +1,6 @@
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
+import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/utils/string_util.dart';
 import 'package:aquarium_bleu/widgets/icon_text_btn.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,10 @@ class _AddWcAlertDialogState extends State<AddWcAlertDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog.adaptive(
-      title: Text(AppLocalizations.of(context)!.addWaterChange),
+      title: Padding(
+        padding: const EdgeInsets.only(bottom: Spacing.betweenSections),
+        child: Text(AppLocalizations.of(context)!.addWaterChange),
+      ),
       content: SingleChildScrollView(
         child: ListBody(
           children: [
