@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -223,6 +224,16 @@ class _LoginPageState extends State<LoginPage> {
                       await Navigator.pushReplacementNamed(context, '/all-pages');
                     },
                   ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Platform.isIOS
+                      ? SignInWithAppleButton(onPressed: () async {
+                          final appleProvider = AppleAuthProvider();
+                          await FirebaseAuth.instance.signInWithProvider(appleProvider);
+                          await Navigator.pushReplacementNamed(context, '/all-pages');
+                        })
+                      : const SizedBox(),
                   // Row(
                   //   mainAxisAlignment: MainAxisAlignment.center,
                   //   children: [
