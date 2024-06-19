@@ -29,6 +29,7 @@
     "account" : "Account",
     "deleteAccount": "Supprimer le compte",
     "deleteAccWarningMsg": "La suppression du compte est permanente! Pour confirmer, veuillez écrire \"CONFIRM\" et appuyer sur supprimer:",
+    "accDeleteErrMsg": "S'il vous plaît veuillez vous déconnecter. Par la suite, reconnectez-vous et réessayer.",
 
     "contactMsg": "Si vous rencontrez un problème dans l'application ou si vous avez une demande, n'hésitez pas à me contacter:\n\naquarium.bleu.app@gmail.com",
     

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:aquarium_bleu/firestore_stuff.dart';
 import 'package:aquarium_bleu/styles/spacing.dart';
 import 'package:aquarium_bleu/widgets/loading_alert_dialog.dart';
+import 'package:aquarium_bleu/widgets/msg_alert_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,9 @@ class ConfirmDeleteAccAlertDialogState extends State<ConfirmDeleteAccAlertDialog
         child: Column(
           children: [
             Text(AppLocalizations.of(context)!.deleteAccWarningMsg),
+            const SizedBox(
+              height: Spacing.betweenSections,
+            ),
             Platform.isIOS
                 ? CupertinoTextField(
                     controller: _confirmFieldController,
@@ -54,6 +58,11 @@ class ConfirmDeleteAccAlertDialogState extends State<ConfirmDeleteAccAlertDialog
                             ? Colors.grey[800]!
                             : Theme.of(context).colorScheme.error,
                       ),
+                    ),
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
                     ),
                   )
                 : TextField(
@@ -106,10 +115,23 @@ class ConfirmDeleteAccAlertDialogState extends State<ConfirmDeleteAccAlertDialog
     await FirestoreStuff.deleteUserDoc();
 
     User? user = FirebaseAuth.instance.currentUser;
-    await user?.delete();
-    await Navigator.pushReplacementNamed(context, '/sign-in');
 
-    Navigator.pop(context);
+    try {
+      await user?.delete();
+      await Navigator.pushReplacementNamed(context, '/sign-in');
+      Navigator.pop(context);
+      Navigator.pop(context);
+    } on FirebaseException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) => MsgAlertDialog(
+            content: Text(AppLocalizations.of(context)!.accDeleteErrMsg),
+          ),
+        );
+      }
+    }
+
     Navigator.pop(context);
   }
 }

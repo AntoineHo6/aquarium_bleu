@@ -29,6 +29,7 @@
     "account" : "Account",
     "deleteAccount": "Delete account",
     "deleteAccWarningMsg": "Deleting the account will be permanent! To proceed, please type \"CONFIRM\" and press on delete:",
+    "accDeleteErrMsg": "Please log out, then log back in and try again.",
     
     "contactMsg": "If you encounter any issues or have any requests, do not hesitate to contact me at:\n\naquarium.bleu.app@gmail.com",
 

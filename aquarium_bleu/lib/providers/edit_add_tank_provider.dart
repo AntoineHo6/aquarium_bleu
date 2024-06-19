@@ -57,7 +57,10 @@ class EditAddTankProvider with ChangeNotifier {
   Future<XFile?> handleImagePicker(BuildContext context) async {
     final ImagePicker picker = ImagePicker();
 
-    XFile? pickedImage = await picker.pickImage(source: ImageSource.gallery);
+    XFile? pickedImage = await picker.pickImage(
+      source: ImageSource.gallery,
+      requestFullMetadata: false,
+    );
 
     if (pickedImage != null) {
       image = pickedImage;

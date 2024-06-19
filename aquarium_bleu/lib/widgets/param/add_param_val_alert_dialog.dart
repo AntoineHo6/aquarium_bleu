@@ -89,6 +89,11 @@ class _AddParamValAlertDialogState extends State<AddParamValAlertDialog> {
                                 : Theme.of(context).colorScheme.error,
                           ),
                         ),
+                        style: TextStyle(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                        ),
                       ),
                       // Visibility(
                       //   visible: !_isValueValid,

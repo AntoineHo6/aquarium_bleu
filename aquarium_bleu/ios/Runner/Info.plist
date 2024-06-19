@@ -38,8 +38,8 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FacebookAppID</key>
 	<string>1201095037938453</string>
-    <key>FacebookClientToken</key>
-    <string>0f60564568820bde33ad54642acc0b6a</string>
+	<key>FacebookClientToken</key>
+	<string>0f60564568820bde33ad54642acc0b6a</string>
 	<key>FacebookDisplayName</key>
 	<string>Aquarium Bleu</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -47,7 +47,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires access to the camera</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires access for photo library usage</string>
+	<string>Aquarium Bleu requires access to the photo library to be able to use pictures and further customize your tank. Only the tank picture with be stored in the cloud database to make the picture persistent across multiple devices.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -71,6 +71,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>ITSAppUsesNonExemptEncryption</key><true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
