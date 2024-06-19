@@ -1,4 +1,5 @@
 import 'package:aquarium_bleu/enums/water_param_type.dart';
+import 'package:aquarium_bleu/firebase_storage_stuff.dart';
 import 'package:aquarium_bleu/models/parameter.dart';
 import 'package:aquarium_bleu/models/tank.dart';
 import 'package:aquarium_bleu/models/water_change.dart';
@@ -216,5 +217,29 @@ class FirestoreStuff {
         .doc(tank.docId);
 
     await tankDoc.delete();
+  }
+
+  static Future deleteUserDoc() async {
+    await FirebaseFirestore.instance
+        .collection(usersCollection)
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection(tanksCollection)
+        .get()
+        .then((snapshot) async {
+      for (DocumentSnapshot ds in snapshot.docs) {
+        print(ds['imgName'].toString());
+        await ds.reference.delete();
+        await FirebaseStorageStuff.deleteImg(ds['imgName'].toString());
+      }
+      ;
+    });
+
+    final userDoc = FirebaseFirestore.instance
+        .collection(usersCollection)
+        .doc(FirebaseAuth.instance.currentUser!.uid);
+
+    await FirebaseFirestore.instance.runTransaction((Transaction myTransaction) async {
+      await myTransaction.delete(userDoc);
+    });
   }
 }

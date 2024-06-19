@@ -26,6 +26,9 @@
     "about": "À propos",
     "general": "Général",
     "info": "Info",
+    "account" : "Account",
+    "deleteAccount": "Supprimer le compte",
+    "deleteAccWarningMsg": "La suppression du compte est permanente! Pour confirmer, veuillez écrire \"CONFIRM\" et appuyer sur supprimer:",
 
     "contactMsg": "Si vous rencontrez un problème dans l'application ou si vous avez une demande, n'hésitez pas à me contacter:\n\naquarium.bleu.app@gmail.com",
     
@@ -65,6 +68,7 @@
     "loading": "Chargement",
     "removed": "Supprimé",
     "updated": "Mis à jour",
+    "invalid": "Invalide",
 
     "yourTanks": "Vos aquariums",
     "addANewTank": "Ajouter un nouvel aquarium",

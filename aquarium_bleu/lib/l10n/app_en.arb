@@ -26,6 +26,9 @@
     "about": "About",
     "general": "General",
     "info": "Info",
+    "account" : "Account",
+    "deleteAccount": "Delete account",
+    "deleteAccWarningMsg": "Deleting the account will be permanent! To proceed, please type \"CONFIRM\" and press on delete:",
     
     "contactMsg": "If you encounter any issues or have any requests, do not hesitate to contact me at:\n\naquarium.bleu.app@gmail.com",
 
@@ -58,6 +61,7 @@
     "loading": "Loading",
     "removed": "Removed",
     "updated": "Updated",
+    "invalid": "Invalid",
 
     "yourTanks": "Your tanks",
     "addANewTank": "Add a new tank",

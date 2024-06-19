@@ -253,5 +253,3 @@ class _TankPageState extends State<TankPage> {
     );
   }
 }
-
-const double _marginBetweenBigButtons = 2.5;
